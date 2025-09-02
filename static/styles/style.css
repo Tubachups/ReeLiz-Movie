@@ -5,7 +5,7 @@ body {
   padding: 20px;
   text-align: center;
 }
-
+/* Dome is  here */
 h1 {
   color: #333;
 }
@@ -21,7 +21,7 @@ h1 {
   background: white;
   border-radius: 8px;
   padding: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .movie-card img {
@@ -39,7 +39,6 @@ h1 {
   color: #777;
 }
 
-
 .button-group {
   margin: 1rem 0;
 }
@@ -53,10 +52,9 @@ h1 {
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  transition:  0.3s ease;
+  transition: 0.3s ease;
 }
 
 .button-group button:hover {
   background: #555;
 }
-
