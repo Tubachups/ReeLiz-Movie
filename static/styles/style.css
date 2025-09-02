@@ -1,0 +1,62 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  color: #333;
+}
+
+#movies {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.movie-card {
+  background: white;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.movie-card img {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.movie-title {
+  font-size: 16px;
+  margin: 10px 0 5px;
+}
+
+.movie-date {
+  font-size: 14px;
+  color: #777;
+}
+
+
+.button-group {
+  margin: 1rem 0;
+}
+
+.button-group button {
+  background: #333;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 5px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition:  0.3s ease;
+}
+
+.button-group button:hover {
+  background: #555;
+}
+
