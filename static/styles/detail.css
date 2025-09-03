@@ -1,0 +1,17 @@
+.movie-detail {
+  display: flex;
+  gap: 2rem;
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.movie-detail img {
+  border-radius: 8px;
+  max-width: 300px;
+}
+
+.movie-detail .info {
+  flex: 1;
+  text-align: left;
+}
