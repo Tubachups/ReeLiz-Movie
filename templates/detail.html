@@ -1,14 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ movie.title }} - Reeliz</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/reset.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/detail.css') }}">
-</head>
-<body>
-  <div class="movie-detail">
+{% extends 'base.html' %}
+
+{% block head %}
+<title>About Us - Reeliz 🎬</title>
+<link rel="stylesheet" href="{{ url_for( 'static', filename='styles/detail.css')}}">
+
+{% endblock %}
+
+
+{% block body %}
+<div class="movie-detail">
     <div class="poster">
       <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}">
     </div>
@@ -24,6 +24,6 @@
       </p>
       <p>{{ movie.overview }}</p>
     </div>
-  </div>
-</body>
-</html>
+</div>
+
+{% endblock %}

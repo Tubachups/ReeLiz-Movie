@@ -1,32 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reeliz 🎬</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/reset.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
-</head>
-<body>
-  <nav>
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Reeliz 🎬</title>
+<link rel="stylesheet" href="{{ url_for( 'static', filename='styles/style.css')}}">
+
+{% endblock %}
+
+
+{% block body %}
+<nav>
   <a href="{{ url_for('about') }}">About Us</a>
   <a href="{{ url_for('contact') }}">Contact Us</a>
-  </nav>
+</nav>
 
-  <h1>🎬 Reeliz</h1>
+<h1>🎬 Reeliz</h1>
 
-  <!-- Buttons -->
-  <div class="button-group">
-    <button id="btn-now">Now Showing</button>
-    <button id="btn-coming">Coming Soon</button>
-  </div>
+<!-- Buttons -->
+<div class="button-group">
+  <button id="btn-now">Now Showing</button>
+  <button id="btn-coming">Coming Soon</button>
+</div>
 
-  <!-- Movie container -->
-  <section>
-    <div id="movies"></div>
-  </section>
+<!-- Movie container -->
+<section>
+  <div id="movies"></div>
+</section>
 
-  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/preview.js') }}"></script>
-</body>
-</html>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+{% endblock %}
