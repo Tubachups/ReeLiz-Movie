@@ -1,0 +1,13 @@
+body{
+  padding: 1rem;
+}
+
+.card{
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-card{
+  display: grid;
+  gap: 1rem;
+}

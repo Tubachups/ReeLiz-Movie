@@ -10,6 +10,15 @@ BASE_URL = "https://api.themoviedb.org/3"
 def home():
     return render_template("index.html")
 
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
+
+
 @app.route("/movie/<int:movie_id>")
 def movie_detail(movie_id):
     url = f"{BASE_URL}/movie/{movie_id}?api_key={API_KEY}&language=en-US"
