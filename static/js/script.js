@@ -1,8 +1,10 @@
 const API_KEY = "da871154a03a2fefab890a14eaba1b4a";
 const BASE_URL = "https://api.themoviedb.org/3";
 
+let genresMap = {};
+
 function getTodayDate() {
-  return new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+  return new Date().toISOString().split("T")[0];
 }
 
 function getFutureDate(monthsAhead) {
@@ -11,13 +13,24 @@ function getFutureDate(monthsAhead) {
   return today.toISOString().split("T")[0];
 }
 
+async function fetchGenres() {
+  try {
+    const response = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=en-US`);
+    const data = await response.json();
+    genresMap = data.genres.reduce((map, genre) => {
+      map[genre.id] = genre.name;
+      return map;
+    }, {});
+  } catch (error) {
+    console.error("Error fetching genres:", error);
+  }
+}
+
 async function fetchMovies(type) {
   const today = getTodayDate();
   const twoMonthsLater = getFutureDate(2);
 
   let url = `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&region=PH&with_release_type=2|3`;
-  
-  
 
   if (type === "now") {
     url += `&release_date.lte=${today}`;
@@ -25,12 +38,10 @@ async function fetchMovies(type) {
     url += `&release_date.gte=${today}&release_date.lte=${twoMonthsLater}`;
   }
 
-
   try {
     const response = await fetch(url);
     const data = await response.json();
     renderMovies(data.results);
-    
   } catch (error) {
     console.error("Error fetching movies:", error);
   }
@@ -53,27 +64,44 @@ function renderMovies(movies) {
     const movieCard = document.createElement("div");
     movieCard.setAttribute("class", "movie-card");
 
-    
-    const imgLink = document.createElement("a")
+    const imgLink = document.createElement("a");
+    imgLink.setAttribute("href", `/movie/${movie.id}`);
+
+    const imgWrapper = document.createElement("div");
+    imgWrapper.setAttribute("class", "movie-img-wrapper");
+
     const img = document.createElement("img");
-    imgLink.setAttribute("href",`/movie/${movie.id}`)
     img.setAttribute("src", `https://image.tmdb.org/t/p/w500${movie.poster_path}`);
     img.setAttribute("alt", movie.title);
-    imgLink.append(img)
 
-    const titleCard = document.createElement("div")
-    const title = document.createElement("a");
-    title.setAttribute("href", `/movie/${movie.id}`);
+    const overlay = document.createElement("div");
+    overlay.setAttribute("class", "movie-overlay");
+
+    const genreDiv = document.createElement("div");
+    genreDiv.setAttribute("class", "movie-genre");
+    const genreNames = movie.genre_ids.map(id => genresMap[id]).filter(Boolean);
+    genreDiv.innerText = `Genre: ${genreNames.join(", ") || "N/A"}`;
+
+    const title = document.createElement("div");
     title.setAttribute("class", "movie-title");
     title.innerText = movie.title;
-    titleCard.append(title)
-
 
     const release = document.createElement("div");
     release.setAttribute("class", "movie-date");
-    release.innerText = `Release Date: ${formatDate(movie.release_date)}`;
+    release.innerText = formatDate(movie.release_date);
 
-    movieCard.append(imgLink, titleCard, release);
+    const showBtn = document.createElement("button");
+    showBtn.setAttribute("class", "show-btn");
+    showBtn.innerText = "Show";
+
+    const bottomRow = document.createElement("div");
+    bottomRow.setAttribute("class", "bottom-row");
+    bottomRow.append(showBtn, release);
+
+    overlay.append(genreDiv, title, bottomRow);
+    imgWrapper.append(img, overlay);
+    imgLink.append(imgWrapper);
+    movieCard.append(imgLink);
     moviesContainer.append(movieCard);
   });
 }
@@ -81,4 +109,7 @@ function renderMovies(movies) {
 document.querySelector("#btn-now").addEventListener("click", () => fetchMovies("now"));
 document.querySelector("#btn-coming").addEventListener("click", () => fetchMovies("coming"));
 
-fetchMovies("now");
+(async function init() {
+  await fetchGenres();
+  fetchMovies("now");
+})();
