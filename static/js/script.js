@@ -16,6 +16,8 @@ async function fetchMovies(type) {
   const twoMonthsLater = getFutureDate(2);
 
   let url = `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&region=PH&with_release_type=2|3`;
+  
+  
 
   if (type === "now") {
     url += `&release_date.lte=${today}`;
@@ -23,10 +25,12 @@ async function fetchMovies(type) {
     url += `&release_date.gte=${today}&release_date.lte=${twoMonthsLater}`;
   }
 
+
   try {
     const response = await fetch(url);
     const data = await response.json();
     renderMovies(data.results);
+    
   } catch (error) {
     console.error("Error fetching movies:", error);
   }
