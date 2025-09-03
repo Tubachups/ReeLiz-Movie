@@ -1,38 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-  <meta charset="UTF-8">
-  <title>Contact Us - Reeliz 🎬</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/reset.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles/contact.css') }}">
-</head>
+{% block head %}
+<title>Contact Us - Reeliz 🎬</title>
+<link rel="stylesheet" href="{{ url_for( 'static', filename='styles/contact.css')}}">
 
-<body>
+{% endblock %}
 
-  <h1>Contact Us 📩</h1>
 
-  <div class="contact-card">
-    <div class="card">
-      <b>support eeliz</b>
-      <a href="#">support@reeliz.com</a>
-    </div>
-    
-    <div class="card">
-      <b>Bug Report</b>
-      <a href="#">bugreport@reeliz.com</a>
-    </div>
+{% block body %}
+<h1>Contact Us 📩</h1>
 
-    <div class="card">
-      <b>Other Concerns</b>
-      <a href="#">info@reeliz.com</a>
-    </div>
+<div class="contact-card">
+  <div class="card">
+    <b>support eeliz</b>
+    <a href="#">support@reeliz.com</a>
   </div>
-  <a href="{{ url_for('home') }}">⬅ Back to Home</a>
+  
+  <div class="card">
+    <b>Bug Report</b>
+    <a href="#">bugreport@reeliz.com</a>
+  </div>
 
+  <div class="card">
+    <b>Other Concerns</b>
+    <a href="#">info@reeliz.com</a>
+  </div>
+</div>
+<a href="{{ url_for('home') }}">⬅ Back to Home</a>
 
-
-
-</body>
-
-</html>
+{% endblock %}
