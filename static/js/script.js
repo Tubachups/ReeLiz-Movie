@@ -53,20 +53,28 @@ function renderMovies(movies) {
     const movieCard = document.createElement("div");
     movieCard.setAttribute("class", "movie-card");
 
+    
+    const imgLink = document.createElement("a")
     const img = document.createElement("img");
+    imgLink.setAttribute("href",`/movie/${movie.id}`)
     img.setAttribute("src", `https://image.tmdb.org/t/p/w500${movie.poster_path}`);
     img.setAttribute("alt", movie.title);
+    imgLink.append(img)
 
-    const title = document.createElement("div");
+    const titleCard = document.createElement("div")
+    const title = document.createElement("a");
+    title.setAttribute("href", `/movie/${movie.id}`);
     title.setAttribute("class", "movie-title");
     title.innerText = movie.title;
+    titleCard.append(title)
+
 
     const release = document.createElement("div");
     release.setAttribute("class", "movie-date");
     release.innerText = `Release Date: ${formatDate(movie.release_date)}`;
 
-    movieCard.append(img, title, release);
-    moviesContainer.appendChild(movieCard);
+    movieCard.append(imgLink, titleCard, release);
+    moviesContainer.append(movieCard);
   });
 }
 

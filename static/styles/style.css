@@ -22,6 +22,8 @@ h1 {
   background: white;
   border-radius: 8px;
   padding: 10px;
+  display: grid;
+  gap: .5rem;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -32,7 +34,6 @@ h1 {
 
 .movie-title {
   font-size: 16px;
-  margin: 10px 0 5px;
 }
 
 .movie-date {
