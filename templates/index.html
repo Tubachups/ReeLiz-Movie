@@ -2,24 +2,41 @@
 
 {% block head %}
 <title>Reeliz 🎬</title>
-<link rel="stylesheet" href="{{ url_for( 'static', filename='styles/style.css')}}">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@400;500;700&display=swap" 
+rel="stylesheet">
 
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css')}}">
 {% endblock %}
 
-
 {% block body %}
-<nav>
-  <a href="{{ url_for('about') }}">About Us</a>
-  <a href="{{ url_for('contact') }}">Contact Us</a>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-left">ReeLiz</div>
+
+  <div class="nav-center">
+    <a href="#">Home</a>
+    <a href="#" id="btn-now">Now Showing</a>
+    <a href="#" id="btn-coming">Coming Soon</a>
+    <a href="#">Genres</a>
+  </div>
+
+  <div class="nav-right">
+  <div class="search-bar">
+    <input type="text" placeholder="Search movies...">
+    <button type="submit">🔍</button>
+  </div>
+
+    <div class="hamburger">&#9776;</div>
+    <div class="dropdown">
+      <a href="{{ url_for('about') }}">About Us</a>
+      <a href="{{ url_for('contact') }}">Contact Us</a>
+    </div>
+  </div>
 </nav>
 
-<h1>🎬 Reeliz</h1>
-
-<!-- Buttons -->
-<div class="button-group">
-  <button id="btn-now">Now Showing</button>
-  <button id="btn-coming">Coming Soon</button>
-</div>
+<!-- Header -->
+<h1></h1>
 
 <!-- Movie container -->
 <section>

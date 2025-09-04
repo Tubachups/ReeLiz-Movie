@@ -113,3 +113,25 @@ document.querySelector("#btn-coming").addEventListener("click", () => fetchMovie
   await fetchGenres();
   fetchMovies("now");
 })();
+
+document.addEventListener("DOMContentLoaded", () => {
+  const hamburger = document.querySelector(".hamburger");
+  const dropdown = document.querySelector(".dropdown");
+
+  if (hamburger && dropdown) {
+    hamburger.addEventListener("click", () => {
+      dropdown.classList.toggle("show");
+    });
+
+    // Optional: close dropdown when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!hamburger.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove("show");
+      }
+    });
+  }
+});
+
+
+
+
