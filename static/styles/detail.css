@@ -172,13 +172,13 @@
 }
 
 .date-pill:hover {
-  background: #dfefff;
+  background: #f9ffdf;
   transform: translateY(-5px);
 }
 
 .date-pill.selected {
-  background: #0072ff;
-  color: white;
+  background: #ffeb3b;
+  color: black;
   font-weight: bold;
 }
 
