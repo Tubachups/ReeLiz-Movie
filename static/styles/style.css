@@ -2,12 +2,10 @@ body {
   font-family: Arial, sans-serif;
   background: #f5f5f5;
   margin: 0;
-  padding: 20px;
+  /* padding: 20px; */
   text-align: center;
   background-color: rgba(252, 251, 251, 0.925);
-  opacity: -10;
-  transform: translateY(20px);  /* start a bit lower */
-  animation: fadeInUp 1s ease-out forwards;
+
 }
 
 @keyframes fadeInUp {
@@ -30,6 +28,7 @@ h1 {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 13px;
   margin-top: 20px;
+    padding: 15px;
 }
 
 .movie-card {
@@ -39,6 +38,10 @@ h1 {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, z-index 0.3s ease;
   cursor: pointer;
+  opacity: -10;
+  transform: translateY(20px);  /* start a bit lower */
+  animation: fadeInUp 0.5s ease-out forwards;
+
 }
 
 .movie-card:hover {
@@ -190,6 +193,7 @@ h1 {
   position: sticky;
   top: 0;
   z-index: 100;
+
 }
 
 
