@@ -1,29 +1,71 @@
-{% extends 'base.html' %}
-
-{% block head %}
-<title>About Us - Reeliz 🎬</title>
-<link rel="stylesheet" href="{{ url_for( 'static', filename='styles/detail.css')}}">
-
-{% endblock %}
-
-
-{% block body %}
+{% extends 'base.html' %} {% block head %} <title>About Us - Reeliz 🎬</title>
+<link
+  rel="stylesheet"
+  href="{{ url_for( 'static', filename='styles/detail.css')}}"
+/>
+{% endblock %} {% block body %}
 <div class="movie-detail">
-    <div class="poster">
-      <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}">
-    </div>
-
-    <div class="info">
-      <h1>{{ movie.title }}</h1>
-      <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
-      <p><strong>Runtime:</strong> {{ movie.runtime }} mins</p>
-      <p><strong>Genres:</strong>
-        {% for genre in movie.genres %}
-          {{ genre.name }}{% if not loop.last %}, {% endif %}
-        {% endfor %}
-      </p>
-      <p>{{ movie.overview }}</p>
-    </div>
+  <div class="poster">
+    <img
+      src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"
+      alt="{{ movie.title }}"
+    />
+  </div>
+  <div class="info">
+    <h1>{{ movie.title }}</h1>
+    <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
+    <p><strong>Runtime:</strong> {{ movie.runtime }} mins</p>
+    <p>
+      <strong>Genres:</strong> {% for genre in movie.genres %} {{ genre.name
+      }}{% if not loop.last %}, {% endif %} {% endfor %}
+    </p>
+    <p>{{ movie.overview }}</p>
+  </div>
 </div>
+
+<div class="seating">
+
+  <!-- Legends -->
+<div class="legend">
+  <div><span class="legend-seat vacant"></span> Vacant</div>
+  <div><span class="legend-seat occupied"></span> Occupied</div>
+  <div><span class="legend-seat selected"></span> Selected</div>
+</div>
+
+
+  <h2>Choose Your Seat</h2>
+  <div class="screen">SCREEN</div>
+
+  <div class="seats">
+    {% for row in range(8) %}
+      <div class="row">
+        <div class="side">
+          <button class="seat vacant"></button>
+          <button class="seat vacant"></button>
+        </div>
+        <div class="middle">
+          <button class="seat vacant"></button>
+          <button class="seat vacant"></button>
+          <button class="seat vacant"></button>
+          <button class="seat vacant"></button>
+        </div>
+        <div class="side">
+          <button class="seat vacant"></button>
+          <button class="seat vacant"></button>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll(".seat").forEach(seat => {
+    seat.addEventListener("click", () => {
+      if (seat.classList.contains("occupied")) return; // 🚫 skip if occupied
+      seat.classList.toggle("selected");
+      seat.classList.toggle("vacant");
+    });
+  });
+</script>
 
 {% endblock %}

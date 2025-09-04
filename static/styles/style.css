@@ -34,7 +34,6 @@ h1 {
 
 #movies:hover .movie-card:not(:hover) {
   /* transform: scale(1.1); */
-  
 }
 
 .movie-img-wrapper {
@@ -101,7 +100,6 @@ h1 {
   -webkit-backdrop-filter: blur(4px);
   box-shadow: none; /* remove heavy outline effect */
 }
-
 
 .movie-date {
   font-size: 12px;
