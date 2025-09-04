@@ -15,3 +15,195 @@
   flex: 1;
   text-align: left;
 }
+
+.seating {
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 50px;
+}
+
+.screen {
+  position: relative;
+  width: 35%;
+  height: 20px;
+  margin: 0 auto 30px auto;
+  background: linear-gradient(
+    to right,
+    #00c6ff,
+    #0073ffcb
+  ); /* glowing effect */
+  border-radius: 50% / 100%; /* curve */
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  letter-spacing: 3px;
+  line-height: 20px;
+  box-shadow: 0 0 15px rgba(0, 114, 255, 0.6);
+}
+.screen::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 100%;
+  height: 15px;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 114, 255, 0.4),
+    transparent
+  );
+}
+
+/* Legend styling */
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  align-items: center;
+}
+
+.legend div {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Legend seats look the same but are not buttons */
+.legend-seat {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  border-radius: 5px;
+}
+
+/* Legend colors */
+.legend-seat.vacant {
+  background: #4caf50;
+}
+.legend-seat.occupied {
+  background: #f44336;
+}
+.legend-seat.selected {
+  background: #ffeb3b;
+}
+
+/* Real seats */
+.seat {
+  width: 25px;
+  height: 25px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.2s;
+  user-select: none;
+  outline: none;
+}
+
+/* Seat states */
+.vacant {
+  background: #4caf50; /* Green */
+}
+.occupied {
+  background: #f44336; /* Red */
+  cursor: not-allowed; /* 🚫 no clicking */
+}
+.selected {
+  background: #ffeb3b; /* Yellow */
+}
+
+/* Hover only on vacant seats */
+.vacant:hover {
+  background: #66bb6a;
+}
+
+.seats {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.side,
+.middle {
+  display: flex;
+  gap: 10px;
+}
+
+.seat:focus {
+  outline: none;
+}
+
+/* DATE DIV */
+
+.schedule {
+  text-align: center;
+  margin: 30px auto;
+}
+
+.date-strip {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.date-pill {
+  width: 75px;
+  height: 90px;
+  border-radius: 10px;
+  background: #f1f1f1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.date-pill:hover {
+  background: #dfefff;
+  transform: translateY(-5px);
+}
+
+.date-pill.selected {
+  background: #0072ff;
+  color: white;
+  font-weight: bold;
+}
+
+.date-month {
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.date-day {
+  font-size: 14px;
+}
+
+.date-num {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.time-select {
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+.time-select select {
+  padding: 6px 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
