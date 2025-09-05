@@ -23,7 +23,7 @@ h1 {
 
 #movies {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1.5rem;
   margin-top: 20px;
     padding: 15px;
@@ -39,6 +39,7 @@ h1 {
 
 .movie-card:hover {
   transform: scale(1.1);
+  z-index: 5;
 }
 
 
