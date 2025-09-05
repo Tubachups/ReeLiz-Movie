@@ -132,6 +132,66 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  const btnNow = document.querySelector("#btn-now");
+  const btnComing = document.querySelector("#btn-coming");
+  const homeLink = document.querySelector(".nav-center a[data-page='home']");
+  const nowLink = document.querySelector(".nav-center a[data-page='now']");
+  const comingLink = document.querySelector(".nav-center a[data-page='coming']");
+
+  if (btnNow) {
+    btnNow.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (document.querySelector("#movies")) {
+        fetchMovies("now");
+      } else {
+        window.location.href = "{{ url_for('home') }}";
+      }
+    });
+  }
+
+  if (btnComing) {
+    btnComing.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (document.querySelector("#movies")) {
+        fetchMovies("coming");
+      } else {
+        window.location.href = "{{ url_for('home') }}";
+      }
+    });
+  }
+
+  if (homeLink) {
+    homeLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.location.href = "{{ url_for('home') }}";
+    });
+  }
+
+  if (nowLink) {
+    nowLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (document.querySelector("#movies")) {
+        fetchMovies("now");
+      } else {
+        window.location.href = "{{ url_for('home') }}";
+      }
+    });
+  }
+
+  if (comingLink) {
+    comingLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (document.querySelector("#movies")) {
+        fetchMovies("coming");
+      } else {
+        window.location.href = "{{ url_for('home') }}";
+      }
+    });
+  }
+});
+
+
 
 
 
