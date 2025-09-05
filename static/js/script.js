@@ -113,3 +113,85 @@ document.querySelector("#btn-coming").addEventListener("click", () => fetchMovie
   await fetchGenres();
   fetchMovies("now");
 })();
+
+document.addEventListener("DOMContentLoaded", () => {
+  const hamburger = document.querySelector(".hamburger");
+  const dropdown = document.querySelector(".dropdown");
+
+  if (hamburger && dropdown) {
+    hamburger.addEventListener("click", () => {
+      dropdown.classList.toggle("show");
+    });
+
+    // Optional: close dropdown when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!hamburger.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove("show");
+      }
+    });
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const btnNow = document.querySelector("#btn-now");
+  const btnComing = document.querySelector("#btn-coming");
+  const homeLink = document.querySelector(".nav-center a[data-page='home']");
+  const nowLink = document.querySelector(".nav-center a[data-page='now']");
+  const comingLink = document.querySelector(".nav-center a[data-page='coming']");
+
+  if (btnNow) {
+    btnNow.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (document.querySelector("#movies")) {
+        fetchMovies("now");
+      } else {
+        window.location.href = "{{ url_for('home') }}";
+      }
+    });
+  }
+
+  if (btnComing) {
+    btnComing.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (document.querySelector("#movies")) {
+        fetchMovies("coming");
+      } else {
+        window.location.href = "{{ url_for('home') }}";
+      }
+    });
+  }
+
+  if (homeLink) {
+    homeLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.location.href = "{{ url_for('home') }}";
+    });
+  }
+
+  if (nowLink) {
+    nowLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (document.querySelector("#movies")) {
+        fetchMovies("now");
+      } else {
+        window.location.href = "{{ url_for('home') }}";
+      }
+    });
+  }
+
+  if (comingLink) {
+    comingLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (document.querySelector("#movies")) {
+        fetchMovies("coming");
+      } else {
+        window.location.href = "{{ url_for('home') }}";
+      }
+    });
+  }
+});
+
+
+
+
+
