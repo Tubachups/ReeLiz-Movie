@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<title>About Us - Reeliz 🎬</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='styles/img/logo.png') }}">
+
+<title>About Us - Reeliz</title>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/about.css') }}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
 {% endblock %}
 
 {% block body %}
@@ -19,35 +23,46 @@
 </div>
 
 
+
   <!-- RIGHT SIDE -->
   <div class="about-right">
     <ul class="features-list">
       <li class="feature-item">
-        <h3 class="feature-title">🎞️ Movie Listings & Showtimes</h3>
-        <p class="feature-desc">
-          Stay updated with the latest movie releases, schedules, and cinema locations. 
-          No more missing out on your favorite films.
-        </p>
+        <span class="material-symbols-outlined feature-icon"style="font-size: 60px;">theaters</span>
+        <div>
+          <h3 class="feature-title">Movie Listings & Showtimes</h3>
+          <p class="feature-desc">
+            Stay updated with the latest movie releases, schedules, and cinema locations. 
+            No more missing out on your favorite films.
+          </p>
+        </div>
       </li>
 
       <li class="feature-item">
-        <h3 class="feature-title">🎟️ Online Booking & Ticketing</h3>
-        <p class="feature-desc">
-          Book your tickets anytime, anywhere. Skip the long lines and secure your seats 
-          with just a few clicks.
-        </p>
+        <span class="material-symbols-outlined feature-icon"
+        style="font-size: 60px;">confirmation_number</span>
+        <div>
+          <h3 class="feature-title">Online Booking & Ticketing</h3>
+          <p class="feature-desc">
+            Book your tickets anytime, anywhere. Skip the long lines and secure your seats 
+            with just a few clicks.
+          </p>
+        </div>
       </li>
 
       <li class="feature-item">
-        <h3 class="feature-title">🎬 Community Engagement</h3>
-        <p class="feature-desc">
-          Join a growing community of film enthusiasts where you can interact, discuss, 
-          and share your love for cinema.
-        </p>
+        <span class="material-symbols-outlined feature-icon" style="font-size: 60px;">video_camera_front</span>
+        <div>
+          <h3 class="feature-title">Community Engagement</h3>
+          <p class="feature-desc">
+            Join a growing community of film enthusiasts where you can interact, discuss, 
+            and share your love for cinema.
+          </p>
+        </div>
       </li>
     </ul>
-  </div>
+</div>
+
 </section>
 
-<a href="{{ url_for('home') }}" class="back-home">⬅ Back to Home</a>
 {% endblock %}
