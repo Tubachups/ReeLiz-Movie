@@ -30,10 +30,14 @@ h1 {
 }
 
 
-.movie-card{
+.movie-card {
   border-radius: .5rem;
   overflow: hidden;
   transition: transform .3s ease;
+  
+  opacity: 0;               
+  transform: translateY(20px);
+  animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .movie-card:hover {
