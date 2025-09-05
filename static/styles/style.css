@@ -26,7 +26,7 @@ h1 {
 #movies {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 13px;
+  gap: 1.5rem;
   margin-top: 20px;
     padding: 15px;
 }

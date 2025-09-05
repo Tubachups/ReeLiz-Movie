@@ -2,43 +2,11 @@
 
 {% block head %}
 <title>About Us - Reeliz 🎬</title>
-<link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@400;500;700&display=swap" 
-rel="stylesheet">
-<link rel="stylesheet" href="{{ url_for( 'static', filename='styles/about.css')}}">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/about.css') }}">
 {% endblock %}
 
 {% block body %}
-
-<!-- NAVBAR -->
-<nav class="navbar">
-  <div class="nav-left">ReeLiz</div>
-
-  <div class="nav-center">
-    <a href="{{ url_for('home') }}" data-page="home">Home</a>
-    <a href="{{ url_for('home') }}" data-page="now">Now Showing</a>
-    <a href="{{ url_for('home') }}" data-page="coming">Coming Soon</a>
-    <a href="{{ url_for('about') }}" data-page="about">About Us</a>
-  </div>
-
-
-  <div class="nav-right">
-  <div class="search-bar">
-    <input type="text" placeholder="Search movies...">
-    <button type="submit">🔍</button>
-  </div>
-
-    <div class="hamburger">&#9776;</div>
-    <div class="dropdown">
-      <a href="{{ url_for('home') }}">Home</a>
-      <a href="{{ url_for('contact') }}">Contact Us</a>
-    </div>
-  </div>
-</nav>
-
 <h1 class="main-header">About Reeliz 🎬</h1>
 
 <header class="about-header">
@@ -49,46 +17,19 @@ rel="stylesheet">
 
   <div class="feature">
     <h3 class="feature-title">Movie Listings & Showtimes</h3>
-    <p class="feature1">
-      Stay updated with the latest movie releases, schedules, and cinema locations. No more missing out on your
-      favorite films.
-    </p>
+    <p>Stay updated with the latest movie releases, schedules, and cinema locations.</p>
   </div>
 
   <div class="feature">
     <h3 class="feature-title">Online Booking & Ticketing</h3>
-    <p class="feature2">
-      Book your tickets anytime, anywhere. Skip the long lines and secure your seats with just a few clicks.
-    </p>
+    <p>Book your tickets anytime, anywhere. Skip the long lines and secure your seats with just a few clicks.</p>
   </div>
 
   <div class="feature">
     <h3 class="feature-title">Community Engagement</h3>
-    <p class="feature3">
-      Join a growing community of film enthusiasts where you can interact, discuss, and share your love for cinema.
-    </p>
+    <p>Join a growing community of film enthusiasts where you can interact and share your love for cinema.</p>
   </div>
 </header>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const hamburger = document.querySelector(".hamburger");
-    const dropdown = document.querySelector(".dropdown");
-
-    if (hamburger && dropdown) {
-      hamburger.addEventListener("click", () => {
-        dropdown.classList.toggle("show");
-      });
-
-      document.addEventListener("click", (e) => {
-        if (!hamburger.contains(e.target) && !dropdown.contains(e.target)) {
-          dropdown.classList.remove("show");
-        }
-      });
-    }
-  });
-</script>
-
-
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<a href="{{ url_for('home') }}" class="back-home">⬅ Back to Home</a>
 {% endblock %}

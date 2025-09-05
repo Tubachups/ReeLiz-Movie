@@ -1,16 +1,35 @@
 const API_KEY = "da871154a03a2fefab890a14eaba1b4a";
 const BASE_URL = "https://api.themoviedb.org/3";
+const nowBtn = document.querySelector("#btn-now");
+const comingBtn = document.querySelector("#btn-coming");
 
 let genresMap = {};
 
-function getTodayDate() {
-  return new Date().toISOString().split("T")[0];
-}
+nowBtn.addEventListener("click", () => fetchMovies("now"));
+comingBtn.addEventListener("click", () => fetchMovies("coming"));
 
-function getFutureDate(monthsAhead) {
-  const today = new Date();
-  today.setMonth(today.getMonth() + monthsAhead);
-  return today.toISOString().split("T")[0];
+
+init();
+
+async function init() {
+  await fetchGenres();
+  
+  // Check URL parameters to determine what movies to load
+  const urlParams = new URLSearchParams(window.location.search);
+  const movieType = urlParams.get('type');
+  
+  if (movieType === 'coming') {
+    await fetchMovies('coming');
+  } else if (movieType === 'now') {
+    await fetchMovies('now');
+  } else {
+    await fetchMovies('now');
+  }
+  
+  // Clean up URL parameters after loading (optional)
+  if (movieType) {
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
 }
 
 async function fetchGenres() {
@@ -45,15 +64,6 @@ async function fetchMovies(type) {
   } catch (error) {
     console.error("Error fetching movies:", error);
   }
-}
-
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric"
-  });
 }
 
 function renderMovies(movies) {
@@ -106,92 +116,23 @@ function renderMovies(movies) {
   });
 }
 
-document.querySelector("#btn-now").addEventListener("click", () => fetchMovies("now"));
-document.querySelector("#btn-coming").addEventListener("click", () => fetchMovies("coming"));
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+}
 
-(async function init() {
-  await fetchGenres();
-  fetchMovies("now");
-})();
+function getTodayDate() {
+  return new Date().toISOString().split("T")[0];
+}
 
-document.addEventListener("DOMContentLoaded", () => {
-  const hamburger = document.querySelector(".hamburger");
-  const dropdown = document.querySelector(".dropdown");
-
-  if (hamburger && dropdown) {
-    hamburger.addEventListener("click", () => {
-      dropdown.classList.toggle("show");
-    });
-
-    // Optional: close dropdown when clicking outside
-    document.addEventListener("click", (e) => {
-      if (!hamburger.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.classList.remove("show");
-      }
-    });
-  }
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const btnNow = document.querySelector("#btn-now");
-  const btnComing = document.querySelector("#btn-coming");
-  const homeLink = document.querySelector(".nav-center a[data-page='home']");
-  const nowLink = document.querySelector(".nav-center a[data-page='now']");
-  const comingLink = document.querySelector(".nav-center a[data-page='coming']");
-
-  if (btnNow) {
-    btnNow.addEventListener("click", (e) => {
-      e.preventDefault();
-      if (document.querySelector("#movies")) {
-        fetchMovies("now");
-      } else {
-        window.location.href = "{{ url_for('home') }}";
-      }
-    });
-  }
-
-  if (btnComing) {
-    btnComing.addEventListener("click", (e) => {
-      e.preventDefault();
-      if (document.querySelector("#movies")) {
-        fetchMovies("coming");
-      } else {
-        window.location.href = "{{ url_for('home') }}";
-      }
-    });
-  }
-
-  if (homeLink) {
-    homeLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      window.location.href = "{{ url_for('home') }}";
-    });
-  }
-
-  if (nowLink) {
-    nowLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      if (document.querySelector("#movies")) {
-        fetchMovies("now");
-      } else {
-        window.location.href = "{{ url_for('home') }}";
-      }
-    });
-  }
-
-  if (comingLink) {
-    comingLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      if (document.querySelector("#movies")) {
-        fetchMovies("coming");
-      } else {
-        window.location.href = "{{ url_for('home') }}";
-      }
-    });
-  }
-});
-
-
-
+function getFutureDate(monthsAhead) {
+  const today = new Date();
+  today.setMonth(today.getMonth() + monthsAhead);
+  return today.toISOString().split("T")[0];
+}
 
 
