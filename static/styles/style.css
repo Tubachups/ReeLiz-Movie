@@ -35,9 +35,6 @@ h1 {
   overflow: hidden;
   transition: transform .3s ease;
   
-  opacity: 0;               
-  transform: translateY(20px);
-  animation: fadeInUp 0.8s ease-out forwards;
 }
 
 .movie-card:hover {
