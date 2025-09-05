@@ -5,23 +5,26 @@
 />
 {% endblock %} {% block body %}
 <div class="movie-detail">
-  <div class="poster">
+  <div class="poster fadeInUp">
     <img
       src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"
       alt="{{ movie.title }}"
     />
   </div>
-  <div class="info">
+  <div class="info fadeInUp">
     <h1>{{ movie.title }}</h1>
     <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
     <p><strong>Runtime:</strong> {{ movie.runtime }} mins</p>
     <p>
-      <strong>Genres:</strong> {% for genre in movie.genres %} {{ genre.name
-      }}{% if not loop.last %}, {% endif %} {% endfor %}
+      <strong>Genres:</strong>
+      {% for genre in movie.genres %}
+        {{ genre.name }}{% if not loop.last %}, {% endif %}
+      {% endfor %}
     </p>
     <p>{{ movie.overview }}</p>
   </div>
 </div>
+
 
 <div class="schedule">
   <h3>Select Date & Time</h3>
