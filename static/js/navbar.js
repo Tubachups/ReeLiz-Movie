@@ -22,6 +22,9 @@ document.addEventListener("DOMContentLoaded", () => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
       const page = link.dataset.page;
+      if (page === "about") {
+        window.location.href = "/";
+        }
 
       if (page === "home") {
         window.location.href = "/";
