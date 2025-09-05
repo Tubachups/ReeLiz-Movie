@@ -16,15 +16,34 @@
   text-align: left;
 }
 
+.booking-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 40px auto;
+}
+
+/* Ticketing box */
+.ticketing {
+  flex: 1;
+  padding: 20px;
+  background: #fafafa;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  min-width: 300px;
+}
+
+/* Seating box */
 .seating {
+  flex: 2;
   text-align: center;
-  margin-top: 30px;
-  margin-bottom: 50px;
 }
 
 .screen {
   position: relative;
-  width: 35%;
+  width: 65%;
   height: 20px;
   margin: 0 auto 30px auto;
   background: linear-gradient(
@@ -92,14 +111,20 @@
 
 /* Real seats */
 .seat {
-  width: 25px;
-  height: 25px;
+  width: 45px;
+  height: 45px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   transition: 0.2s;
   user-select: none;
   outline: none;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Seat states */
@@ -128,16 +153,13 @@
 
 .row {
   display: flex;
-  justify-content: center;
-  gap: 30px;
+  gap: 35px; /* aisle spacing */
 }
-
 .side,
 .middle {
   display: flex;
   gap: 10px;
 }
-
 .seat:focus {
   outline: none;
 }
