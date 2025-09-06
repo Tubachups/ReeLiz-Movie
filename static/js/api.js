@@ -34,9 +34,8 @@ async function init() {
 
 async function fetchGenres() {
   try {
-    const response = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=en-US`);
-    const data = await response.json();
-    genresMap = data.genres.reduce((map, genre) => {
+    const response = await axios.get(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=en-US`);
+    genresMap = response.data.genres.reduce((map, genre) => {
       map[genre.id] = genre.name;
       return map;
     }, {});
@@ -58,9 +57,8 @@ async function fetchMovies(type) {
   }
 
   try {
-    const response = await fetch(url);
-    const data = await response.json();
-    renderMovies(data.results);
+    const response = await axios.get(url);
+    renderMovies(response.data.results);
   } catch (error) {
     console.error("Error fetching movies:", error);
   }
