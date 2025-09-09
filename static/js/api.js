@@ -4,115 +4,130 @@ const nowBtn = document.querySelector("#btn-now");
 const comingBtn = document.querySelector("#btn-coming");
 
 let genresMap = {};
+let allMovies = []; // store currently displayed movies
 
 nowBtn.addEventListener("click", () => fetchMovies("now"));
 comingBtn.addEventListener("click", () => fetchMovies("coming"));
 
+// Genres dropdown toggle
+const genresBtn = document.querySelector("#btn-genres");
+const genresDropdown = document.querySelector("#genres-dropdown");
+
+genresBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  genresDropdown.classList.toggle("show"); // toggle visibility
+});
 
 init();
 
 async function init() {
   await fetchGenres();
-  
-  // Check URL parameters to determine what movies to load
-  const urlParams = new URLSearchParams(window.location.search);
-  const movieType = urlParams.get('type');
-  
-  if (movieType === 'coming') {
-    await fetchMovies('coming');
-  } else if (movieType === 'now') {
-    await fetchMovies('now');
-  } else {
-    await fetchMovies('now');
-  }
-  
-  // Clean up URL parameters after loading (optional)
-  if (movieType) {
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }
+  await fetchMovies("now");
 }
 
+// Fetch genres and populate dropdown
 async function fetchGenres() {
   try {
     const response = await axios.get(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=en-US`);
-    genresMap = response.data.genres.reduce((map, genre) => {
-      map[genre.id] = genre.name;
-      return map;
-    }, {});
-  } catch (error) {
-    console.error("Error fetching genres:", error);
+    const genres = response.data.genres;
+
+    genresMap = genres.reduce((map, g) => { map[g.id] = g.name; return map; }, {});
+
+    genresDropdown.innerHTML = "";
+    genres.forEach(genre => {
+      const a = document.createElement("a");
+      a.href = "#";
+      a.innerText = genre.name;
+      a.dataset.genreId = genre.id;
+
+      // Filter movies by genre on click
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        filterMoviesByGenre(genre.id);
+        genresDropdown.classList.remove("show"); // close dropdown
+      });
+
+      genresDropdown.appendChild(a);
+    });
+  } catch (err) {
+    console.error("Error fetching genres:", err);
   }
 }
 
+// Fetch movies from API
 async function fetchMovies(type) {
-  const today = getTodayDate();
-  const twoMonthsLater = getFutureDate(2);
+  const today = new Date().toISOString().split("T")[0];
+  const twoMonthsLater = new Date();
+  twoMonthsLater.setMonth(twoMonthsLater.getMonth() + 2);
 
   let url = `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&region=PH&with_release_type=2|3`;
 
-  if (type === "now") {
-    url += `&release_date.lte=${today}`;
-  } else if (type === "coming") {
-    url += `&release_date.gte=${today}&release_date.lte=${twoMonthsLater}`;
-  }
+  if (type === "now") url += `&release_date.lte=${today}`;
+  if (type === "coming") url += `&release_date.gte=${today}&release_date.lte=${twoMonthsLater.toISOString().split("T")[0]}`;
 
   try {
     const response = await axios.get(url);
-    renderMovies(response.data.results);
-  } catch (error) {
-    console.error("Error fetching movies:", error);
+    allMovies = response.data.results; // store current movies
+    renderMovies(allMovies);
+  } catch (err) {
+    console.error("Error fetching movies:", err);
   }
 }
 
+// Render movies on page
 function renderMovies(movies) {
-  const moviesContainer = document.querySelector("#movies");
-  moviesContainer.innerHTML = "";
+  const container = document.querySelector("#movies");
+  container.innerHTML = "";
 
   movies.forEach(movie => {
     const movieCard = document.createElement("div");
-    movieCard.setAttribute("class", "movie-card");
+    movieCard.className = "movie-card";
 
     const imgLink = document.createElement("a");
-    imgLink.setAttribute("href", `/movie/${movie.id}`);
+    imgLink.href = `/movie/${movie.id}`;
 
     const imgWrapper = document.createElement("div");
-    imgWrapper.setAttribute("class", "movie-img-wrapper");
+    imgWrapper.className = "movie-img-wrapper";
 
     const img = document.createElement("img");
-    img.setAttribute("src", `https://image.tmdb.org/t/p/w500${movie.poster_path}`);
-    img.setAttribute("alt", movie.title);
+    img.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+    img.alt = movie.title;
 
     const overlay = document.createElement("div");
-    overlay.setAttribute("class", "movie-overlay");
+    overlay.className = "movie-overlay";
 
     const genreDiv = document.createElement("div");
-    genreDiv.setAttribute("class", "movie-genre");
+    genreDiv.className = "movie-genre";
     const genreNames = movie.genre_ids.map(id => genresMap[id]).filter(Boolean);
     genreDiv.innerText = `Genre: ${genreNames.join(", ") || "N/A"}`;
 
     const title = document.createElement("div");
-    title.setAttribute("class", "movie-title");
+    title.className = "movie-title";
     title.innerText = movie.title;
 
     const release = document.createElement("div");
-    release.setAttribute("class", "movie-date");
-    release.innerText = formatDate(movie.release_date);
-
-    const showBtn = document.createElement("button");
-    showBtn.setAttribute("class", "show-btn");
-    showBtn.innerText = "Show";
+    release.className = "movie-date";
+    release.innerText = new Date(movie.release_date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
     const bottomRow = document.createElement("div");
-    bottomRow.setAttribute("class", "bottom-row");
-    bottomRow.append(showBtn, release);
+    bottomRow.className = "bottom-row";
+    bottomRow.append(release);
 
     overlay.append(genreDiv, title, bottomRow);
     imgWrapper.append(img, overlay);
     imgLink.append(imgWrapper);
     movieCard.append(imgLink);
-    moviesContainer.append(movieCard);
+    container.append(movieCard);
   });
 }
+
+// Filter rendered movies by genre
+function filterMoviesByGenre(genreId) {
+  const filtered = allMovies.filter(movie => movie.genre_ids.includes(parseInt(genreId)));
+  renderMovies(filtered);
+}
+
+
 
 function formatDate(dateString) {
   const date = new Date(dateString);

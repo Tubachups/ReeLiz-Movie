@@ -2,22 +2,58 @@
 
 {% block head %}
 <title>Reeliz</title>
-  <link rel="icon" type="image/png" href="{{ url_for('static', filename='styles/img/logo.png') }}">
-
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='styles/img/logo.png') }}">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/layout-movie.css')}}">
+<!-- Font Awesome for social icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 {% endblock %}
 
 {% block body %}
-<!-- Header -->
-
 <!-- Movie container -->
 <section>
   <div id="movies"></div>
 </section>
+<footer class="footer">
+  <div class="footer-container">
+    <!-- Explore -->
+    <div class="footer-column">
+      <h3>Explore</h3>
+      <ul class="footer-links">
+        <li><a href="#now-showing">Now Showing</a></li>
+        <li><a href="#coming-soon">Coming Soon</a></li>
+        <li><a href="#genres">Genres</a></li>
+      </ul>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="footer-column">
+      <h3>Quick Links</h3>
+      <ul class="footer-links">
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('about') }}">About Us</a></li>
+        <li><a href="{{ url_for('contact') }}">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- Social Links -->
+    <div class="footer-column">
+      <h3>Follow Us</h3>
+      <ul class="footer-links">
+        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+        <li><a href="#"><i class="fab fa-tiktok"></i> TikTok</a></li>
+        <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+        <li><a href="#"><i class="fab fa-facebook-f"></i> Facebook</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; 2025 ReeLiz 🎬 | All Rights Reserved</p>
+  </div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="{{ url_for('static', filename='js/api.js') }}"></script>
 <script src="{{ url_for('static', filename='js/searchFilter.js') }}"></script>
-
 {% endblock %}
