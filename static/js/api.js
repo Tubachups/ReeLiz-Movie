@@ -1,27 +1,30 @@
 const API_KEY = "da871154a03a2fefab890a14eaba1b4a";
 const BASE_URL = "https://api.themoviedb.org/3";
-const nowBtn = document.querySelector("#btn-now");
-const comingBtn = document.querySelector("#btn-coming");
 
 let genresMap = {};
 let allMovies = []; // store currently displayed movies
 
-nowBtn.addEventListener("click", () => fetchMovies("now"));
-comingBtn.addEventListener("click", () => fetchMovies("coming"));
-
-// Genres dropdown toggle
-const genresBtn = document.querySelector("#btn-genres");
-const genresDropdown = document.querySelector("#genres-dropdown");
-
-genresBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  genresDropdown.classList.toggle("show"); // toggle visibility
+document.querySelectorAll("[data-page]").forEach(link => {
+  link.addEventListener("click", (e) => {
+    e.preventDefault();
+    const page = link.dataset.page;
+    fetchMovies(page);
+  });
 });
+
+// // Genres dropdown toggle
+// const genresBtn = document.querySelector("#btn-genres");
+// const genresDropdown = document.querySelector("#genres-dropdown");
+
+// genresBtn.addEventListener("click", (e) => {
+//   e.preventDefault();
+//   genresDropdown.classList.toggle("show"); // toggle visibility
+// });
 
 init();
 
 async function init() {
-  await fetchGenres();
+  // await fetchGenres();
   await fetchMovies("now");
 }
 

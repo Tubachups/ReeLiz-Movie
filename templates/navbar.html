@@ -1,0 +1,33 @@
+<nav class="navbar navbar-expand-md bg-dark " data-bs-theme="dark">
+  <div class="container-fluid mx-3">
+    <a class="navbar-brand " href="{{ url_for('home') }}">ReeLiz</a>
+    <a >Nigga</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mx-auto mb-2 mb-md-0 text-start   ">
+        <li class="nav-item">
+          <a class="nav-link " href="#" data-page="now" >Now Showing</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-page="coming">Coming Soon</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            Genres
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Action</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+          </ul>
+        </li>
+      </ul>
+      <form class="d-flex" role="search">
+        <input class="form-control me-2" id="search-input" type="search" placeholder="Search movies...">
+      </form>
+    </div>
+  </div>
+</nav>
