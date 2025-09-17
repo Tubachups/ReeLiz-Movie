@@ -1,21 +1,15 @@
-.movie-detail {
-  display: flex;
-  gap: 2rem;
-  padding: 20px;
-  max-width: 900px;
-  margin: auto;
+.thumbnail{
+  max-width: 200px;
 }
 
-/* Poster styling */
-.movie-detail img {
-  border-radius: 8px;
-  max-width: 300px;
+.movie-detail .col-md{
+  border: 1px solid red;
 }
 
-/* Info block */
-.movie-detail .info {
-  flex: 1;
-  text-align: left;
+@media (min-width: 768px) {
+  .thumbnail {
+    max-width: 300px;
+  }
 }
 
 /* Transition Animation */
@@ -38,42 +32,11 @@
 }
 
 /* Add delay for smoother stagger effect */
-.poster.fadeInUp {
-  animation-delay: 0.2s;
-}
-
-.info.fadeInUp {
+.fadeInUp {
   animation-delay: 0.4s;
 }
 
-.booking-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 40px;
-  max-width: 1200px;
-  margin: 40px auto;
-}
-
-/* Ticketing box */
-.ticketing {
-  flex: 1;
-  padding: 20px;
-  background: #fafafa;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  min-width: 300px;
-}
-
-
-
 /* DATE DIV */
-
-.schedule {
-  text-align: center;
-  margin: 30px auto;
-}
-
 .date-strip {
   display: flex;
   justify-content: center;
