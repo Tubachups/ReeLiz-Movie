@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/dropdown.css') }}">
+
+
 <nav class="navbar navbar-expand-md bg-dark " data-bs-theme="dark">
   <div class="container-fluid mx-3">
     <a class="navbar-brand " href="{{ url_for('home') }}">ReeLiz</a>
@@ -17,11 +20,8 @@
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
             Genres
           </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
+          <ul class="dropdown-menu" id="genres-dropdown">
+            
           </ul>
         </li>
       </ul>
@@ -31,3 +31,6 @@
     </div>
   </div>
 </nav>
+
+
+<script src="{{ url_for('static', filename='js/searchFilter.js') }}"></script>
