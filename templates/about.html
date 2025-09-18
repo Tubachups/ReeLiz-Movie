@@ -1,67 +1,67 @@
 {% extends 'base.html' %}
 
 {% block head %}
-  <link rel="icon" type="image/png" href="{{ url_for('static', filename='styles/img/logo.png') }}">
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='styles/img/logo.png') }}">
 
 <title>About Us - Reeliz</title>
-<link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@400;500;700&display=swap"
+  rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/about.css') }}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 
 {% endblock %}
 
 {% block body %}
-<section class="about-container">
-  <!-- LEFT SIDE -->
-<div class="about-left">
-  <h1 class="main-header">About Reeliz 🎬</h1>
-  <p class="intro">
-    At Reeliz, we bring the magic of movies closer to you. Our platform is designed to give every movie lover
-    a seamless and exciting cinema experience. Here’s what we offer:
-  </p>
-  <a href="{{ url_for('home') }}" class="back-home">⬅ Back to Home</a>
-</div>
+<section class="container my-4">
+  <div class="row ">
+
+    <div class="col-md mb-4">
+      <h1 class="main-header">About Reeliz 🎬</h1>
+      <p class="lh-lg intro">
+        At Reeliz, we bring the magic of movies closer to you. Our platform is designed to give every movie lover
+        a seamless and exciting cinema experience. Here’s what we offer:
+      </p>
+      <a href="{{ url_for('home') }}" class="btn btn-dark p-3">&larr; Back to Home</a>
+    </div>
 
 
+    <div class="col-md ">
+      <ul class="d-flex gap-4 flex-column">
+        <li class="d-flex bg-body-tertiary  rounded-4 p-3 feature-item gap-3">
+          <span class="material-symbols-outlined feature-icon bg-black rounded-circle text-white d-flex justify-content-center align-items-center " style="font-size: 60px;">theaters</span>
+          <div>
+            <h3 class="fw-medium feature-title">Movie Listings & Showtimes</h3>
+            <p class="feature-desc textse">
+              Stay updated with the latest movie releases, schedules, and cinema locations.
+              No more missing out on your favorite films.
+            </p>
+          </div>
+        </li>
 
-  <!-- RIGHT SIDE -->
-  <div class="about-right">
-    <ul class="features-list">
-      <li class="feature-item">
-        <span class="material-symbols-outlined feature-icon"style="font-size: 60px;">theaters</span>
-        <div>
-          <h3 class="feature-title">Movie Listings & Showtimes</h3>
-          <p class="feature-desc">
-            Stay updated with the latest movie releases, schedules, and cinema locations. 
-            No more missing out on your favorite films.
-          </p>
-        </div>
-      </li>
+        <li class="d-flex bg-body-tertiary  rounded-4 p-3 feature-item gap-3">
+          <span class="material-symbols-outlined  feature-icon bg-black rounded-circle text-white d-flex justify-content-center align-items-center" style="font-size: 60px;">confirmation_number</span>
+          <div>
+            <h3 class="fw-medium feature-title">Online Booking & Ticketing</h3>
+            <p class="feature-desc textse">
+              Book your tickets anytime, anywhere. Skip the long lines and secure your seats
+              with just a few clicks.
+            </p>
+          </div>
+        </li>
 
-      <li class="feature-item">
-        <span class="material-symbols-outlined feature-icon"
-        style="font-size: 60px;">confirmation_number</span>
-        <div>
-          <h3 class="feature-title">Online Booking & Ticketing</h3>
-          <p class="feature-desc">
-            Book your tickets anytime, anywhere. Skip the long lines and secure your seats 
-            with just a few clicks.
-          </p>
-        </div>
-      </li>
-
-      <li class="feature-item">
-        <span class="material-symbols-outlined feature-icon" style="font-size: 60px;">video_camera_front</span>
-        <div>
-          <h3 class="feature-title">Community Engagement</h3>
-          <p class="feature-desc">
-            Join a growing community of film enthusiasts where you can interact, discuss, 
-            and share your love for cinema.
-          </p>
-        </div>
-      </li>
-    </ul>
-</div>
+        <li class="d-flex bg-body-tertiary  rounded-4 p-3 feature-item gap-3">
+          <span class="material-symbols-outlined  feature-icon bg-black rounded-circle text-white d-flex justify-content-center align-items-center" style="font-size: 60px;">video_camera_front</span>
+          <div>
+            <h3 class="fw-medium feature-title">Community Engagement</h3>
+            <p class="feature-desc textse">
+              Join a growing community of film enthusiasts where you can interact, discuss,
+              and share your love for cinema.
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
 
 </section>
 
