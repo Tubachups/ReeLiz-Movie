@@ -1,7 +1,10 @@
-{% extends 'base.html' %} {% block head %} <title>About Us - Reeliz 🎬</title>
+{% extends 'base.html' %} 
+{% block head %} 
+<title>About Us - Reeliz 🎬</title>
 <link rel="stylesheet" href="{{ url_for( 'static', filename='styles/detail.css')}}" />
 <link rel="stylesheet" href="{{ url_for( 'static', filename='styles/layout-seat.css')}}" />
 {% endblock %} 
+
 {% block body %}
 <!-- Movie Detail Section -->
 <section class="movie-detail py-5">
@@ -55,9 +58,38 @@
 <!-- Booking Section -->
 <section class="booking-section py-5">
   <div class="container">
-    <div class="row justify-content-center g-4">
-      <!-- Seating Layout -->
-      <div class="col-12 col-lg-8 order-2 order-lg-1">
+    <div class="row g-4">
+      
+      <!-- Ticket Summary (LEFT) -->
+        <div class="col-12 col-lg-4">
+          <div class="ticketing bg-body-tertiary rounded-4 p-4 shadow sticky-lg-top">
+            <h2 class="h4 mb-4">Selected Seats:</h2>
+            <div class="ticket-info">
+              <p>Number of Seats: <span id="seat-count">0</span></p>
+              <p id="selected-seats">None</p>
+              <h3 class="h5 mt-4">Movie Tickets</h3>
+              <p>Date and Time: <span id="selected-date-time">Not selected</span></p>
+              <p>Quantity: <span id="seat-quantity">0</span></p>
+              
+            </div>
+
+            <!-- New Panel -->
+            <div class="ticket-panel mt-4 pt-3 border-top">
+              <p class="mb-3"><strong>Tickets:</strong> <span id="seat-quantity-panel">0</span></p>
+              <p class="h5 mb-4"><strong>Total Price:</strong> ₱<span id="total-cost-panel">0</span></p>
+              
+              <div class="d-flex gap-2">
+                <button class="btn btn-primary flex-grow-1">Proceed to Payment</button>
+                <button class="btn btn-outline-secondary flex-grow-1">Cancel</button>
+              </div>
+            </div>
+            <!-- End New Panel -->
+
+          </div>
+        </div>
+
+      <!-- Seating Layout (RIGHT) -->
+      <div class="col-12 col-lg-8">
         <div class="seating text-center">
           <div class="legend d-flex flex-wrap justify-content-center gap-4 mb-4">
             <div class="d-flex align-items-center">
@@ -70,54 +102,46 @@
               <span class="legend-seat p-3 rounded selected me-2"></span> Selected
             </div>
           </div>
-          
+
           <h2 class="mb-4">Choose Your Seat</h2>
           <div class="screen mb-4">SCREEN</div>
-          
-          <div class="seat-layout">
-            {% set letters = ["A","B","C","D","E","F","G","H"] %}
-            {% for row in range(8) %}
-            <div class="row justify-content-center mb-2 g-2">
-              <!-- Left side seats -->
-              <div class="col-auto d-flex gap-2">
-                {% for col in range(1,3) %}
-                <button class="btn seat vacant">{{ letters[row] }}{{ col }}</button>
-                {% endfor %}
+
+          <!-- Scrollable wrapper for seats -->
+          <div class="seat-layout-wrapper">
+            <div class="seat-layout">
+              {% set letters = ["A","B","C","D","E","F","G","H"] %}
+              {% for row in range(8) %}
+              <div class="seat-row mb-2 g-2">
+                <!-- Left side seats -->
+                <div class="col-auto d-flex gap-2">
+                  {% for col in range(1,3) %}
+                  <button class="btn seat vacant">{{ letters[row] }}{{ col }}</button>
+                  {% endfor %}
+                </div>
+                <!-- Middle seats -->
+                <div class="col-auto d-flex gap-2">
+                  {% for col in range(3,7) %}
+                  <button class="btn seat vacant">{{ letters[row] }}{{ col }}</button>
+                  {% endfor %}
+                </div>
+                <!-- Right side seats -->
+                <div class="col-auto d-flex gap-2">
+                  {% for col in range(7,9) %}
+                  <button class="btn seat vacant">{{ letters[row] }}{{ col }}</button>
+                  {% endfor %}
+                </div>
               </div>
-              <!-- Middle seats -->
-              <div class="col-auto d-flex gap-2">
-                {% for col in range(3,7) %}
-                <button class="btn seat vacant">{{ letters[row] }}{{ col }}</button>
-                {% endfor %}
-              </div>
-              <!-- Right side seats -->
-              <div class="col-auto d-flex gap-2">
-                {% for col in range(7,9) %}
-                <button class="btn seat vacant">{{ letters[row] }}{{ col }}</button>
-                {% endfor %}
-              </div>
+              {% endfor %}
             </div>
-            {% endfor %}
           </div>
+          <!-- End scrollable wrapper -->
+
         </div>
       </div>
 
-      <!-- Ticket Summary -->
-      <div class="col-12 col-lg-4 order-1 order-lg-2">
-        <div class="ticketing bg-body-tertiary rounded-4 p-4 shadow sticky-lg-top">
-          <h2 class="h4 mb-4">Selected Seats:</h2>
-          <div class="ticket-info">
-            <p>Number of Seats: <span id="seat-count">0</span></p>
-            <p id="selected-seats">None</p>
-            <h3 class="h5 mt-4">Movie Tickets</h3>
-            <p>Date and Time: <span id="selected-date-time">Not selected</span></p>
-            <p>Quantity: <span id="seat-quantity">0</span></p>
-            <h4 class="h5 mt-4">Total: ₱<span id="total-cost">0</span></h4>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </section>
 
+<script src="{{ url_for('static', filename='js/detail.js') }}"></script>
 {% endblock %}
