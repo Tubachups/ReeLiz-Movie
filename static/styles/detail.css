@@ -3,7 +3,7 @@
 }
 
 .movie-detail .col-md{
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 
 @media (min-width: 768px) {
@@ -24,14 +24,12 @@
   }
 }
 
-/* Apply fade-in-up to elements */
 .fadeInUp {
   opacity: 0;
   transform: translateY(20px);
   animation: fadeInUp 0.8s ease-out forwards;
 }
 
-/* Add delay for smoother stagger effect */
 .fadeInUp {
   animation-delay: 0.4s;
 }
@@ -94,4 +92,16 @@
   font-size: 16px;
   border-radius: 6px;
   border: 1px solid #ccc;
+}
+
+.btn-primary:hover {
+  background-color: #248d3c !important; 
+  border-color: #248d3c !important;
+}
+
+/* Cancel button hover */
+.btn-outline-secondary:hover {
+  background-color: #bb3c49 !important; 
+  color: #fff !important;  
+  border-color: #b92f3d !important;
 }

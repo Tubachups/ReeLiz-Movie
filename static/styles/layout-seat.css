@@ -16,6 +16,9 @@
   line-height: 20px;
   box-shadow: 0 0 15px rgba(0, 114, 255, 0.6);
 }
+
+
+
 .screen::after {
   content: "";
   position: absolute;
@@ -66,7 +69,7 @@
 }
 .occupied {
   background: #f44336; /* Red */
-  cursor: not-allowed; /* 🚫 no clicking */
+  cursor: not-allowed; 
 }
 .selected {
   background: #ffeb3b; /* Yellow */
@@ -84,10 +87,11 @@
   align-items: center;
 }
 
-.row {
+.seat-layout .row {
   display: flex;
   gap: 35px; /* aisle spacing */
 }
+
 .side,
 .middle {
   display: flex;
@@ -95,4 +99,20 @@
 }
 .seat:focus {
   outline: none;
+}
+
+.seat-layout-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; 
+}
+
+.seat-layout {
+  min-width: 500px; 
+  display: inline-block;
+}
+
+.seat-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
 }

@@ -25,7 +25,7 @@ function generateDates() {
         .querySelectorAll(".date-pill")
         .forEach((d) => d.classList.remove("selected"));
       div.classList.add("selected");
-      updateTicketInfo(); // ✅ update immediately when date changes
+      updateTicketInfo(); // 
     });
 
     dateStrip.appendChild(div);
@@ -41,9 +41,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const selectedSeatsEl = document.getElementById("selected-seats");
   const seatCountEl = document.getElementById("seat-count");
   const seatQuantityEl = document.getElementById("seat-quantity");
-  const totalCostEl = document.getElementById("total-cost");
   const dateTimeEl = document.getElementById("selected-date-time");
   const showtimeSelect = document.getElementById("showtime");
+
+  // new panel elements
+  const seatQuantityPanelEl = document.getElementById("seat-quantity-panel");
+  const totalCostPanelEl = document.getElementById("total-cost-panel");
 
   function updateTicketInfo() {
     const selectedSeats = document.querySelectorAll(".seat.selected");
@@ -56,9 +59,11 @@ document.addEventListener("DOMContentLoaded", () => {
       seatNumbers.length > 0 ? seatNumbers.join(", ") : "None";
     seatCountEl.textContent = seatNumbers.length;
     seatQuantityEl.textContent = seatNumbers.length;
-    totalCostEl.textContent = seatNumbers.length * BASE_PRICE;
 
-    // ✅ Always update Date & Time when date or time changes
+    // ✅ only update new panel
+    seatQuantityPanelEl.textContent = seatNumbers.length;
+    totalCostPanelEl.textContent = seatNumbers.length * BASE_PRICE;
+
     const selectedDate = document.querySelector(".date-pill.selected");
     const showtime = showtimeSelect ? showtimeSelect.value : "";
     if (selectedDate) {
@@ -74,18 +79,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // Toggle seat selection
   seats.forEach((seat) => {
     seat.addEventListener("click", () => {
-      if (seat.classList.contains("occupied")) return; // 🚫 skip if occupied
+      if (seat.classList.contains("occupied")) return; 
       seat.classList.toggle("selected");
       seat.classList.toggle("vacant");
       updateTicketInfo();
     });
   });
 
-  // ✅ Update when showtime changes
   if (showtimeSelect) {
     showtimeSelect.addEventListener("change", updateTicketInfo);
   }
 
-  // ✅ Initial update (to show default today + default time)
   updateTicketInfo();
 });
