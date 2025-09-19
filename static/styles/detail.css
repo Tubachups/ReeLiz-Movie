@@ -2,34 +2,6 @@
   max-width: 200px;
 }
 
-.movie-detail .col-md {
-  /* border: 1px solid red; */
-}
-
-/* @media (min-width: 768px) {
-  .thumbnail {
-    max-width: 300px;
-  }
-} */
-
-@media (min-width: 768px) {
-  .thumbnail {
-    max-width: 300px;
-  }
-}
-
-/* Transition Animation */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .fadeInUp {
   opacity: 0;
   transform: translateY(20px);
@@ -39,16 +11,6 @@
 .fadeInUp {
   animation-delay: 0.4s;
 }
-
-/* DATE DIV */
-/* FIRST DATE LAYOUT*/
-/* .date-strip {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-} */
 
 /* SECOND DATE LAYOUT */
 .date-strip {
@@ -126,26 +88,31 @@
   border-color: #b92f3d !important;
 }
 
-/* .ticketing {
-  max-width: 470px; 
-  width: 108%;
-} */
-
-/* Mobile layout reorder */
-@media (max-width: 790px) {
+@media (min-width: 768px) {
+  .thumbnail {
+    max-width: 300px;
+  }
   /* Target the main booking columns */
   .booking-section .col-12.col-lg-4 {
-    order: 2; /* Date & Time stays first */
+    order: 2;
   }
   .booking-section .ticketing {
-    order: 1; /* Seating Layout moves second */
+    order: 1;
   }
   .booking-section .col-12 .col-lg-8 {
-    order: 3; /* Ticket Summary moves last */
+    order: 3;
     margin-top: 1rem; /* add spacing after seats */
   }
-  .booking-section .row {
-    display: flex;
-    flex-direction: column;
+}
+
+/* Transition Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

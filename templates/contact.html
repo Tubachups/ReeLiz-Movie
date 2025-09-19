@@ -14,15 +14,15 @@
 <h1 class="head1">Contact Us 📩</h1>
 
 <div class="contact-container">
+
   <!-- Left side: contact info as a row -->
   <div class="contact-row">
-    <div class="contact-item">
-    
-     <span class="material-symbols-outlined" style="font-size: 50px;">support_agent</span>
 
+    <div class="contact-item">
+      <span class="material-symbols-outlined" style="font-size: 50px;">support_agent</span>
       <div class="contact-text">
-    <b>Support Team</b>
-    <a href="mailto:support@reeliz.com">support@reeliz.com</a>
+        <b>Support Team</b>
+        <a href="mailto:support@reeliz.com">support@reeliz.com</a>
       </div>
     </div>
 
@@ -41,19 +41,35 @@
         <a href="mailto:info@reeliz.com">info@reeliz.com</a>
       </div>
     </div>
+
   </div>
 
   <!-- Right side: message form -->
   <div class="contact-form">
     <form>
       <label for="email">Email</label>
-      <input type="email" id="email" name="email" placeholder="Type e-mail here..." required>
+      <input 
+        type="email" 
+        id="email" 
+        name="email" 
+        placeholder="Type e-mail here..." 
+        required
+      >
 
       <label for="message">Message</label>
-      <textarea id="message" name="message" rows="5" placeholder="Type your message here..." required></textarea>
+      <textarea 
+        id="message" 
+        name="message" 
+        rows="5" 
+        placeholder="Type your message here..." 
+        required
+      ></textarea>
 
       <button type="submit">Submit</button>
     </form>
   </div>
+
 </div>
+
+
 {% endblock %}
