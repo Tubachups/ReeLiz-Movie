@@ -6,6 +6,12 @@
   /* border: 1px solid red; */
 }
 
+/* @media (min-width: 768px) {
+  .thumbnail {
+    max-width: 300px;
+  }
+} */
+
 @media (min-width: 768px) {
   .thumbnail {
     max-width: 300px;
@@ -49,7 +55,7 @@
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
-  gap: 1rem;
+  gap: 0.8rem;
 }
 .date-strip .date-item {
   flex: 0 0 auto;
@@ -83,16 +89,16 @@
 }
 
 .date-month {
-  font-size: 12px;
+  font-size: 10px;
   text-transform: uppercase;
 }
 
 .date-day {
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .date-num {
-  font-size: 20px;
+  font-size: 17px;
   font-weight: bold;
 }
 
@@ -120,3 +126,26 @@
   border-color: #b92f3d !important;
 }
 
+/* .ticketing {
+  max-width: 470px; 
+  width: 108%;
+} */
+
+/* Mobile layout reorder */
+@media (max-width: 790px) {
+  /* Target the main booking columns */
+  .booking-section .col-12.col-lg-4 {
+    order: 2; /* Date & Time stays first */
+  }
+  .booking-section .ticketing {
+    order: 1; /* Seating Layout moves second */
+  }
+  .booking-section .col-12 .col-lg-8 {
+    order: 3; /* Ticket Summary moves last */
+    margin-top: 1rem; /* add spacing after seats */
+  }
+  .booking-section .row {
+    display: flex;
+    flex-direction: column;
+  }
+}
