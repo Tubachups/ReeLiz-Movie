@@ -48,7 +48,7 @@
 .date-strip {
   display: flex;
   flex-wrap: nowrap;
-  /overflow-x: auto;
+  overflow-x: auto;
   gap: 1rem;
 }
 .date-strip .date-item {
@@ -119,7 +119,4 @@
   color: #fff !important;
   border-color: #b92f3d !important;
 }
-/* .ticketing {
-  max-width: 470px; 
-  width: 108%;
-} */
+

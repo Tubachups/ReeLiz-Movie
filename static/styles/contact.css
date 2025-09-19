@@ -99,15 +99,14 @@ body {
 
 .contact-form form {
   display: flex;
-  width: 750px;
   flex-direction: column;
   gap: 1rem;
   background: #f3f3f3;
   padding: 1rem;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-
-  /* Center horizontally */
+  width: 100%;
+  max-width: 750px;  
   margin: 0 auto;
 
   opacity: 0;
@@ -140,4 +139,15 @@ body {
 
 .contact-form button:hover {
   background: #555;
+}
+
+@media (max-width: 768px) {
+  .contact-form {
+    padding: 10px;
+  }
+
+  .contact-form form {
+    width: 100%;      
+    max-width: 100%;  
+  }
 }

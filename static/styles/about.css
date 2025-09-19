@@ -46,3 +46,28 @@ h3{
 .main-header, .intro {
   animation-delay: 0.3s;
 }
+
+@media (max-width: 768px) {
+  /* Center the whole list */
+  .col-md ul {
+    padding-left: 0;   
+    margin: 0 auto;  
+  }
+
+  .feature-item {
+    width: 100%;             
+    max-width: 400px;        
+    margin: 0 auto;           
+    flex-direction: column;  
+    align-items: center;
+    text-align: center;
+  }
+    .col-md.mb-4 {
+    text-align: center;       /* center heading + paragraph */
+  }
+
+  .col-md.mb-4 .btn {
+    display: inline-block;    /* button doesn't stretch full width */
+    margin: 10px auto 0;      /* center button horizontally */
+  }
+}
