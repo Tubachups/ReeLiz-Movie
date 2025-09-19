@@ -1,8 +1,8 @@
-.thumbnail{
+.thumbnail {
   max-width: 200px;
 }
 
-.movie-detail .col-md{
+.movie-detail .col-md {
   /* border: 1px solid red; */
 }
 
@@ -35,12 +35,26 @@
 }
 
 /* DATE DIV */
-.date-strip {
+/* FIRST DATE LAYOUT*/
+/* .date-strip {
   display: flex;
   justify-content: center;
   gap: 15px;
   margin-bottom: 20px;
   flex-wrap: wrap;
+} */
+
+/* SECOND DATE LAYOUT */
+.date-strip {
+  display: flex;
+  flex-wrap: nowrap;
+  /overflow-x: auto;
+  gap: 1rem;
+}
+.date-strip .date-item {
+  flex: 0 0 auto;
+  width: 70px;
+  text-align: center;
 }
 
 .date-pill {
@@ -95,19 +109,17 @@
 }
 
 .btn-primary:hover {
-  background-color: #248d3c !important; 
+  background-color: #248d3c !important;
   border-color: #248d3c !important;
 }
 
 /* Cancel button hover */
 .btn-outline-secondary:hover {
-  background-color: #bb3c49 !important; 
-  color: #fff !important;  
+  background-color: #bb3c49 !important;
+  color: #fff !important;
   border-color: #b92f3d !important;
 }
 /* .ticketing {
   max-width: 470px; 
   width: 108%;
 } */
-
-
