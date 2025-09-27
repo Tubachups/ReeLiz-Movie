@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends './components/base.html' %}
 
 {% block head %}
 <title>Reeliz</title>
@@ -10,10 +10,21 @@
 {% endblock %}
 
 {% block body %}
-<!-- Movie container -->
 <section>
   <div id="movies"></div>
 </section>
+
+<!-- <header class="container">
+  <div class="row flex-column">
+    <div class="col"><img class="img-fluid" src="{{ url_for('static', filename='styles/img/herologo.svg') }}" alt=""></div>
+    <div class="col">
+      <h1 class="display-5 fw-semibold">Book & Track Movie Tickets Easily with ReeLiz</h1>
+      <p>If you are looking for a fast, reliable, and convenient way to book tickets and track available seats in real-time, ReeLiz is your best movie companion.</p>
+    </div>
+  </div>
+</header> -->
+
+
 
 
 {% endblock %}

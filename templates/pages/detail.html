@@ -1,11 +1,15 @@
-{% extends 'base.html' %} {% block head %} <title>About Us - Reeliz 🎬</title>
+{% extends './components/base.html' %} 
+
+{% block head %} <title>Movie Preview - Reeliz </title>
 <link
   rel="stylesheet"
   href="{{ url_for( 'static', filename='styles/detail.css')}}"/>
 <link
   rel="stylesheet"
   href="{{ url_for( 'static', filename='styles/layout-seat.css')}}"/>
-{% endblock %} {% block body %}
+{% endblock %} 
+
+{% block body %}
 <!-- Movie Detail Section -->
 <section class="movie-detail py-5">
   <div class="container">
@@ -35,7 +39,7 @@
   </div>
 </section>
 
-{% include "booking.html" %}
+{% include "./components/booking.html" %}
 
 <script src="{{ url_for('static', filename='js/detail.js') }}"></script>
 
