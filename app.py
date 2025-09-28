@@ -23,6 +23,11 @@ def contact():
     return render_template("pages/contact.html")
 
 
+@app.route("/landing")
+def landing():
+    return render_template("pages/landing.html")
+
+
 @app.route("/movie/<int:movie_id>")
 def movie_detail(movie_id):
     url = f"{BASE_URL}/movie/{movie_id}?api_key={API_KEY}&language=en-US"
