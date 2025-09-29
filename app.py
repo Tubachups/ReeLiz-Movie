@@ -3,14 +3,9 @@ from datetime import datetime, timedelta
 import requests
 import time
 import os
-import logging
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 # Use environment variable for debug mode
 app.debug = os.getenv('FLASK_ENV') == 'development'
@@ -27,14 +22,14 @@ def get_cached_or_fetch(cache_key, fetch_function):
     if cache_key in cache:
         data, timestamp = cache[cache_key]
         if current_time - timestamp < CACHE_DURATION:
-            logger.info(f"Returning cached data for {cache_key}")
             return data
     
     # Fetch new data
-    logger.info(f"Fetching new data for {cache_key}")
     data = fetch_function()
     cache[cache_key] = (data, current_time)
     return data
+
+# ...existing routes...
 
 @app.route("/")
 def home():
@@ -57,21 +52,13 @@ def get_genres():
     try:
         def fetch_genres():
             url = f"{BASE_URL}/genre/movie/list?api_key={API_KEY}&language=en-US"
-            logger.info(f"Fetching genres from: {url}")
-            response = requests.get(url, timeout=30)
-            response.raise_for_status()
-            data = response.json()
-            logger.info(f"Genres fetched successfully: {len(data.get('genres', []))} genres")
-            return data
+            response = requests.get(url)
+            return response.json()
         
         result = get_cached_or_fetch("genres", fetch_genres)
         return jsonify(result)
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Request error in get_genres: {str(e)}")
-        return jsonify({"error": f"Request failed: {str(e)}"}), 500
     except Exception as e:
-        logger.error(f"Unexpected error in get_genres: {str(e)}")
-        return jsonify({"error": f"Server error: {str(e)}"}), 500
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/api/movies/<movie_type>")
 def get_movies(movie_type):
@@ -86,61 +73,22 @@ def get_movies(movie_type):
                 url += f"&release_date.lte={today}"
             elif movie_type == "coming":
                 url += f"&release_date.gte={today}&release_date.lte={two_months_later}"
-            
-            logger.info(f"Fetching {movie_type} movies from: {url}")
-            response = requests.get(url, timeout=30)
-            response.raise_for_status()
-            data = response.json()
-            logger.info(f"Movies fetched successfully: {len(data.get('results', []))} movies")
-            return data
+                
+            response = requests.get(url, timeout=10)
+            return response.json()
         
         cache_key = f"movies_{movie_type}"
         result = get_cached_or_fetch(cache_key, fetch_movies)
         return jsonify(result)
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Request error in get_movies: {str(e)}")
-        return jsonify({"error": f"Request failed: {str(e)}"}), 500
     except Exception as e:
-        logger.error(f"Unexpected error in get_movies: {str(e)}")
-        return jsonify({"error": f"Server error: {str(e)}"}), 500
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/movie/<int:movie_id>")
 def movie_detail(movie_id):
-    try:
-        url = f"{BASE_URL}/movie/{movie_id}?api_key={API_KEY}&language=en-US"
-        logger.info(f"Fetching movie detail from: {url}")
-        response = requests.get(url, timeout=30)
-        response.raise_for_status()
-        movie = response.json()
-        logger.info(f"Movie detail fetched successfully: {movie.get('title', 'Unknown')}")
-        return render_template("pages/detail.html", movie=movie)
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Request error in movie_detail: {str(e)}")
-        return render_template("pages/detail.html", movie={"error": f"Failed to load movie: {str(e)}"})
-    except Exception as e:
-        logger.error(f"Unexpected error in movie_detail: {str(e)}")
-        return render_template("pages/detail.html", movie={"error": f"Server error: {str(e)}"})
-
-# Add a test endpoint to check if API is working
-@app.route("/api/test")
-def test_api():
-    try:
-        url = f"{BASE_URL}/genre/movie/list?api_key={API_KEY}&language=en-US"
-        response = requests.get(url, timeout=10)
-        return jsonify({
-            "status": "success",
-            "status_code": response.status_code,
-            "api_key_length": len(API_KEY),
-            "base_url": BASE_URL,
-            "response_size": len(response.text)
-        })
-    except Exception as e:
-        return jsonify({
-            "status": "error",
-            "error": str(e),
-            "api_key_length": len(API_KEY),
-            "base_url": BASE_URL
-        })
+    url = f"{BASE_URL}/movie/{movie_id}?api_key={API_KEY}&language=en-US"
+    response = requests.get(url)
+    movie = response.json()
+    return render_template("pages/detail.html", movie=movie)
 
 if __name__ == "__main__":
     # Only run with livereload in development
