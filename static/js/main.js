@@ -1,6 +1,6 @@
 import { fetchGenres, fetchMovies } from "./services/movieService.js";
 import { renderMovies } from "./components/movieRenderer.js";
-import { setupGenresDropdown } from "./components/dropdownHandler.js";
+import { setupGenresDropdown } from "./components/dropdown.js";
 
 let genresMap = {};
 let allMovies = [];
