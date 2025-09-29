@@ -3,10 +3,11 @@ from livereload import Server
 from datetime import datetime, timedelta
 import requests
 import time
+import os
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.debug = True
+app.debug = os.getenv('FLASK_ENV') == 'development' 
 
 API_KEY = "da871154a03a2fefab890a14eaba1b4a"
 BASE_URL = "https://api.themoviedb.org/3"
@@ -90,6 +91,11 @@ def movie_detail(movie_id):
     return render_template("pages/detail.html", movie=movie)
 
 if __name__ == "__main__":
-    server = Server(app.wsgi_app)
-    server.serve(port=5500, host="127.0.0.1")  # you can change port if 5000 is busy
+    # Only run with livereload in development
+    if os.getenv('FLASK_ENV') == 'development':
+        from livereload import Server
+        server = Server(app.wsgi_app)
+        server.serve(port=5500, host="127.0.0.1")
+    else:
+        app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
 
