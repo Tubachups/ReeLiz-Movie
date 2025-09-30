@@ -2,24 +2,6 @@
   max-width: 200px;
 }
 
-@media (min-width: 768px) {
-  .thumbnail {
-    max-width: 300px;
-  }
-}
-
-/* Transition Animation */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .fadeInUp {
   opacity: 0;
   transform: translateY(20px);
@@ -108,6 +90,9 @@
 
 /* Mobile layout reorder */
 @media (max-width: 790px) {
+  .thumbnail {
+    max-width: 300px;
+  }
   /* Target the main booking columns */
   .booking-section .col-12.col-lg-4 {
     order: 2;
@@ -118,5 +103,17 @@
   .booking-section .col-12 .col-lg-8 {
     order: 3;
     margin-top: 1rem; /* add spacing after seats */
+  }
+}
+
+/* Transition Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
