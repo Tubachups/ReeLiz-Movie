@@ -31,7 +31,10 @@ function generateDates() {
     dateStrip.appendChild(div);
   }
 }
-
+document.getElementById("CancelBtn").addEventListener("click", function() {
+  // mimic nav-link behavior
+  window.location.href = "#"; // or handle data-page="now" logic here
+});
 document.addEventListener("DOMContentLoaded", () => {
   generateDates();
 
