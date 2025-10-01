@@ -3,10 +3,14 @@
 {% block head %} <title>Movie Preview - Reeliz </title>
 <link
   rel="stylesheet"
+  href="{{ url_for( 'static', filename='styles/modal.css')}}"/>
+<link
+  rel="stylesheet"
   href="{{ url_for( 'static', filename='styles/detail.css')}}"/>
 <link
   rel="stylesheet"
   href="{{ url_for( 'static', filename='styles/layout-seat.css')}}"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=shopping_cart" />
 {% endblock %} 
 
 {% block body %}
@@ -40,6 +44,30 @@
 </section>
 
 {% include "./components/booking.html" %}
+
+      <!-- Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title d-flex align-items-center gap-2" id="paymentModalLabel">
+          <span class="material-symbols-outlined">shopping_cart</span>
+          Payment Confirmation
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body text-center">
+        Would you like to proceed to payment?
+      </div>
+
+      <div class="modal-footer border-0 d-flex justify-content-center gap-3">
+        <button type="button" class="btn btn-primary">Proceed</button>
+        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="{{ url_for('static', filename='js/detail.js') }}"></script>
 
