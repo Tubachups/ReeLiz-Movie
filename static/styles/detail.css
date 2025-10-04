@@ -1,5 +1,5 @@
 .thumbnail {
-  max-width: 200px;
+  max-width: 300px;
 }
 
 .fadeInUp {
@@ -81,7 +81,6 @@
   border-color: #248d3c !important;
 }
 
-/* Cancel button hover */
 .btn-outline-secondary:hover {
   background-color: #bb3c49 !important;
   color: #ffffff !important;
@@ -93,7 +92,7 @@
   .thumbnail {
     max-width: 300px;
   }
-  /* Target the main booking columns */
+
   .booking-section .col-12.col-lg-4 {
     order: 2;
   }
@@ -102,11 +101,10 @@
   }
   .booking-section .col-12 .col-lg-8 {
     order: 3;
-    margin-top: 1rem; /* add spacing after seats */
+    margin-top: 1rem; 
   }
 }
 
-/* Transition Animation */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -115,5 +113,72 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+.booking-section {
+  display: none;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+
+.booking-section.visible {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.movie-detail {
+  position: relative;
+  color: #fff;
+  background-image: var(--poster-url);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Main dark overlay */
+.movie-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.76); 
+  z-index: 1;
+}
+
+/* Top + bottom gradients */
+.movie-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, #212529 1%, transparent 10%), 
+    linear-gradient(to bottom, transparent 75%, #ffffff 100%); 
+  z-index: 2;
+  pointer-events: none;
+}
+
+.movie-detail .container {
+  position: relative;
+  z-index: 3;
+}
+
+.movie-detail h1,
+.movie-detail p {
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.582);
+}
+
+@media (max-width: 768px) {
+  .thumbnail {
+    max-width: 200px;
+  }
+  .movie-overlay::after {
+    background:
+      linear-gradient(to bottom, transparent 90%, #ffffff 100%);
   }
 }

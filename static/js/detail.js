@@ -110,5 +110,19 @@ document.addEventListener("DOMContentLoaded", () => {
     showtimeSelect.addEventListener("change", updateTicketInfo);
   }
 
-  updateTicketInfo(); // initial check
+  updateTicketInfo();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const bookNowBtn = document.getElementById("bookNowBtn");
+  const bookingSection = document.querySelector(".booking-section");
+
+  if (bookNowBtn && bookingSection) {
+    bookNowBtn.addEventListener("click", () => {
+      
+      bookingSection.classList.add("visible");
+
+      bookingSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
 });
