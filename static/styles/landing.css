@@ -2,89 +2,9 @@
   height: 250px;
 }
 
-@media (max-width: 768px) {
-  .hero-header {
-    min-height: 80vh;
-    padding-top: 3rem;
-  }
-  .hero-header .btn {
-    background-color: #212529 !important;
-    color: #fff !important;
-    border: none;
-  }
-
-  .hero-header .btn:hover {
-    background-color: #343a40 !important; 
-  }
-}
-
-@media (max-width: 425px) {
-   
-  .hero-header .fade-section {
-    color: #212529 !important;
-  }
-
-  .hero-header .btn {
-    background-color: #212529 !important;
-    color: #fff !important;
-    border: none;
-  }
-
-  .hero-header .btn:hover {
-    background-color: #343a40 !important; 
-  }
-}
-
 @media(min-width: 992px){
   #cineTrackAccordion{
     width: 75%;
   }
 }
-
-.fade-section {
-  opacity: 0;
-  transform: translateY(50px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-  will-change: opacity, transform;
-}
-
-.fade-section.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.hero-header {
-  width: 100%;
-  min-height: 100vh; 
-  background: linear-gradient(to bottom, #212529 20%, #fff);
-  color: white;
-  display: flex;
-  align-items: center; 
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  padding-top: 4rem; 
-}
-
-.hero-header img {
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
-  max-height: 450px;
-}
-
-header.fade-section {
-  opacity: 1;
-  transform: none;
-}
-
-.features .card {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-
-.features .card.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 
