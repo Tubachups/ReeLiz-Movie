@@ -25,18 +25,31 @@ function generateDates() {
         .querySelectorAll(".date-pill")
         .forEach((d) => d.classList.remove("selected"));
       div.classList.add("selected");
-      updateTicketInfo(); // 
+      updateTicketInfo(); 
     });
 
     dateStrip.appendChild(div);
   }
 }
 
+// Cancel button redirect
+document.getElementById("CancelBtn").addEventListener("click", function() {
+  window.location.href = "#"; // or handle data-page="now" logic here
+});
+
+// Show payment modal when Proceed is clicked
+document.getElementById("ProceedBtn").addEventListener("click", function () {
+  var paymentModal = new bootstrap.Modal(document.getElementById("paymentModal"), {
+    backdrop: 'static',
+    keyboard: false
+  });
+  paymentModal.show();
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   generateDates();
 
   const BASE_PRICE = 300;
-
   const seats = document.querySelectorAll(".seat");
   const selectedSeatsEl = document.getElementById("selected-seats");
   const seatCountEl = document.getElementById("seat-count");
@@ -47,6 +60,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // new panel elements
   const seatQuantityPanelEl = document.getElementById("seat-quantity-panel");
   const totalCostPanelEl = document.getElementById("total-cost-panel");
+
+  // proceed button
+  const proceedBtn = document.getElementById("ProceedBtn");
 
   function updateTicketInfo() {
     const selectedSeats = document.querySelectorAll(".seat.selected");
@@ -64,6 +80,10 @@ document.addEventListener("DOMContentLoaded", () => {
     seatQuantityPanelEl.textContent = seatNumbers.length;
     totalCostPanelEl.textContent = seatNumbers.length * BASE_PRICE;
 
+    // ✅ Enable / disable proceed button
+    proceedBtn.disabled = seatNumbers.length === 0;
+
+    // Date + time info
     const selectedDate = document.querySelector(".date-pill.selected");
     const showtime = showtimeSelect ? showtimeSelect.value : "";
     if (selectedDate) {
@@ -90,5 +110,5 @@ document.addEventListener("DOMContentLoaded", () => {
     showtimeSelect.addEventListener("change", updateTicketInfo);
   }
 
-  updateTicketInfo();
+  updateTicketInfo(); // initial check
 });
