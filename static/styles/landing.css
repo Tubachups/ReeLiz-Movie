@@ -2,12 +2,6 @@
   height: 250px;
 }
 
-@media(min-width: 768px){
-  .hero-logo{
-    height: 375px;
-  }
-}
-
 @media(min-width: 992px){
   #cineTrackAccordion{
     width: 75%;
