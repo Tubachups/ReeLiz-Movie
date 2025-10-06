@@ -1,10 +1,9 @@
-.features img{
+.features img {
   height: 250px;
 }
 
-@media(min-width: 992px){
-  #cineTrackAccordion{
+@media (min-width: 992px) {
+  #cineTrackAccordion {
     width: 75%;
   }
 }
-
