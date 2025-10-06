@@ -83,16 +83,11 @@ def get_movies(movie_type):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 @app.route("/movie/<int:movie_id>")
 def movie_detail(movie_id):
-    url = f"{BASE_URL}/movie/{movie_id}?api_key={API_KEY}&language=en-US"
-    response = requests.get(url)
-    movie = response.json()
-    return render_template("pages/detail.html", movie=movie)
-
-@app.route("/movie/<int:movie_id>/details")
-def movie_detail_full(movie_id):
     try:
+        # Fetch movie details
         movie_url = f"{BASE_URL}/movie/{movie_id}?api_key={API_KEY}&language=en-US"
         credits_url = f"{BASE_URL}/movie/{movie_id}/credits?api_key={API_KEY}&language=en-US"
         release_url = f"{BASE_URL}/movie/{movie_id}/release_dates?api_key={API_KEY}"
@@ -101,6 +96,7 @@ def movie_detail_full(movie_id):
         credits = requests.get(credits_url, timeout=10).json()
         releases = requests.get(release_url, timeout=10).json()
 
+        # Get certification (Age Rating)
         certification = "N/A"
         for country in releases.get("results", []):
             if country["iso_3166_1"] in ["PH", "US"]:
@@ -108,11 +104,20 @@ def movie_detail_full(movie_id):
                     if release.get("certification"):
                         certification = release["certification"]
                         break
+                if certification != "N/A":
+                    break
 
+        # Get cast (top 5)
         cast = [member["name"] for member in credits.get("cast", [])[:5]]
+        
+        # Get directors
         directors = [crew["name"] for crew in credits.get("crew", []) if crew.get("job") == "Director"]
-        producers = [crew["name"] for crew in credits.get("crew", []) if crew.get("job") == "Producer"]
-        writers = [crew["name"] for crew in credits.get("crew", []) if crew.get("job") in ["Writer", "Screenplay", "Story"]]
+        
+        # Get producers
+        producers = [crew["name"] for crew in credits.get("crew", []) if crew.get("job") == "Producer"][:3]
+        
+        # Get writers
+        writers = [crew["name"] for crew in credits.get("crew", []) if crew.get("job") in ["Writer", "Screenplay", "Story"]][:3]
 
         return render_template(
             "pages/detail.html",
@@ -124,7 +129,7 @@ def movie_detail_full(movie_id):
             writers=writers,
         )
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": str(e)}), 
 
 # --- Server Entry Point ---
 if __name__ == "__main__":
