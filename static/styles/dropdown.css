@@ -8,3 +8,6 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 5px;
 }
+.nav-item {
+  margin-right: 1.5rem; 
+}
