@@ -90,8 +90,44 @@ def movie_detail(movie_id):
     movie = response.json()
     return render_template("pages/detail.html", movie=movie)
 
+@app.route("/movie/<int:movie_id>/details")
+def movie_detail_full(movie_id):
+    try:
+        movie_url = f"{BASE_URL}/movie/{movie_id}?api_key={API_KEY}&language=en-US"
+        credits_url = f"{BASE_URL}/movie/{movie_id}/credits?api_key={API_KEY}&language=en-US"
+        release_url = f"{BASE_URL}/movie/{movie_id}/release_dates?api_key={API_KEY}"
+
+        movie = requests.get(movie_url, timeout=10).json()
+        credits = requests.get(credits_url, timeout=10).json()
+        releases = requests.get(release_url, timeout=10).json()
+
+        certification = "N/A"
+        for country in releases.get("results", []):
+            if country["iso_3166_1"] in ["PH", "US"]:
+                for release in country.get("release_dates", []):
+                    if release.get("certification"):
+                        certification = release["certification"]
+                        break
+
+        cast = [member["name"] for member in credits.get("cast", [])[:5]]
+        directors = [crew["name"] for crew in credits.get("crew", []) if crew.get("job") == "Director"]
+        producers = [crew["name"] for crew in credits.get("crew", []) if crew.get("job") == "Producer"]
+        writers = [crew["name"] for crew in credits.get("crew", []) if crew.get("job") in ["Writer", "Screenplay", "Story"]]
+
+        return render_template(
+            "pages/detail.html",
+            movie=movie,
+            certification=certification,
+            cast=cast,
+            directors=directors,
+            producers=producers,
+            writers=writers,
+        )
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# --- Server Entry Point ---
 if __name__ == "__main__":
-    # Only run with livereload in development
     if os.getenv('FLASK_ENV') == 'development':
         from livereload import Server
         server = Server(app.wsgi_app)
