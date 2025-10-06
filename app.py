@@ -137,5 +137,3 @@ if __name__ == "__main__":
         from livereload import Server
         server = Server(app.wsgi_app)
         server.serve(port=5500, host="127.0.0.1")
-    else:
-        app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
