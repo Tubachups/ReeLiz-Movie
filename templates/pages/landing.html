@@ -3,26 +3,38 @@
 {% block head %}
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='styles/img/logo.png') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/landing.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/gradient.css')}}">
 <title>Reeliz</title>
+<script src="{{ url_for('static', filename='js/landing.js') }}"></script>
 
 {% endblock %}
 
 {% block body %}
-<header class="container py-4">
-  <div class="row flex-md-row-reverse align-items-center">
-    <img class="img-fluid col hero-logo" src="{{ url_for('static', filename='styles/img/herologo.svg') }}" alt="">
-    <div class="col text-center text-md-start">
-      <h1 class="display-6 fw-bold ">Book & Track Movie Tickets Easily with ReeLiz</h1>
-      <p>Book tickets instantly and track seats in real-time — ReeLiz makes movie experience hassle-free.</p>
-      <button class="col btn btn-dark p-3 rounded-5" data-page="now"> View Full Site <i class="fa-solid fa-arrow-right-to-bracket ps-2"></i></button>
+
+<!-- first -->
+<header class="hero-header">
+  <div class="container py-5">
+    <div class="row flex-md-row-reverse align-items-center">
+      <img class="img-fluid col hero-logo fade-section" 
+           src="{{ url_for('static', filename='styles/img/herologo.svg') }}" 
+           alt="">
+      <div class="col text-center text-md-start fade-section" style="color: fff;">
+        <h1 class="display-6 fw-bold">Book & Track Movie Tickets Easily with ReeLiz</h1>
+        <p>Book tickets instantly and track seats in real-time — ReeLiz makes movie experience hassle-free.</p>
+        <button class="col btn btn-light p-3 rounded-5" data-page="now">
+          View Full Site <i class="fa-solid fa-arrow-right-to-bracket ps-2"></i>
+        </button>
+      </div>
     </div>
   </div>
 </header>
 
 
-<section class="container py-4 features">
+<!-- second -->
+<section class="container py-4 features fade-section">
   <h1 class="display-6 fw-bold text-center mb-4">Features</h1>
   <div class="row justify-content-center g-4">
+    <!-- feature1 -->
     <div class="col-12 col-md-6 col-lg-4">
       <div class="card  text-center">
         <img src="../static/styles/img/img-reeliz-1.jpg" class="card-img-top" alt="...">
@@ -36,6 +48,7 @@
       </div>
     </div>
 
+    <!-- feature2 -->
     <div class="col-12 col-md-6 col-lg-4">
       <div class="card text-center">
         <img src="../static/styles/img/img-reeliz-2.jpg" class="card-img-top" alt="...">
@@ -49,6 +62,7 @@
       </div>
     </div>
 
+    <!-- feature3 -->
     <div class="col-12 col-md-6 col-lg-4">
       <div class="card  text-center">
         <img src="../static/styles/img/img-reeliz-3.jpg" class="card-img-top" alt="...">
@@ -65,7 +79,8 @@
 </section>
 
 
-<section class="container py-4">
+<!-- third -->
+<section class="container py-4 fade-section">
   <h2 class="text-center mb-4 fw-bold">FAQ</h2>
   <div class="accordion  mx-auto" id="cineTrackAccordion">
 

@@ -43,24 +43,25 @@
                 >0</span
               >
             </p>
-            <div class="d-flex gap-2">
-              <button class="btn btn-primary flex-grow-1">
-                Proceed to Payment
-              </button>
-              <button class="btn btn-outline-secondary flex-grow-1">
-                Cancel
-              </button>
+            <div id="PaymentBtn" class="d-flex gap-2">
+            <button id="ProceedBtn" class="btn btn-primary flex-grow-1" disabled>
+              Proceed to Payment
+            </button>
+
+
+          <button id="CancelBtn" class="btn btn-outline-secondary flex-grow-1 nav-link border border-dark" 
+                  data-page="now">
+            Cancel
+          </button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- RIGHT: Seating Layout -->
       <div class="col-12 col-lg-8">
         <div class="seating text-center">
           <div
-            class="legend d-flex flex-wrap justify-content-center gap-4 mb-4"
-          >
+            class="legend d-flex flex-wrap justify-content-center gap-4 mb-4">
             <div class="d-flex align-items-center">
               <span class="legend-seat p-3 rounded vacant me-2"></span> Vacant
             </div>
