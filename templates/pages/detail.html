@@ -1,34 +1,24 @@
-{% extends './components/base.html' %} 
+{% extends './components/base.html' %}
 
 {% block head %} <title>Movie Preview - Reeliz </title>
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='styles/img/logo.png') }}">
-<link
-  rel="stylesheet"
-  href="{{ url_for( 'static', filename='styles/modal.css')}}"/>
-<link
-  rel="stylesheet"
-  href="{{ url_for( 'static', filename='styles/detail.css')}}"/>
-<link
-  rel="stylesheet"
-  href="{{ url_for( 'static', filename='styles/layout-seat.css')}}"/>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=shopping_cart" />
-{% endblock %} 
+<link rel="stylesheet" href="{{ url_for( 'static', filename='styles/modal.css')}}" />
+<link rel="stylesheet" href="{{ url_for( 'static', filename='styles/detail.css')}}" />
+<link rel="stylesheet" href="{{ url_for( 'static', filename='styles/layout-seat.css')}}" />
+<link rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=shopping_cart" />
+{% endblock %}
 
 {% block body %}
 <!-- Movie Detail Section -->
-<section
-  class="movie-detail py-5"
-  style="--poster-url: url('https://image.tmdb.org/t/p/original{{ movie.poster_path }}');"
->
+<section class="movie-detail py-5"
+  style="--poster-url: url('https://image.tmdb.org/t/p/original{{ movie.poster_path }}');">
   <div class="movie-overlay"></div>
   <div class="container position-relative">
     <div class="row align-items-center g-5">
       <div class="col-md col-lg-4 col-xl-3 collgfadeInUp d-flex justify-content-center">
-        <img
-          src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"
-          alt="{{ movie.title }}"
-          class="thumbnail rounded shadow"
-        />
+        <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}"
+          class="thumbnail rounded shadow" />
       </div>
       <div class="col-md fadeInUp text-light">
         <h1 class="mb-4">{{ movie.title }}</h1>
@@ -38,21 +28,21 @@
           <p>
             <strong>Genres:</strong>
             {% for genre in movie.genres %}
-              {{ genre.name }}{% if not loop.last %}, {% endif %}
+            {{ genre.name }}{% if not loop.last %}, {% endif %}
             {% endfor %}
           </p>
           <p class="mt-3">{{ movie.overview }}</p>
         </div>
 
         <!-- Ratings and Credits Section that I can't fucking fix -->
-          <div class="movie-extra mt-4">
-            <p><strong>TMDB Rating:</strong> ⭐ {{ movie.vote_average }}/10</p>
-            <p><strong>Age Rating:</strong> {{ certification }}</p>
-            <p><strong>Cast:</strong> {{ cast | join(', ') }}</p>
-            <p><strong>Director:</strong> {{ directors | join(', ') if directors else 'N/A' }}</p>
-            <p><strong>Producers:</strong> {{ producers | join(', ') if producers else 'N/A' }}</p>
-            <p><strong>Writers:</strong> {{ writers | join(', ') if writers else 'N/A' }}</p>
-          </div>
+        <div class="movie-extra mt-4">
+          <p><strong>TMDB Rating:</strong> ⭐ {{ movie.vote_average }}/10</p>
+          <p><strong>Age Rating:</strong> {{ certification }}</p>
+          <p><strong>Cast:</strong> {{ cast | join(', ') }}</p>
+          <p><strong>Director:</strong> {{ directors | join(', ') if directors else 'N/A' }}</p>
+          <p><strong>Producers:</strong> {{ producers | join(', ') if producers else 'N/A' }}</p>
+          <p><strong>Writers:</strong> {{ writers | join(', ') if writers else 'N/A' }}</p>
+        </div>
 
         <button id="bookNowBtn" class="btn btn-primary mt-1 px-4 py-2 rounded-3">
           Book Now
@@ -65,7 +55,7 @@
 
 {% include "./components/booking.html" %}
 
-      <!-- Modal -->
+<!-- Modal -->
 <div class="modal fade" id="paymentModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -89,6 +79,6 @@
   </div>
 </div>
 
-<script src="{{ url_for('static', filename='js/detail.js') }}"></script>
+<script src="{{ url_for('static', filename='js/components/detail.js') }}"></script>
 
 {% endblock %}

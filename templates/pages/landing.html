@@ -1,11 +1,16 @@
 {% extends './components/base.html' %}
 
 {% block head %}
+<style>
+  @media (min-width: 992px) {
+  #cineTrackAccordion {
+    width: 75%;
+  }
+}
+</style>
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='styles/img/logo.png') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='styles/landing.css')}}">
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/gradient.css')}}">
 <title>Reeliz</title>
-<script src="{{ url_for('static', filename='js/landing.js') }}"></script>
 
 {% endblock %}
 
@@ -79,7 +84,7 @@
 <!-- third -->
 <section class="container py-4 fade-section">
   <h2 class="text-center mb-4 fw-bold">FAQ's</h2>
-  <div class="accordion  mx-auto" id="cineTrackAccordion">
+  <div class="accordion  mx-auto " id="cineTrackAccordion">
 
    <!-- Item 1 -->
     <div class="accordion-item">
@@ -196,5 +201,6 @@
   </div>
 </section>
 
+<script src="{{ url_for('static', filename='js/components/landing.js') }}"></script>
 
 {% endblock %}
