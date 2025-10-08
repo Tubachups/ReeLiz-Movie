@@ -1,20 +1,14 @@
 from flask import Flask, render_template, jsonify
 from livereload import Server
 from datetime import datetime, timedelta
-from dotenv import load_dotenv
-import os
 import requests
 import time
 
-
-load_dotenv()
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.debug = True
 
-API_KEY = os.getenv("TMDB_API_KEY")
-if not API_KEY:
-    raise ValueError("TMDB_API_KEY environment variable is not set")
+API_KEY = "da871154a03a2fefab890a14eaba1b4a"
 BASE_URL = "https://api.themoviedb.org/3"
 cache = {}
 CACHE_DURATION = 300
@@ -89,12 +83,6 @@ def get_movies(movie_type):
 
 @app.route("/movie/<int:movie_id>")
 def movie_detail(movie_id):
-<<<<<<< HEAD
-    url = f"{BASE_URL}/movie/{movie_id}?api_key={API_KEY}&language=en-US"
-    response = requests.get(url)
-    movie = response.json()
-    return render_template("pages/detail.html", movie=movie)
-=======
     try:
         # Fetch movie details
         movie_url = f"{BASE_URL}/movie/{movie_id}?api_key={API_KEY}&language=en-US"
@@ -139,13 +127,12 @@ def movie_detail(movie_id):
         )
     except Exception as e:
         return jsonify({"error": str(e)}), 
->>>>>>> cc11cf08e646348086ff379e398821336ee970dd
+    url = f"{BASE_URL}/movie/{movie_id}?api_key={API_KEY}&language=en-US"
+    response = requests.get(url)
+    movie = response.json()
+    return render_template("pages/detail.html", movie=movie)
 
 
 if __name__ == "__main__":
     server = Server(app.wsgi_app)
-<<<<<<< HEAD
     server.serve(port=5500, host="127.0.0.1")  # you can change port if 5000 is busy
-=======
-    server.serve(port=5500, host="127.0.0.1")  # you can change port if 5000 is busy
->>>>>>> cc11cf08e646348086ff379e398821336ee970dd
