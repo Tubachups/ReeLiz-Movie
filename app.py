@@ -1,14 +1,20 @@
 from flask import Flask, render_template, jsonify
 from livereload import Server
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
+import os
 import requests
 import time
 
+
+load_dotenv()
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.debug = True
 
-API_KEY = "da871154a03a2fefab890a14eaba1b4a"
+API_KEY = os.getenv("TMDB_API_KEY")
+if not API_KEY:
+    raise ValueError("TMDB_API_KEY environment variable is not set")
 BASE_URL = "https://api.themoviedb.org/3"
 cache = {}
 CACHE_DURATION = 300
@@ -127,10 +133,6 @@ def movie_detail(movie_id):
         )
     except Exception as e:
         return jsonify({"error": str(e)}), 
-    url = f"{BASE_URL}/movie/{movie_id}?api_key={API_KEY}&language=en-US"
-    response = requests.get(url)
-    movie = response.json()
-    return render_template("pages/detail.html", movie=movie)
 
 
 if __name__ == "__main__":
