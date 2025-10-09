@@ -8,14 +8,16 @@
   rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/about.css') }}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+<script src="{{ url_for('static', filename='js/components/about.js') }}"></script>
+
 
 {% endblock %}
 
 {% block body %}
-<section class="container my-4">
-  <div class="row ">
-
-    <div class="col-md mb-4">
+<!-- ABOUT SECTION -->
+<div class="about-section">
+  <div class="about-overlay text-center text-white">
+    <div class="container-fluid">
       <h1 class="main-header">About Reeliz 🎬</h1>
       <p class="lh-lg intro">
         At Reeliz, we bring the magic of movies closer to you. Our platform is designed to give every movie lover
@@ -23,46 +25,54 @@
       </p>
       <a href="{{ url_for('home') }}" class="btn btn-dark p-3">&larr; Back to Home</a>
     </div>
+  </div>
+</div>
 
+<!-- FEATURES SECTION -->
+<section class="features-container my-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md">
+        <ul class="d-flex gap-4 flex-column">
 
-    <div class="col-md ">
-      <ul class="d-flex gap-4 flex-column">
-        <li class="d-flex bg-body-tertiary  rounded-4 p-3 feature-item gap-3">
-          <span class="material-symbols-outlined feature-icon bg-black rounded-circle text-white d-flex justify-content-center align-items-center " style="font-size: 60px;">theaters</span>
-          <div>
-            <h3 class="fw-medium feature-title">Movie Listings & Showtimes</h3>
-            <p class="feature-desc textse">
-              Stay updated with the latest movie releases, schedules, and cinema locations.
-              No more missing out on your favorite films.
-            </p>
-          </div>
-        </li>
+          <li class="d-flex bg-body-tertiary rounded-4 p-3 feature-item gap-3">
+            <span class="material-symbols-outlined feature-icon bg-black rounded-circle text-white d-flex justify-content-center align-items-center" style="font-size: 60px;">theaters</span>
+            <div>
+              <h3 class="fw-medium feature-title">Movie Listings & Showtimes</h3>
+              <p class="feature-desc textse">
+                Stay updated with the latest movie releases, schedules, and cinema locations.
+                No more missing out on your favorite films.
+              </p>
+            </div>
+          </li>
 
-        <li class="d-flex bg-body-tertiary  rounded-4 p-3 feature-item gap-3">
-          <span class="material-symbols-outlined  feature-icon bg-black rounded-circle text-white d-flex justify-content-center align-items-center" style="font-size: 60px;">confirmation_number</span>
-          <div>
-            <h3 class="fw-medium feature-title">Online Booking & Ticketing</h3>
-            <p class="feature-desc textse">
-              Book your tickets anytime, anywhere. Skip the long lines and secure your seats
-              with just a few clicks.
-            </p>
-          </div>
-        </li>
+          <li class="d-flex bg-body-tertiary rounded-4 p-3 feature-item gap-3">
+            <span class="material-symbols-outlined feature-icon bg-black rounded-circle text-white d-flex justify-content-center align-items-center" style="font-size: 60px;">confirmation_number</span>
+            <div>
+              <h3 class="fw-medium feature-title">Online Booking & Ticketing</h3>
+              <p class="feature-desc textse">
+                Book your tickets anytime, anywhere. Skip the long lines and secure your seats
+                with just a few clicks.
+              </p>
+            </div>
+          </li>
 
-        <li class="d-flex bg-body-tertiary  rounded-4 p-3 feature-item gap-3">
-          <span class="material-symbols-outlined  feature-icon bg-black rounded-circle text-white d-flex justify-content-center align-items-center" style="font-size: 60px;">video_camera_front</span>
-          <div>
-            <h3 class="fw-medium feature-title">Community Engagement</h3>
-            <p class="feature-desc textse">
-              Join a growing community of film enthusiasts where you can interact, discuss,
-              and share your love for cinema.
-            </p>
-          </div>
-        </li>
-      </ul>
+          <li class="d-flex bg-body-tertiary rounded-4 p-3 feature-item gap-3">
+            <span class="material-symbols-outlined feature-icon bg-black rounded-circle text-white d-flex justify-content-center align-items-center" style="font-size: 60px;">video_camera_front</span>
+            <div>
+              <h3 class="fw-medium feature-title">Community Engagement</h3>
+              <p class="feature-desc textse">
+                Join a growing community of film enthusiasts where you can interact, discuss,
+                and share your love for cinema.
+              </p>
+            </div>
+          </li>
+
+        </ul>
+      </div>
     </div>
   </div>
-
 </section>
+
 
 {% endblock %}

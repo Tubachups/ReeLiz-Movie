@@ -71,3 +71,65 @@ h3{
     margin: 10px auto 0;      /* center button horizontally */
   }
 }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden; 
+}
+
+.main-header {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.intro {
+  font-size: 1.1rem;
+  max-width: 800px;
+  margin: 0 auto 1.5rem;
+  line-height: 1.6;
+}
+
+.about-section.hero {
+  min-height: 90vh;
+}
+
+.about-section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh; 
+  margin: 0;
+  padding: 0;
+  left: 50%;
+  right: 50%;
+  transform: translateX(-50%); 
+  background: url('img/aboutbg.jpg') center center / cover no-repeat;
+  background-attachment: scroll;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.about-overlay {
+  background: rgba(0, 0, 0, 0.637);
+  padding: 110px 0; 
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.features-container {
+  position: relative;
+  z-index: 2; /* ✅ sits above about-section */
+  background-color: #f8f9fa;
+  margin-top: 100vh; /* pushes it right below the hero */
+  transition: transform 0.5s ease-out;
+}
+
+
