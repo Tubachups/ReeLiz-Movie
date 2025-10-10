@@ -21,10 +21,13 @@ function generateDates() {
     `;
 
     div.addEventListener("click", () => {
+      // Remove selected class from all dates first
       document
         .querySelectorAll(".date-pill")
         .forEach((d) => d.classList.remove("selected"));
+      // Add selected class to clicked date
       div.classList.add("selected");
+      // Update ticket info AFTER the DOM has been updated
       updateTicketInfo(); 
     });
 
@@ -64,7 +67,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // proceed button
   const proceedBtn = document.getElementById("ProceedBtn");
 
-  function updateTicketInfo() {
+  // Make updateTicketInfo globally accessible
+  window.updateTicketInfo = function updateTicketInfo() {
     const selectedSeats = document.querySelectorAll(".seat.selected");
     const seatNumbers = Array.from(selectedSeats).map(
       (seat) => seat.textContent
@@ -76,11 +80,11 @@ document.addEventListener("DOMContentLoaded", () => {
     seatCountEl.textContent = seatNumbers.length;
     seatQuantityEl.textContent = seatNumbers.length;
 
-    // ✅ only update new panel
+    // only update new panel
     seatQuantityPanelEl.textContent = seatNumbers.length;
     totalCostPanelEl.textContent = seatNumbers.length * BASE_PRICE;
 
-    // ✅ Enable / disable proceed button
+    // Enable / disable proceed button
     proceedBtn.disabled = seatNumbers.length === 0;
 
     // Date + time info

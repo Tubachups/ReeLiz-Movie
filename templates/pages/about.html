@@ -20,8 +20,8 @@
     <div class="container-fluid">
       <h1 class="main-header">About Reeliz 🎬</h1>
       <p class="lh-lg intro">
-        At Reeliz, we bring the magic of movies closer to you. Our platform is designed to give every movie lover
-        a seamless and exciting cinema experience. Here’s what we offer:
+               ReeLiz Cinema is dedicated to delivering a comfortable and enjoyable movie experience for everyone. 
+        We combine modern technology with a passion for film to bring stories to life and connect people through cinema.
       </p>
       <a href="{{ url_for('home') }}" class="btn btn-dark p-3">&larr; Back to Home</a>
     </div>
@@ -35,35 +35,58 @@
       <div class="col-md">
         <ul class="d-flex gap-4 flex-column">
 
+          <!-- HISTORY -->
           <li class="d-flex bg-body-tertiary rounded-4 p-3 feature-item gap-3">
-            <span class="material-symbols-outlined feature-icon bg-black rounded-circle text-white d-flex justify-content-center align-items-center" style="font-size: 60px;">theaters</span>
+            <span class="material-symbols-outlined feature-icon bg-black rounded-circle text-white d-flex justify-content-center align-items-center" style="font-size: 80px; width: 100px; height: 100px; flex-shrink: 0;">history</span>
             <div>
-              <h3 class="fw-medium feature-title">Movie Listings & Showtimes</h3>
+              <h3 class="fw-medium feature-title">HISTORY</h3>
               <p class="feature-desc textse">
-                Stay updated with the latest movie releases, schedules, and cinema locations.
-                No more missing out on your favorite films.
+                ReeLiz Cinema was founded in 2015 with a vision to transform the local movie-going experience through innovation and accessibility. 
+                What began as a small independent screening hub for local films has evolved into a modern entertainment brand that embraces technology and creativity. 
+                Over the years, ReeLiz has continuously adapted to changing trends in film and digital media, offering seamless booking systems, immersive viewing experiences, and a strong connection to Filipino film culture.
               </p>
             </div>
           </li>
 
+          <!-- FOUNDER -->
           <li class="d-flex bg-body-tertiary rounded-4 p-3 feature-item gap-3">
-            <span class="material-symbols-outlined feature-icon bg-black rounded-circle text-white d-flex justify-content-center align-items-center" style="font-size: 60px;">confirmation_number</span>
+            <div style="width: 100px; height: 100px; flex-shrink: 0; overflow: hidden; border-radius: 50%;">
+              <img src="{{ url_for('static', filename='styles/img/Founder.png') }}" alt="Founder" style="width: 100%; height: 100%; object-fit: cover; object-position: center -80%; transform: scale(1.3);">
+            </div>
             <div>
-              <h3 class="fw-medium feature-title">Online Booking & Ticketing</h3>
+              <h3 class="fw-medium feature-title">Founder</h3>
               <p class="feature-desc textse">
-                Book your tickets anytime, anywhere. Skip the long lines and secure your seats
-                with just a few clicks.
+                <strong>Mika Torres</strong>, the visionary founder of ReeLiz Cinema, combined her love for storytelling and entrepreneurship to create a new kind of cinema experience. 
+                With a background in film production and business management, Elizabeth focused on promoting inclusivity and innovation within the entertainment industry. 
+                Her dedication to empowering local filmmakers and modernizing the viewing experience laid the foundation for ReeLiz’s enduring success and artistic reputation.
               </p>
             </div>
           </li>
 
+          <!-- CEO -->
           <li class="d-flex bg-body-tertiary rounded-4 p-3 feature-item gap-3">
-            <span class="material-symbols-outlined feature-icon bg-black rounded-circle text-white d-flex justify-content-center align-items-center" style="font-size: 60px;">video_camera_front</span>
+            <div style="width: 100px; height: 100px; flex-shrink: 0; overflow: hidden; border-radius: 50%;">
+              <img src="{{ url_for('static', filename='styles/img/CEO.png') }}" alt="CEO" style="width: 100%; height: 100%; object-fit: cover; object-position: center -40%; transform: scale(1.3);">
+            </div>
             <div>
-              <h3 class="fw-medium feature-title">Community Engagement</h3>
+              <h3 class="fw-medium feature-title">C.E.O.</h3>
               <p class="feature-desc textse">
-                Join a growing community of film enthusiasts where you can interact, discuss,
-                and share your love for cinema.
+                <strong>Catherine Reyes</strong>, the current Chief Executive Officer of ReeLiz Cinema, has been with the company for over ten years. 
+                Her leadership has guided ReeLiz toward a new era of digital transformation and customer-focused innovation. 
+                Rachel is known for her forward-thinking management style and her efforts to strengthen community engagement, sustainability, and the integration of smart technology in the cinema industry. 
+                Under her direction, ReeLiz continues to redefine what it means to experience films in a modern world.
+              </p>
+            </div>
+          </li>
+
+          <!-- LOCATION -->
+          <li class="d-flex bg-body-tertiary rounded-4 p-3 feature-item gap-3">
+            <span class="material-symbols-outlined feature-icon bg-black rounded-circle text-white d-flex justify-content-center align-items-center" style="font-size: 80px; width: 100px; height: 100px; flex-shrink: 0;">location_on</span>
+            <div>
+              <h3 class="fw-medium feature-title">LOCATION</h3>
+              <p class="feature-desc textse">
+                ReeLiz Cinema is proudly located at <strong>Mercedes Avenue, San Miguel, Pasig City, Philippines</strong>
+                Its location makes it accessible to moviegoers from all parts of Metro Manila, offering a welcoming space where technology, art, and entertainment meet.
               </p>
             </div>
           </li>
