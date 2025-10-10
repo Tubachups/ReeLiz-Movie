@@ -130,6 +130,12 @@
 #cinemaCarousel .carousel-control-next {
   width: 5%;
   opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+#cinemaCarousel .carousel-control-prev:hover,
+#cinemaCarousel .carousel-control-next:hover {
+  opacity: 1;
 }
 
 #cinemaCarousel .carousel-control-prev-icon,
@@ -137,6 +143,13 @@
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 50%;
   padding: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#cinemaCarousel .carousel-control-prev-icon:hover,
+#cinemaCarousel .carousel-control-next-icon:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1);
 }
 
 #cinemaCarousel .carousel-indicators {
@@ -148,9 +161,14 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-#cinemaCarousel .carousel-item {
-  min-height: 600px;
-  padding: 20px 0;
+#cinemaCarousel .carousel-indicators button:hover {
+  background-color: #0056b3;
+  transform: scale(1.2);
+}
+
+#cinemaCarousel .carousel-indicators button.active {
+  background-color: #003d80;
 }
