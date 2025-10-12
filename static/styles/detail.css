@@ -12,31 +12,10 @@
   animation-delay: 0.4s;
 }
 
-/* SECOND DATE LAYOUT */
-.date-strip {
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  gap: 0.8rem;
-}
-.date-strip .date-item {
-  flex: 0 0 auto;
-  width: 70px;
-  text-align: center;
-}
-
 .date-pill {
-  width: 75px;
-  height: 90px;
-  border-radius: 10px;
   background: #f1f1f1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   cursor: pointer;
   transition: 0.3s;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .date-pill:hover {
@@ -45,14 +24,11 @@
 }
 
 .date-pill.selected {
-  background: #ffeb3b;
-  color: black;
   font-weight: bold;
 }
 
 .date-month {
   font-size: 10px;
-  text-transform: uppercase;
 }
 
 .date-day {
@@ -61,19 +37,6 @@
 
 .date-num {
   font-size: 17px;
-  font-weight: bold;
-}
-
-.time-select {
-  margin-top: 10px;
-  font-size: 16px;
-}
-
-.time-select select {
-  padding: 6px 12px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
 }
 
 .btn-primary:hover {
@@ -87,68 +50,8 @@
   border-color: #b92f3d !important;
 }
 
-/* Mobile layout reorder */
-@media (max-width: 790px) {
-  .thumbnail {
-    max-width: 300px;
-  }
-
-  .booking-section .col-12.col-lg-4 {
-    order: 2;
-  }
-  .booking-section .ticketing {
-    order: 1;
-  }
-  .booking-section .col-12 .col-lg-8 {
-    order: 3;
-    margin-top: 1rem; 
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.booking-section {
-  display: none;
-  opacity: 0;
-  transform: translateY(50px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-
-.booking-section.visible {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-}
-
 .movie-detail {
-  position: relative;
-  color: #fff;
-  background-image: var(--poster-url);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-}
-
-/* Main dark overlay */
-.movie-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.76); 
-  z-index: 1;
+  background: var(--poster-url) center/cover no-repeat;
 }
 
 /* Top + bottom gradients */
@@ -163,22 +66,18 @@
   pointer-events: none;
 }
 
-.movie-detail .container {
-  position: relative;
-  z-index: 3;
-}
-
 .movie-detail h1,
 .movie-detail p {
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.582);
 }
 
-@media (max-width: 768px) {
-  .thumbnail {
-    max-width: 200px;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  .movie-overlay::after {
-    background:
-      linear-gradient(to bottom, transparent 90%, #ffffff 100%);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

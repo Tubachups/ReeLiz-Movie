@@ -2,7 +2,6 @@
 
 {% block head %} <title>Movie Preview - Reeliz </title>
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='styles/img/logo.png') }}">
-<link rel="stylesheet" href="{{ url_for( 'static', filename='styles/modal.css')}}" />
 <link rel="stylesheet" href="{{ url_for( 'static', filename='styles/detail.css')}}" />
 <link rel="stylesheet" href="{{ url_for( 'static', filename='styles/layout-seat.css')}}" />
 <link rel="stylesheet"
@@ -11,10 +10,10 @@
 
 {% block body %}
 <!-- Movie Detail Section -->
-<section class="movie-detail py-5"
+<section class="movie-detail py-5 d-flex align-items-center min-vh-100 overflow-hidden position-relative"
   style="--poster-url: url('https://image.tmdb.org/t/p/original{{ movie.poster_path }}');">
-  <div class="movie-overlay"></div>
-  <div class="container position-relative">
+  <div class="movie-overlay position-absolute z-1 bg-dark bg-opacity-75" style="inset: 0;"></div>
+  <div class="container position-relative z-3">
     <div class="row align-items-center g-5">
       <div class="col-md col-lg-4 col-xl-3 collgfadeInUp d-flex justify-content-center">
         <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}"
@@ -79,6 +78,6 @@
   </div>
 </div>
 
-<script src="{{ url_for('static', filename='js/components/detail.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/components/detail.js') }}"></script>
 
 {% endblock %}
