@@ -2,14 +2,15 @@
 @import url("https://fonts.googleapis.com/css2?family=Cossette+Texte&display=swap");
 /* HEADERS */
 h1,
-h3{
+h3 {
   font-family: "Oswald", serif;
 }
 
 /* ICON STYLE */
 .feature-item {
   transition: transform 0.5s ease, box-shadow 0.3s ease;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
 
 .feature-item:hover {
@@ -43,31 +44,125 @@ h3{
 }
 
 /* ANIMATION DELAYS */
-.main-header, .intro {
+.main-header,
+.intro {
   animation-delay: 0.3s;
 }
 
 @media (max-width: 768px) {
   /* Center the whole list */
   .col-md ul {
-    padding-left: 0;   
-    margin: 0 auto;  
+    padding-left: 0;
+    margin: 0 auto;
   }
 
   .feature-item {
-    width: 100%;             
-    max-width: 400px;        
-    margin: 0 auto;           
-    flex-direction: column;  
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    flex-direction: column;
     align-items: center;
     text-align: center;
   }
-    .col-md.mb-4 {
-    text-align: center;       /* center heading + paragraph */
+  .col-md.mb-4 {
+    text-align: center; /* center heading + paragraph */
   }
 
   .col-md.mb-4 .btn {
-    display: inline-block;    /* button doesn't stretch full width */
-    margin: 10px auto 0;      /* center button horizontally */
+    display: inline-block; /* button doesn't stretch full width */
+    margin: 10px auto 0; /* center button horizontally */
   }
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.main-header {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.intro {
+  font-size: 1.1rem;
+  max-width: 800px;
+  margin: 0 auto 1.5rem;
+  line-height: 1.6;
+}
+
+.about-section.hero {
+  min-height: 90vh;
+}
+
+.about-section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  left: 50%;
+  right: 50%;
+  transform: translateX(-50%);
+  background: url("img/aboutbg.jpg") center center / cover no-repeat;
+  background-attachment: scroll;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.about-overlay {
+  background: rgba(0, 0, 0, 0.637);
+  padding: 110px 0;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.features-container {
+  position: relative;
+  z-index: 2; /* ✅ sits above about-section */
+  background-color: #f8f9fa;
+  margin-top: 100vh; /* pushes it right below the hero */
+  transition: transform 0.5s ease-out;
+}
+
+.about-overlay {
+  background: rgba(0, 0, 0, 0.637);
+  padding: 110px 0;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.about-overlay.fade-out {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+.features-container {
+  position: relative;
+  z-index: 2;
+  background-color: #f8f9fa;
+  margin-top: 0; /* Changed from 100vh */
+  opacity: 0;
+  transform: translateY(0); /* Changed from translateY(50px) */
+  transition: opacity 0.8s ease-out;
+}
+
+.features-container.fade-in {
+  opacity: 1;
+  transform: translateY(0);
 }
