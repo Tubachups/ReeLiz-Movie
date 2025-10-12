@@ -1,19 +1,12 @@
 .screen {
-  position: relative;
   width: 65%;
-  height: 20px;
-  margin: 0 auto 30px auto;
   background: linear-gradient(
     to right,
     #00c6ff,
     #0073ffcb
   ); /* glowing effect */
   border-radius: 50% / 100%; /* curve */
-  text-align: center;
-  color: white;
-  font-weight: bold;
   letter-spacing: 3px;
-  line-height: 20px;
   box-shadow: 0 0 15px rgba(0, 114, 255, 0.6);
 }
 
@@ -41,24 +34,16 @@
 }
 .legend-seat.selected {
   background: #ffeb3b;
+
 }
 
 /* Real seats */
 .seat {
   width: 45px;
   height: 45px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
   transition: 0.2s;
   user-select: none;
-  outline: none;
-  font-size: 14px;
-  font-weight: bold;
   color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 /* Seat states */
@@ -75,33 +60,12 @@
 
 /* Hover only on selected seats */
 .selected:hover {
-  background: #ffeb3b;
+  background: #ffeb3ba2;
 }
 
 /* Hover only on vacant seats */
 .vacant:hover {
   background: #66bb6a;
-}
-
-.seats {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
-}
-
-.seat-layout .row {
-  display: flex;
-  gap: 35px; /* aisle spacing */
-}
-
-.side,
-.middle {
-  display: flex;
-  gap: 10px;
-}
-.seat:focus {
-  outline: none;
 }
 
 .seat-layout-wrapper {
@@ -111,39 +75,6 @@
 
 .seat-layout {
   min-width: 500px;
-  display: inline-block;
-}
-
-.seat-row {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-/* Cinema Carousel Styling */
-#cinemaCarousel {
-  position: relative;
-  padding: 20px 0;
-}
-
-#cinemaCarousel .carousel-control-prev,
-#cinemaCarousel .carousel-control-next {
-  width: 5%;
-  opacity: 0.8;
-  transition: opacity 0.3s ease;
-}
-
-#cinemaCarousel .carousel-control-prev:hover,
-#cinemaCarousel .carousel-control-next:hover {
-  opacity: 1;
-}
-
-#cinemaCarousel .carousel-control-prev-icon,
-#cinemaCarousel .carousel-control-next-icon {
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 50%;
-  padding: 20px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 #cinemaCarousel .carousel-control-prev-icon:hover,
@@ -152,23 +83,3 @@
   transform: scale(1.1);
 }
 
-#cinemaCarousel .carousel-indicators {
-  margin-bottom: 1rem;
-}
-
-#cinemaCarousel .carousel-indicators button {
-  background-color: #0073ff;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-#cinemaCarousel .carousel-indicators button:hover {
-  background-color: #0056b3;
-  transform: scale(1.2);
-}
-
-#cinemaCarousel .carousel-indicators button.active {
-  background-color: #003d80;
-}
