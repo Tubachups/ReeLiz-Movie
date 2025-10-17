@@ -1,57 +1,7 @@
-function generateDates() {
-  const dateStrip = document.getElementById("date-strip");
-  const today = new Date();
-
-  for (let i = 0; i < 7; i++) {
-    const date = new Date();
-    date.setDate(today.getDate() + i);
-
-    const month = date.toLocaleString("default", { month: "short" });
-    const day = date.toLocaleString("default", { weekday: "short" });
-    const num = date.getDate();
-
-    const div = document.createElement("div");
-    div.classList.add("date-pill");
-    if (i === 0) div.classList.add("selected"); // default today
-
-    div.innerHTML = `
-      <div class="date-month">${month}</div>
-      <div class="date-num">${num}</div>
-      <div class="date-day">${day}</div>
-    `;
-
-    div.addEventListener("click", () => {
-      // Remove selected class from all dates first
-      document
-        .querySelectorAll(".date-pill")
-        .forEach((d) => d.classList.remove("selected"));
-      // Add selected class to clicked date
-      div.classList.add("selected");
-      // Update ticket info AFTER the DOM has been updated
-      updateTicketInfo(); 
-    });
-
-    dateStrip.appendChild(div);
-  }
-}
-
-// Cancel button redirect
-document.getElementById("CancelBtn").addEventListener("click", function() {
-  window.location.href = "#"; // or handle data-page="now" logic here
-});
-
-// Show payment modal when Proceed is clicked
-document.getElementById("ProceedBtn").addEventListener("click", function () {
-  var paymentModal = new bootstrap.Modal(document.getElementById("paymentModal"), {
-    backdrop: 'static',
-    keyboard: false
-  });
-  paymentModal.show();
-});
+import { generateDates } from '../utils/dateUtils.js';
+import { updateTicketInfo } from '../services/updateTicketInfo.js';
 
 document.addEventListener("DOMContentLoaded", () => {
-  generateDates();
-
   const BASE_PRICE = 300;
   const seats = document.querySelectorAll(".seat");
   const selectedSeatsEl = document.getElementById("selected-seats");
@@ -67,66 +17,77 @@ document.addEventListener("DOMContentLoaded", () => {
   // proceed button
   const proceedBtn = document.getElementById("ProceedBtn");
 
-  // Make updateTicketInfo globally accessible
-  window.updateTicketInfo = function updateTicketInfo() {
-    const selectedSeats = document.querySelectorAll(".seat.selected");
-    const seatNumbers = Array.from(selectedSeats).map(
-      (seat) => seat.textContent
-    );
+  // Cancel button
+  const cancelBtn = document.getElementById("CancelBtn");
 
-    // Seats info
-    selectedSeatsEl.textContent =
-      seatNumbers.length > 0 ? seatNumbers.join(", ") : "None";
-    seatCountEl.textContent = seatNumbers.length;
-    seatQuantityEl.textContent = seatNumbers.length;
+  // Book Now button
+  const bookNowBtn = document.getElementById("bookNowBtn");
+  const bookingSection = document.querySelector(".booking-section");
 
-    // only update new panel
-    seatQuantityPanelEl.textContent = seatNumbers.length;
-    totalCostPanelEl.textContent = seatNumbers.length * BASE_PRICE;
+  // Bundle all elements needed by updateTicketInfo
+  const elements = {
+    selectedSeatsEl,
+    seatCountEl,
+    seatQuantityEl,
+    seatQuantityPanelEl,
+    totalCostPanelEl,
+    proceedBtn,
+    dateTimeEl,
+    showtimeSelect
+  };
 
-    // Enable / disable proceed button
-    proceedBtn.disabled = seatNumbers.length === 0;
+  // Create a wrapper function to call updateTicketInfo with the required parameters
+  const update = () => updateTicketInfo(elements, BASE_PRICE);
 
-    // Date + time info
-    const selectedDate = document.querySelector(".date-pill.selected");
-    const showtime = showtimeSelect ? showtimeSelect.value : "";
-    if (selectedDate) {
-      const month = selectedDate.querySelector(".date-month").textContent;
-      const num = selectedDate.querySelector(".date-num").textContent;
-      const day = selectedDate.querySelector(".date-day").textContent;
-      dateTimeEl.textContent = `${month} ${num} (${day}), ${showtime}`;
-    } else {
-      dateTimeEl.textContent = "Not selected";
-    }
-  }
+  // Generate dates with callback
+  generateDates(update);
 
   // Toggle seat selection
   seats.forEach((seat) => {
     seat.addEventListener("click", () => {
-      if (seat.classList.contains("occupied")) return; 
+      if (seat.classList.contains("occupied")) return;
       seat.classList.toggle("selected");
       seat.classList.toggle("vacant");
-      updateTicketInfo();
+      update();
     });
   });
 
+  // Showtime select change
   if (showtimeSelect) {
-    showtimeSelect.addEventListener("change", updateTicketInfo);
+    showtimeSelect.addEventListener("change", update);
   }
 
-  updateTicketInfo();
-});
+  // Cancel button redirect
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", function () {
+      window.location.href = "#"; // or handle data-page="now" logic here
+    });
+  }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const bookNowBtn = document.getElementById("bookNowBtn");
-  const bookingSection = document.querySelector(".booking-section");
+  // Show payment modal when Proceed is clicked
+  if (proceedBtn) {
+    proceedBtn.addEventListener("click", function () {
+      var paymentModal = new bootstrap.Modal(
+        document.getElementById("paymentModal"),
+        {
+          backdrop: "static",
+          keyboard: false,
+        }
+      );
+      paymentModal.show();
+    });
+  }
 
+  // Book Now button functionality
   if (bookNowBtn && bookingSection) {
     bookNowBtn.addEventListener("click", () => {
-      
-      bookingSection.classList.add("visible");
-
+      bookingSection.classList.add("d-block");
+      bookingSection.classList.remove("d-none");
+      bookingSection.style.transofrm = "translateY(0)";
       bookingSection.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
+
+  // Initial update
+  update();
 });
