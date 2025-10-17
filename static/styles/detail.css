@@ -59,9 +59,8 @@
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(to bottom, #212529 1%, transparent 10%), 
-    linear-gradient(to bottom, transparent 75%, #ffffff 100%); 
+  background: linear-gradient(to bottom, #212529 1%, transparent 10%),
+    linear-gradient(to bottom, transparent 75%, #ffffff 100%);
   z-index: 2;
   pointer-events: none;
 }
