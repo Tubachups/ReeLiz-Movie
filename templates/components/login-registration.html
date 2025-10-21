@@ -1,0 +1,84 @@
+<!-- Authentication Modal -->
+<div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <div class="d-flex w-100 justify-content-around">
+          <h5 class="auth-tab active" id="loginTab">Login</h5>
+          <h5 class="auth-tab" id="signupTab">Sign Up</h5>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Login Form -->
+        <form id="loginForm" class="auth-form active">
+          <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">Email address</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+            <label for="floatingPassword">Password</label>
+          </div>
+          <div class="mb-3 form-check mb-3">
+            <input type="checkbox" class="form-check-input" id="rememberMe">
+            <label class="form-check-label" for="rememberMe">Remember me</label>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Login</button>
+          <div class="text-center mt-3">
+            <a href="#" class="text-decoration-none">Forgot password?</a>
+          </div>
+        </form>
+
+        <!-- Signup Form -->
+        <form id="signupForm" class="auth-form">
+          <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">Username</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+            <label for="floatingPassword">Email</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+            <label for="floatingInput">Password</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+            <label for="floatingPassword">Confirm Password</label>
+          </div>
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="termsCheck" required>
+            <label class="form-check-label" for="termsCheck">I agree to the terms and conditions</label>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  const loginTab = document.getElementById('loginTab');
+  const signupTab = document.getElementById('signupTab');
+  const loginForm = document.getElementById('loginForm');
+  const signupForm = document.getElementById('signupForm');
+
+  function activateTab(activeTab, inactiveTab, activeForm, inactiveForm) {
+    activeTab.classList.add('active');
+    inactiveTab.classList.remove('active');
+    activeForm.classList.add('active');
+    inactiveForm.classList.remove('active');
+  }
+
+  loginTab.addEventListener('click', () => {
+    activateTab(loginTab, signupTab, loginForm, signupForm);
+  });
+
+  signupTab.addEventListener('click', () => {
+    activateTab(signupTab, loginTab, signupForm, loginForm);
+  });
+
+</script>
