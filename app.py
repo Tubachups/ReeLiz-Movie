@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request, redirect, url_for
 from livereload import Server
 from dotenv import load_dotenv
 import api
@@ -46,6 +46,35 @@ def movie_detail(movie_id):
         return render_template("pages/detail.html", **movie_data)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        remember = request.form.get('remember')
+        
+        # Add your login logic here
+        # Authenticate user, create session, etc.
+        
+        return redirect(url_for('landing'))
+    
+    return render_template('pages/login.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        
+        # Add your signup logic here
+        # Validate passwords match, create user account, etc.
+        
+        return redirect(url_for('pages/login'))
+    
+    return render_template('pages/signup.html')
 
 
 if __name__ == "__main__":

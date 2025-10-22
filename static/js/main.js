@@ -10,12 +10,7 @@ document.querySelectorAll("[data-page]").forEach((link) => {
   link.addEventListener("click", (e) => {
     e.preventDefault();
     const page = link.dataset.page;
-
-    if (window.location.pathname !== "/") {
-      window.location.href = `/?page=${page}`;
-    } else {
-      loadMovies(page);
-    }
+    window.location.href = `/?page=${page}`;
   });
 });
 
