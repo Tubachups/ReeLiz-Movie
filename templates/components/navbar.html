@@ -7,26 +7,6 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }
-
-  .auth-tab {
-    cursor: pointer;
-    padding: 10px 20px;
-    border-bottom: 3px solid transparent;
-    transition: all 0.3s;
-  }
-
-  .auth-tab.active {
-    border-bottom-color: #0d6efd;
-    color: #0d6efd;
-  }
-
-  .auth-form {
-    display: none;
-  }
-
-  .auth-form.active {
-    display: block;
-  }
 </style>
 
 <nav class="navbar navbar-expand-md bg-dark " data-bs-theme="dark">
@@ -53,7 +33,7 @@
           </ul>
         </li>
         <li class="nav-item me-1 me-lg-4">
-          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#authModal">
+          <a class="nav-link" href="{{ url_for('login') }}">
             <i class="fa-solid fa-user"></i> Log-In
           </a>
         </li>
@@ -64,7 +44,5 @@
     </div>
   </div>
 </nav>
-
-{% include "components/login-registration.html" %}
 
 <script src="{{ url_for('static', filename='js/utils/searchFilter.js') }}"></script>
