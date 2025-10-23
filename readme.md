@@ -209,10 +209,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Flask](https://flask.palletsprojects.com/) for the web framework
 - [Bootstrap](https://getbootstrap.com/) for UI components
 
-## 📧 Contact
-
-Project Link: [https://github.com/yourusername/reeliz](https://github.com/yourusername/reeliz)
-
 ---
 
 Made with ❤️ by OGAY
