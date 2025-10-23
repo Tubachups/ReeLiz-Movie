@@ -15,17 +15,27 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Transistion height
+// Transition height
 const tabContent = document.getElementById('authTabsContent');
 const tabs = document.querySelectorAll('#authTabs button');
 const imageContainer = document.querySelector('.auth-image-container');
+const card = document.querySelector('.card');
 
 function setTabHeight(activeTabId) {
   const activePane = document.querySelector(activeTabId);
-  const height = activePane.scrollHeight;
+  if (!activePane || !tabContent) return;
 
-  tabContent.style.height = height + 'px';
-  imageContainer.style.height = height + 'px';
+  const contentHeight = activePane.scrollHeight;
+
+  tabContent.style.height = contentHeight + 'px';
+
+  if (imageContainer && card) {
+    const currentContentHeight = tabContent.clientHeight || tabContent.offsetHeight || 0;
+    const delta = contentHeight - currentContentHeight;
+    const predictedCardHeight = Math.max(0, card.offsetHeight + delta);
+
+    imageContainer.style.height = predictedCardHeight + 'px';
+  }
 }
 
 window.addEventListener('load', () => {

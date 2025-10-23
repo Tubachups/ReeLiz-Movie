@@ -3,7 +3,31 @@ body {
   background: linear-gradient(rgba(0, 0, 0, 0.819), rgba(0, 0, 0, 0.844)),
     /* dark overlay */ url("img/login1.jpg") center/cover no-repeat;
   min-height: 100vh;
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out forwards;
   color: #fff;
+}
+
+.card,
+.auth-image-container {
+  opacity: 0;
+  animation: fadeIn 0.8s ease-in-out forwards;
+}
+
+.auth-image-container {
+  animation-delay: 0.15s;
+}
+
+/* Define fade-in keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 
@@ -44,8 +68,8 @@ body {
   border: none !important;
 }
 
-/* Card shadow for clarity */
 .card {
+  height: fit-content;
   background-color: white !important;
   border: none;
   border-top-left-radius: 0.9rem;   
@@ -57,15 +81,95 @@ body {
 
 .auth-image-container {
   width: 100%;
-  height: 1500px; /* initial image height */
+  height: auto;
+  min-height: 400px;
   transition: height 0.35s ease;
   background-image: url("img/login1.jpg");
   background-size: cover;
   background-position: center;
-  border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
   overflow: hidden;
 }
+
+/* GHOST BUTTON (expands from center) */
+.btn-ghost {
+  position: relative;
+  display: inline-block;
+  border: 2px solid #212529;
+  color: #212529 !important; 
+  background: transparent;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  overflow: hidden;
+  transition: color 0.4s ease, box-shadow 0.3s ease;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  z-index: 1;
+}
+
+.btn-ghost::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0%;
+  height: 100%;
+  background: #212529;
+  transform: translateX(-50%);
+  transition: all 0.4s ease;
+  z-index: -1; 
+}
+
+.btn-ghost:hover::before {
+  width: 100%;
+}
+
+.btn-ghost:hover {
+  color: white !important;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+}
+.text-center a {
+  color: rgb(53, 100, 210);
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.text-center a:hover {
+  color: #15426e;
+  text-decoration: underline;
+}
+.btn-link {
+  color: #212529 !important;
+  font-weight: 400;
+  text-decoration: none !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px; 
+  transition: color 0.3s ease;
+}
+
+.btn-link i,
+.btn-link span {
+  transition: transform 0.3s ease;
+}
+
+.btn-link:hover i {
+  transform: translateX(-5px);
+}
+
+.btn-link:hover span {
+  transform: translateX(4px);
+}
+
+.form-check-input:checked {
+  background-color: black;
+  border-color: black;
+}
+
+.form-check-input:focus {
+  border-color: black;
+}
+
 
 
 
