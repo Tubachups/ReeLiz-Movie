@@ -7,20 +7,24 @@
 
 {% block body %}
 <div class="container py-5">
-  <div class="row justify-content-center align-items-center min-vh-100">
+  <div class="row justify-content-center align-items-center min-vh-100 g-0">
 
     <!-- Login / Signup Container (Left Side) -->
     <div class="col-md-6 col-lg-5">
       <div class="card shadow-lg">
         <!-- Tabs on top (flush to top edge of card) -->
+
+        <!-- Tabs on top-->
         <ul class="nav nav-tabs nav-fill" id="authTabs" role="tablist" style="margin-bottom: 0;">
           <li class="nav-item" role="presentation">
+            <!-- Login tab-->
             <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button"
               role="tab" aria-controls="login" aria-selected="true">
               <i class="fa-solid fa-right-to-bracket me-1"></i> Login
             </button>
           </li>
           <li class="nav-item" role="presentation">
+            <!-- Sign up tab-->
             <button class="nav-link" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup" type="button"
               role="tab" aria-controls="signup" aria-selected="false">
               <i class="fa-solid fa-user-plus me-1"></i> Sign Up
