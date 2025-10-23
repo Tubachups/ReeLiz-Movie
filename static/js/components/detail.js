@@ -78,6 +78,49 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // When user clicks Proceed inside the first payment modal, open payment method modal
+  const paymentModalProceedBtn = document.getElementById('paymentModalProceedBtn');
+  if (paymentModalProceedBtn) {
+    paymentModalProceedBtn.addEventListener('click', function () {
+      // Hide the first modal
+      var first = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
+      if (first) first.hide();
+
+      // Show payment method modal
+      var methodModal = new bootstrap.Modal(document.getElementById('paymentMethodModal'), { backdrop: 'static', keyboard: false });
+      methodModal.show();
+    });
+  }
+
+  // Payment method selection logic
+  const paymentOptions = document.querySelectorAll('.payment-option');
+  const confirmPaymentBtn = document.getElementById('confirmPaymentBtn');
+  let selectedPayment = null;
+
+  paymentOptions.forEach((opt) => {
+    opt.addEventListener('click', () => {
+      // toggle selection
+      paymentOptions.forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      selectedPayment = opt.getAttribute('data-method');
+      if (confirmPaymentBtn) confirmPaymentBtn.removeAttribute('disabled');
+    });
+  });
+
+  if (confirmPaymentBtn) {
+    confirmPaymentBtn.addEventListener('click', () => {
+      // You can replace this with real checkout flow
+      console.log('User selected payment method:', selectedPayment);
+      // Close payment method modal
+      var method = bootstrap.Modal.getInstance(document.getElementById('paymentMethodModal'));
+      if (method) method.hide();
+      // Optionally show a success toast or redirect
+      // For now, show the original paymentModal again as confirmation (or redirect to payment)
+      var successModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+      successModal.show();
+    });
+  }
+
   // Book Now button functionality
   if (bookNowBtn && bookingSection) {
     bookNowBtn.addEventListener("click", () => {

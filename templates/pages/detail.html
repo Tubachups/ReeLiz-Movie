@@ -1,7 +1,7 @@
 {% extends './components/base.html' %}
 
 {% block head %} <title>Movie Preview - Reeliz </title>
-<link rel="icon" type="image/png" href="{{ url_for('static', filename='styles/img/logo.png') }}">
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='styles/img/logo3.png') }}">
 <link rel="stylesheet" href="{{ url_for( 'static', filename='styles/detail.css')}}" />
 <link rel="stylesheet" href="{{ url_for( 'static', filename='styles/layout-seat.css')}}" />
 <link rel="stylesheet"
@@ -43,9 +43,10 @@
           <p><strong>Writers:</strong> {{ writers | join(', ') if writers else 'N/A' }}</p>
         </div>
 
-        <button id="bookNowBtn" class="btn btn-primary mt-1 px-4 py-2 rounded-3">
-          Book Now
-        </button>
+          <button id="bookNowBtn" class="btn btn-primary mt-1 rounded-3">
+            <span class="btn-text">Book Now</span>
+            <i class="fa-solid fa-calendar-days btn-icon"></i>
+          </button>
       </div>
     </div>
   </div>
@@ -71,13 +72,47 @@
       </div>
 
       <div class="modal-footer border-0 d-flex justify-content-center gap-3">
-        <button type="button" class="btn btn-primary">Proceed</button>
+        <button type="button" class="btn btn-primary" id="paymentModalProceedBtn">Proceed</button>
         <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
+ 
+<!-- Payment Method Modal (Bank / GCash) -->
+<div class="modal fade" id="paymentMethodModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title d-flex align-items-center gap-2" id="paymentMethodModalLabel">
+          <span class="material-symbols-outlined"></span>
+          Choose Payment Method
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
 
+      <div class="modal-body text-center">
+        <p>Please select a payment method:</p>
+        <div class="d-flex gap-3 justify-content-center align-items-center flex-wrap">
+          <button type="button" class="payment-option btn p-2 bg-transparent" data-method="bank" aria-pressed="false">
+            <img src="{{ url_for('static', filename='styles/img/bank.png') }}" alt="Bank" class="img-fluid" style="max-width:60px;" />
+            <div class="mt-2">Bank</div>
+          </button>
+
+          <button type="button" class="payment-option btn p-2 bg-transparent" data-method="gcash" aria-pressed="false">
+            <img src="{{ url_for('static', filename='styles/img/Gcashlogo.png') }}" alt="GCash" class="img-fluid" style="max-width:60px;" />
+            <div class="mt-2">GCash</div>
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 d-flex justify-content-center gap-3">
+        <button type="button" class="btn btn-primary" id="confirmPaymentBtn" disabled>Confirm Payment</button>
+        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script type="module" src="{{ url_for('static', filename='js/components/detail.js') }}"></script>
 
 {% endblock %}
