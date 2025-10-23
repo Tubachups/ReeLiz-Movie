@@ -1,0 +1,50 @@
+body {
+  /* same image as the side container */
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), /* dark overlay */
+    url("../img/login1.png") center/cover no-repeat;
+  min-height: 100vh;
+  color: #fff;
+}
+
+
+/* Remove all borders from tab container */
+.nav-tabs {
+  border: none !important;
+}
+
+/* Remove all borders from each tab button */
+.nav-tabs .nav-link {
+  border: none !important;
+  border-radius: 0 !important;
+  background-color: #212529;
+  color: white !important;
+  position: relative;
+  transition: top 0.25s ease;
+}
+
+/* Lift on hover */
+.nav-tabs .nav-link:hover {
+  top: -0.25rem;
+transition: all 0.35s;
+}
+
+/* Active tab style */
+.nav-tabs .nav-link.active {
+  background-color: white !important;
+  color: black !important;
+  top: 0;
+  border: none !important;
+    transition: all 0.35s;
+}
+
+.auth-image-container {
+  width: 100%;
+  min-height: 100vh;  /* or a fixed value like 500px */
+  background-image: url("../img/login1.png");
+  background-size: cover;
+  background-position: center;
+  border-radius: 0.5rem;
+}
+
+

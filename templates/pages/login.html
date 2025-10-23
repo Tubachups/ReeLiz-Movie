@@ -1,51 +1,100 @@
 {% extends './components/base.html' %}
 
 {% block head %}
-<title>Login - ReeLiz</title>
+<title>ReeLiz - Login / Sign Up</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/auth.css') }}">
 {% endblock %}
 
 {% block body %}
-
-<div class="container">
+<div class="container py-5">
   <div class="row justify-content-center align-items-center min-vh-100">
-    <div class="col-md-6 col-lg-4">
+
+    <!-- Login / Signup Container (Left Side) -->
+    <div class="col-md-6 col-lg-5">
       <div class="card shadow-lg">
-        <div class="card-body p-5">
-          <div class="text-center mb-4">
-            <h2 class="fw-bold">ReeLiz</h2>
-            <p class="text-muted">Welcome back!</p>
+        <!-- Tabs on top (flush to top edge of card) -->
+        <ul class="nav nav-tabs nav-fill" id="authTabs" role="tablist" style="margin-bottom: 0;">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button"
+              role="tab" aria-controls="login" aria-selected="true">
+              <i class="fa-solid fa-right-to-bracket me-1"></i> Login
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup" type="button"
+              role="tab" aria-controls="signup" aria-selected="false">
+              <i class="fa-solid fa-user-plus me-1"></i> Sign Up
+            </button>
+          </li>
+        </ul>
+
+        <div class="card-body px-4 pb-4 pt-3">
+          <!-- ReeLiz Title below Tabs -->
+          <div class="text-center mb-3">
+            <h2 class="fw-bold mb-1">ReeLiz</h2>
+            <p class="text-muted" id="tabSubtitle">Welcome back!</p>
           </div>
 
-          <form id="loginForm" method="POST" action="{{ url_for('login') }}">
-            <div class="form-floating mb-3">
-              <input type="email" class="form-control" id="loginEmail" name="email" placeholder="name@example.com"
-                required>
-              <label for="loginEmail"><i class="bi bi-envelope-at-fill me-1"></i> Email</label>
-            </div>
-            <div class="form-floating mb-3">
-              <input type="password" class="form-control" id="loginPassword" name="password" placeholder="Password"
-                required>
-              <label for="loginPassword"><i class="fa-solid fa-lock me-2"></i> Password</label>
-            </div>
-            <div class="mb-3 form-check">
-              <input type="checkbox" class="form-check-input" id="rememberMe" name="remember">
-              <label class="form-check-label" for="rememberMe">Remember me</label>
-            </div>
-            <button type="submit" class="btn btn-primary w-100 py-2">Login</button>
-          </form>
+          <!-- Tabs Content -->
+          <div class="tab-content" id="authTabsContent">
+            <!-- Login Tab -->
+            <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+              <form id="loginForm" method="POST" action="{{ url_for('login') }}">
+                <div class="form-floating mb-3">
+                  <input type="email" class="form-control" id="loginEmail" name="email"
+                    placeholder="name@example.com" required>
+                  <label for="loginEmail"><i class="bi bi-envelope-at-fill me-1"></i> Email</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="password" class="form-control" id="loginPassword" name="password" placeholder="Password"
+                    required>
+                  <label for="loginPassword"><i class="fa-solid fa-lock me-1"></i> Password</label>
+                </div>
+                <div class="mb-3 form-check">
+                  <input type="checkbox" class="form-check-input" id="rememberMe" name="remember">
+                  <label class="form-check-label" for="rememberMe">Remember me</label>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2">Login</button>
+              </form>
 
-          <div class="text-center mt-3">
-            <a href="#" class="text-decoration-none">Forgot password?</a>
+              <div class="text-center mt-3">
+                <a href="#" class="text-decoration-none">Forgot password?</a>
+              </div>
+            </div>
+
+            <!-- Sign Up Tab -->
+            <div class="tab-pane fade" id="signup" role="tabpanel" aria-labelledby="signup-tab">
+              <form id="signupForm" method="POST" action="{{ url_for('signup') }}">
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="signupUsername" name="username" placeholder="Username"
+                    required>
+                  <label for="signupUsername"><i class="fa-regular fa-user me-1"></i> Username</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="email" class="form-control" id="signupEmail" name="email"
+                    placeholder="name@example.com" required>
+                  <label for="signupEmail"><i class="bi bi-envelope-at-fill me-1"></i> Email</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="password" class="form-control" id="signupPassword" name="password" placeholder="Password"
+                    required>
+                  <label for="signupPassword"><i class="fa-solid fa-lock me-1"></i> Password</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="password" class="form-control" id="signupConfirmPassword" name="confirm_password"
+                    placeholder="Confirm Password" required>
+                  <label for="signupConfirmPassword"><i class="fa-solid fa-key me-1"></i> Confirm Password</label>
+                </div>
+                <div class="mb-3 form-check">
+                  <input type="checkbox" class="form-check-input" id="termsCheck" name="terms" required>
+                  <label class="form-check-label" for="termsCheck">I agree to the terms and conditions</label>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2">Sign Up</button>
+              </form>
+            </div>
           </div>
 
-          <hr class="my-4">
-
-          <div class="text-center">
-            <p class="mb-0">Don't have an account? <a href="{{ url_for('signup') }}"
-                class="text-decoration-none fw-bold">Sign Up</a></p>
-          </div>
-
-          <div class="text-center mt-3">
+          <div class="text-center mt-4">
             <a href="{{ url_for('landing') }}" class="btn btn-link text-decoration-none">
               <i class="fa-solid fa-arrow-left me-1"></i> Back to Home
             </a>
@@ -53,7 +102,15 @@
         </div>
       </div>
     </div>
+
+    <!-- Image Container (Right Side) -->
+    <div class="col-md-6 col-lg-5 d-none d-md-block">
+      <div class="auth-image-container"></div>
+    </div>
+
+
   </div>
 </div>
 
+<script src="{{ url_for('static', filename='js/components/auth.js') }}"></script>
 {% endblock %}
