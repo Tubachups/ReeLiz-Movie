@@ -182,16 +182,6 @@ This project is configured for deployment on [Render.com](https://render.com/).
 | `/api/genres` | GET | Get all movie genres |
 | `/api/movies/<type>` | GET | Get movies by type (popular, trending, top_rated) |
 
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
 ## 📝 Development Roadmap
 
 - [x] Movie browsing functionality
@@ -212,10 +202,6 @@ Contributions are welcome! Please follow these steps:
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👥 Authors
-
-- Your Name - Initial work
 
 ## 🙏 Acknowledgments
 
