@@ -48,5 +48,37 @@ function filterMoviesByGenre(genreId) {
   );
   renderMovies(filtered, genresMap);
 }
-
 init();
+ (function () {
+    const pageLinks = document.querySelectorAll('.nav-link[data-page]');
+    const genresDropdown = document.getElementById('genres-dropdown');
+
+    function clearActive() {
+      pageLinks.forEach(l => l.classList.remove('active'));
+    }
+
+    pageLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        clearActive();
+        link.classList.add('active');
+      });
+    });
+
+    // When a genre is selected, remove the active rectangle from page links.
+    if (genresDropdown) {
+      genresDropdown.addEventListener('click', (e) => {
+        const a = e.target.closest('a');
+        if (!a) return;
+        clearActive();
+      });
+    }
+
+    // set active based on URL ?page= value (falls back to "now")
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentPage = urlParams.get('page') || 'now';
+    const currentLink = document.querySelector(`.nav-link[data-page="${currentPage}"]`);
+    if (currentLink) {
+      clearActive();
+      currentLink.classList.add('active');
+    }
+  })();

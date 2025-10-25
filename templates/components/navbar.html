@@ -7,6 +7,32 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }
+   .dropdown-menu {
+    min-width: 275px;
+  }
+
+  .genres-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Active rectangle under page links */
+  .navbar { overflow: visible; } /* allow the rectangle to show outside if needed */
+  .nav-link.active {
+    position: relative;
+  }
+  .nav-link.active::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -6px;
+    width: 60%;
+    height: 6px;
+    background: #ffffff; /* bootstrap primary */
+    border-radius: 3px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.12);
+  }
 </style>
 
 <nav class="navbar navbar-expand-md bg-dark " data-bs-theme="dark">
