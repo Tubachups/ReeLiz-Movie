@@ -1,4 +1,5 @@
 <style>
+  
   .dropdown-menu {
     min-width: 275px;
   }
@@ -7,17 +8,8 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }
-   .dropdown-menu {
-    min-width: 275px;
-  }
 
-  .genres-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  /* Active rectangle under page links */
-  .navbar { overflow: visible; } /* allow the rectangle to show outside if needed */
+  .navbar { overflow: visible; } 
   .nav-link.active {
     position: relative;
   }
@@ -29,10 +21,18 @@
     bottom: -6px;
     width: 60%;
     height: 6px;
-    background: #ffffff; /* bootstrap primary */
+    background: #ffffff; 
     border-radius: 3px;
     box-shadow: 0 1px 0 rgba(0,0,0,0.12);
   }
+
+
+  @media (max-width: 767.98px) {
+    .nav-link.active::after { display: none !important; }
+    .nav-link.active { font-weight: 600; color: #ffffff !important; }
+  }
+
+  .navbar-collapse.show .nav-link.active::after { display: none; }
 </style>
 
 <nav class="navbar navbar-expand-md bg-dark " data-bs-theme="dark">
