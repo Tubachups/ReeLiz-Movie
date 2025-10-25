@@ -48,5 +48,44 @@ function filterMoviesByGenre(genreId) {
   );
   renderMovies(filtered, genresMap);
 }
-
 init();
+ (function () {
+    const pageLinks = document.querySelectorAll('.nav-link[data-page]');
+    const genresDropdown = document.getElementById('genres-dropdown');
+
+    function clearActive() {
+      pageLinks.forEach(l => l.classList.remove('active'));
+    }
+
+    pageLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        clearActive();
+        link.classList.add('active');
+      });
+    });
+
+    // When a genre is selected, remove the active rectangle from page links.
+    if (genresDropdown) {
+      genresDropdown.addEventListener('click', (e) => {
+        const a = e.target.closest('a');
+        if (!a) return;
+        clearActive();
+      });
+    }
+
+    // Only set the active indicator when a ?page= query param is present.
+    // This prevents showing the rectangle on routes like the landing (navbar-brand) or /login.
+    const urlParams = new URLSearchParams(window.location.search);
+    const pageParam = urlParams.get('page');
+
+    if (pageParam) {
+      const currentLink = document.querySelector(`.nav-link[data-page="${pageParam}"]`);
+      if (currentLink) {
+        clearActive();
+        currentLink.classList.add('active');
+      }
+    } else {
+      // no page param -> ensure no page-link is active (landing / login / other pages)
+      clearActive();
+    }
+  })();
