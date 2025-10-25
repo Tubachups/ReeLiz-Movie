@@ -73,12 +73,19 @@ init();
       });
     }
 
-    // set active based on URL ?page= value (falls back to "now")
+    // Only set the active indicator when a ?page= query param is present.
+    // This prevents showing the rectangle on routes like the landing (navbar-brand) or /login.
     const urlParams = new URLSearchParams(window.location.search);
-    const currentPage = urlParams.get('page') || 'now';
-    const currentLink = document.querySelector(`.nav-link[data-page="${currentPage}"]`);
-    if (currentLink) {
+    const pageParam = urlParams.get('page');
+
+    if (pageParam) {
+      const currentLink = document.querySelector(`.nav-link[data-page="${pageParam}"]`);
+      if (currentLink) {
+        clearActive();
+        currentLink.classList.add('active');
+      }
+    } else {
+      // no page param -> ensure no page-link is active (landing / login / other pages)
       clearActive();
-      currentLink.classList.add('active');
     }
   })();
