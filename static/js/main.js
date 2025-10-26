@@ -49,6 +49,7 @@ function filterMoviesByGenre(genreId) {
   renderMovies(filtered, genresMap);
 }
 init();
+
  (function () {
     const pageLinks = document.querySelectorAll('.nav-link[data-page]');
     const genresDropdown = document.getElementById('genres-dropdown');
@@ -78,7 +79,7 @@ init();
     const urlParams = new URLSearchParams(window.location.search);
     const pageParam = urlParams.get('page');
 
-    if (pageParam) {
+   if (pageParam) {
       const currentLink = document.querySelector(`.nav-link[data-page="${pageParam}"]`);
       if (currentLink) {
         clearActive();
@@ -87,5 +88,20 @@ init();
     } else {
       // no page param -> ensure no page-link is active (landing / login / other pages)
       clearActive();
+    }
+
+    // highlight Login when we're on the login page (keeps other behavior unchanged)
+    if (location.pathname && location.pathname.toLowerCase().startsWith('/login')) {
+      const loginLink = Array.from(document.querySelectorAll('.nav-link')).find(l => {
+        const href = l.getAttribute('href');
+        if (!href) return false;
+        try {
+          const url = new URL(href, location.origin);
+          return url.pathname.toLowerCase().startsWith('/login');
+        } catch (e) {
+          return false;
+        }
+      });
+      if (loginLink) loginLink.classList.add('active');
     }
   })();
