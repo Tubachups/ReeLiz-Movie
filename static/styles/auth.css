@@ -78,24 +78,35 @@ body {
   background-color: #212529;
   color: rgb(255, 255, 255) !important;
   position: relative;
-  transition: top 0.25s ease, background-color 0.35s ease, color 0.35s ease;
+  transform: translateY(0);
+  will-change: transform;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transition: transform 0.25s ease, background-color 0.35s ease,
+    color 0.35s ease;
+  z-index: 1;
 }
 
+/* keep rounded left corner for first tab */
 .nav-tabs .nav-item:first-child .nav-link {
   border-top-left-radius: 0.4rem !important;
 }
 
+/* hover uses transform (no layout shift) and raises z-index so it doesn't get overlapped */
 .nav-tabs .nav-link:hover {
-  top: -0.25rem;
+  transform: translateY(-4px);
   background-color: #2d3338;
-  transition: all 0.35s ease;
+  transition: transform 0.25s ease, background-color 0.35s ease;
+  z-index: 3;
 }
 
+/* active tab stays flush (no translate), sits above others */
 .nav-tabs .nav-link.active {
   background-color: white !important;
   color: black !important;
-  top: 0;
+  transform: translateY(0);
   border: none !important;
+  z-index: 4;
 }
 
 .card {
