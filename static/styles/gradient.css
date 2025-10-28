@@ -10,12 +10,11 @@
   }
 
   .hero-header .btn:hover {
-    background-color: #343a40 !important; 
+    background-color: #343a40 !important;
   }
 }
 
 @media (max-width: 425px) {
-   
   .hero-header .fade-section {
     color: #212529 !important;
   }
@@ -27,7 +26,7 @@
   }
 
   .hero-header .btn:hover {
-    background-color: #343a40 !important; 
+    background-color: #343a40 !important;
   }
 }
 
@@ -45,15 +44,15 @@
 
 .hero-header {
   width: 100%;
-  min-height: 100vh; 
+  min-height: 100vh;
   background: linear-gradient(to bottom, #212529 20%, #fff);
   color: white;
   display: flex;
-  align-items: center; 
+  align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
-  padding-top: 4rem; 
+  padding-top: 4rem;
 }
 
 .hero-header img {
