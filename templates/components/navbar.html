@@ -23,11 +23,29 @@
 
           </ul>
         </li>
+        
+        {% if session.get('username') %}
+        <!-- Logged-in user dropdown -->
+        <li class="nav-item me-1 me-lg-4 dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="fa-solid fa-user"></i> {{ session.get('username') }}
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="{{ url_for('logout') }}">
+                <i class="fa-solid fa-right-from-bracket me-1"></i> Sign Out
+              </a>
+            </li>
+          </ul>
+        </li>
+        {% else %}
+        <!-- Not logged in -->
         <li class="nav-item me-1 me-lg-4">
           <a class="nav-link" href="{{ url_for('login') }}">
             <i class="fa-solid fa-user"></i> Log-In
           </a>
         </li>
+        {% endif %}
       </ul>
       <form class="d-flex" role="search">
         <input class="form-control me-2" id="search-input" type="search" placeholder="Search movies...">
