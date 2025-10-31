@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, session
 from livereload import Server
 from dotenv import load_dotenv
 import api
@@ -13,22 +13,26 @@ app.debug = True
 
 @app.route("/")
 def home():
-    return render_template("pages/index.html")
+    username = session.get('username')
+    return render_template("pages/index.html", username=username)
 
 
 @app.route("/about")
 def about():
-    return render_template("pages/about.html")
+    username = session.get('username')
+    return render_template("pages/about.html", username=username)
 
 
 @app.route("/contact")
 def contact():
-    return render_template("pages/contact.html")
+    username = session.get('username')
+    return render_template("pages/contact.html", username=username)
 
 
 @app.route("/landing")
 def landing():
-    return render_template("pages/landing.html")
+    username = session.get('username')
+    return render_template("pages/landing.html", username=username)
 
 
 @app.route("/api/genres")
