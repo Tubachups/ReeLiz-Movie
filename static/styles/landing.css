@@ -1,8 +1,16 @@
+/* GRADIENT CSS */
 /* Welcome Text in Hero */
+body {
+  background:black;
+
+}
+
+
 .welcome-text {
-  font-weight: 600;
+  font-weight: 250;
   font-size: 5rem;
   color: #fff !important;
+  font-family: 'Praise', sans-serif;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   animation: fadeIn 0.8s ease-out;
 }
@@ -27,7 +35,7 @@
 @media (max-width: 425px) {
   .welcome-text {
     font-size: 1.1rem;
-    color: #212529 !important;
+    color: #ffffff !important;
   }
 }
 
@@ -42,32 +50,11 @@
     min-height: 80vh;
     padding-top: 3rem;
   }
-  .hero-header .btn {
-    background-color: #212529 !important;
-    color: #fff !important;
-    border: none;
-  }
 
-  .hero-header .btn:hover {
-    background-color: #343a40 !important;
-  }
+
+
 }
 
-@media (max-width: 425px) {
-  .hero-header .fade-section {
-    color: #212529 !important;
-  }
-
-  .hero-header .btn {
-    background-color: #212529 !important;
-    color: #fff !important;
-    border: none;
-  }
-
-  .hero-header .btn:hover {
-    background-color: #343a40 !important;
-  }
-}
 
 .fade-section {
   opacity: 0;
@@ -82,21 +69,87 @@
 }
 
 .hero-header {
+  background-color: black;
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(to bottom, #212529 20%, #fff);
+  position: relative;
+  overflow: hidden;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  overflow: hidden;
   padding-top: 4rem;
 }
 
+/* multiple background layers for fading effect */
+.hero-header::before,
+.hero-header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: opacity 1s ease-in-out;
+  animation: bgFade 20s infinite;
+  z-index: 0;
+
+  /* 🔥 Gradient overlay to black at bottom */
+  background-image:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 1) 100%),
+    var(--bg-image);
+}
+.hero-header::before {
+  --bg-image: url("img/movie9.png");
+  animation-delay: 0s;
+}
+
+.hero-header::after {
+  --bg-image: url("img/movie1.jpg");
+  animation-delay: 10s;
+}
+
+/* fade animation */
+@keyframes bgFade {
+  0%, 45% {
+    opacity: 1;
+  }
+  50%, 95% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* overlay gradient above both images */
+.hero-header::after,
+.hero-header::before {
+  background-blend-mode: darken;
+}
+
+.hero-header .overlay {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.765) 0%,
+    rgba(0, 0, 0, 0.723) 90%,
+    rgb(0, 0, 0) 100%
+  );
+  z-index: 1;
+}
+
+.hero-header > .container {
+  position: relative;
+  z-index: 2;
+}
+
+
 .hero-header img {
   filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
-  max-height: 450px;
+  max-height: 500px;
 }
 
 header.fade-section {
@@ -113,4 +166,91 @@ header.fade-section {
 .features .card.visible {
   opacity: 1;
   transform: translateY(0);
+}
+.features {
+  background: black;
+  color: #fff; /* make text white for contrast */
+  padding: 4rem 0; /* keep breathing space top & bottom */
+  border-radius: 0; /* optional: make sure it spans full width */
+}
+
+/* Make sure the container spans full width */
+.features.container {
+  max-width: 100%;
+}
+
+/* Optional: card styling on black background */
+.features .card {
+  background-color: #1a1a1a; /* dark gray card */
+  border: none;
+  color: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.features .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+.features .card img {
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* FAQ title */
+section.fade-section h2 {
+  color: #fff !important;
+}
+
+
+/* Accordion dark theme */
+.accordion-item {
+  background-color: #111;
+  border: 1px solid #222;
+  color: #fff;
+}
+
+/* Button (header) */
+.accordion-button {
+  background-color: #1a1a1a !important;
+  color: #fff !important; /* ✅ force white text */
+  border: none !important;
+  box-shadow: none !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Remove Bootstrap's default background icon colors */
+.accordion-button::after {
+  filter: invert(1); /* ✅ make the arrow icon white */
+}
+
+/* When opened */
+.accordion-button:not(.collapsed) {
+  background-color: #222 !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+
+/* Hover effect */
+.accordion-button:hover {
+  background-color: #2a2a2a !important;
+  color: #fff !important;
+}
+
+/* Accordion body */
+.accordion-body {
+  background-color: #141414;
+  color: #ddd;
+  border-top: 1px solid #222;
+}
+
+/* Optional: remove default blue focus outline */
+.accordion-button:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Optional hover for accordion items */
+.accordion-item:hover {
+  background-color: #181818;
+  transition: background-color 0.3s ease;
 }
