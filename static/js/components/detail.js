@@ -124,9 +124,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // Close payment method modal
       var method = bootstrap.Modal.getInstance(document.getElementById('paymentMethodModal'));
       if (method) method.hide();
-      // Optionally show a success toast or redirect
-      // For now, show the original paymentModal again as confirmation (or redirect to payment)
-      var successModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+      
+      // Show success modal with animation
+      var successModal = new bootstrap.Modal(document.getElementById('successModal'));
       successModal.show();
     });
   }
