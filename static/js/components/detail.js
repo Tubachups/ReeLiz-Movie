@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // When user clicks Proceed inside the first payment modal, open payment method modal
+  // When user clicks Proceed inside the first payment modal, check if user is signed in
   const paymentModalProceedBtn = document.getElementById('paymentModalProceedBtn');
   if (paymentModalProceedBtn) {
     paymentModalProceedBtn.addEventListener('click', function () {
@@ -86,9 +86,19 @@ document.addEventListener("DOMContentLoaded", () => {
       var first = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
       if (first) first.hide();
 
-      // Show payment method modal
-      var methodModal = new bootstrap.Modal(document.getElementById('paymentMethodModal'), { backdrop: 'static', keyboard: false });
-      methodModal.show();
+      // Check if user is signed in
+      const authStatus = document.getElementById('userAuthStatus');
+      const isSignedIn = authStatus && authStatus.getAttribute('data-authenticated') === 'true';
+
+      if (!isSignedIn) {
+        // Show sign-in required modal
+        var signInModal = new bootstrap.Modal(document.getElementById('signInRequiredModal'), { backdrop: 'static', keyboard: false });
+        signInModal.show();
+      } else {
+        // Show payment method modal
+        var methodModal = new bootstrap.Modal(document.getElementById('paymentMethodModal'), { backdrop: 'static', keyboard: false });
+        methodModal.show();
+      }
     });
   }
 

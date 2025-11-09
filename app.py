@@ -48,8 +48,9 @@ def movies_route(movie_type):
 @app.route("/movie/<int:movie_id>")
 def movie_detail(movie_id):
     try:
+        username = session.get('username')
         movie_data = api.get_movie_details(movie_id)
-        return render_template("pages/detail.html", **movie_data)
+        return render_template("pages/detail.html", username=username, **movie_data)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
