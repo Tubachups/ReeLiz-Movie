@@ -9,6 +9,9 @@
 {% endblock %}
 
 {% block body %}
+<!-- Hidden element to check auth status -->
+<div id="userAuthStatus" data-authenticated="{% if username %}true{% else %}false{% endif %}" style="display: none;"></div>
+
 <!-- Movie Detail Section -->
 <section class="movie-detail py-5 d-flex align-items-center min-vh-100 overflow-hidden position-relative"
   style="--poster-url: url('https://image.tmdb.org/t/p/original{{ movie.poster_path }}');">
@@ -74,6 +77,32 @@
       <div class="modal-footer border-0 d-flex justify-content-center gap-3">
         <button type="button" class="btn btn-primary" id="paymentModalProceedBtn">Proceed</button>
         <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sign In Required Modal -->
+<div class="modal fade" id="signInRequiredModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title d-flex align-items-center gap-2" id="signInRequiredModalLabel">
+          Log In Required
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body text-center">
+        <h5 class="mb-3">You need to log in to continue with your booking.</h5>
+        <h3 class="text-muted small">Please log in or create an account to proceed to checkout.</h3>
+      </div>
+
+      <div class="modal-footer border-0 d-flex justify-content-center gap-3">
+        <a href="{{ url_for('login') }}" class="btn btn-primary">
+          <i class="fa-solid fa-right-to-bracket me-2"></i>log In
+        </a>
+        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
       </div>
     </div>
   </div>
