@@ -164,10 +164,40 @@
         </div>
         <h3 class="text-success mb-3">Payment Successful!</h3>
         <p class="text-muted mb-4">Your booking has been confirmed.</p>
-        <p class="small">You will receive a confirmation email shortly.</p>
+        <p class="small">Barcode: <strong id="transactionBarcode"></strong></p>
+        <p class="small">You will receive a invoice email shortly.</p>
       </div>
       <div class="modal-footer border-0 d-flex justify-content-center">
         <button type="button" class="btn btn-success px-5" data-bs-dismiss="modal">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Transaction Failed Modal -->
+<div class="modal fade" id="transactionFailedModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0 bg-danger text-white">
+        <h5 class="modal-title d-flex align-items-center gap-2" id="transactionFailedModalLabel">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          Transaction Failed
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body text-center py-4">
+        <div class="mb-4">
+          <i class="fa-solid fa-triangle-exclamation text-danger" style="font-size: 4rem;"></i>
+        </div>
+        <h4 class="text-danger mb-3">Transaction Could Not Be Completed</h4>
+        <p class="text-muted mb-2">We encountered an error while processing your transaction.</p>
+        <p class="text-muted small" id="transactionErrorMessage">Please try again or contact support if the issue persists.</p>
+      </div>
+
+      <div class="modal-footer border-0 d-flex justify-content-center gap-3">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Try Again</button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
       </div>
     </div>
   </div>
