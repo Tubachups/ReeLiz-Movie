@@ -238,6 +238,32 @@ def confirm_transaction():
             'message': f'Server error: {str(e)}'
         }), 500
 
+@app.route('/api/occupied-seats/<int:movie_id>/<cinema_room>', methods=['GET'])
+def get_occupied_seats(movie_id, cinema_room):
+    """Get occupied seats for a specific movie and cinema room (no date filtering)"""
+    try:
+        # Get movie title from movie_id
+        movie_data = api.get_movie_details(movie_id)
+        movie_title = movie_data['movie']['title']
+        
+        # Get occupied seats from database (without date)
+        occupied = database.get_occupied_seats(movie_title, cinema_room)
+        
+        return jsonify({
+            'success': True,
+            'occupied_seats': occupied,
+            'movie': movie_title,
+            'room': cinema_room
+        }), 200
+        
+    except Exception as e:
+        print(f"Error getting occupied seats: {e}")
+        return jsonify({
+            'success': False,
+            'message': str(e),
+            'occupied_seats': []
+        }), 500
+
 if __name__ == "__main__":
     server = Server(app.wsgi_app)
     server.serve(port=5500, host="127.0.0.1")
