@@ -45,6 +45,11 @@ def movies_route(movie_type):
     return api.get_movies(movie_type)
 
 
+@app.route("/api/movie/<int:movie_id>/schedule")
+def movie_schedule(movie_id):
+    return api.get_movie_schedule_api(movie_id)
+
+
 @app.route("/movie/<int:movie_id>")
 def movie_detail(movie_id):
     try:
