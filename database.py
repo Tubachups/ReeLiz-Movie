@@ -123,6 +123,52 @@ def insert_transaction_with_barcode(transaction_id, date, name, room, movie, sit
         if connection and connection.is_connected():
             connection.close()
 
+def get_occupied_seats(movie_title, cinema_room):
+    """
+    Get all occupied seats for a specific movie and cinema room (without date filtering)
+    Returns: list of seat codes (e.g., ['A1', 'A2', 'B3'])
+    """
+    connection = None
+    cursor = None
+    
+    try:
+        connection = get_db_connection()
+        if not connection:
+            return []
+        
+        cursor = connection.cursor()
+        
+        # Query to get all seats for matching movie and room (no date filter)
+        query = """
+        SELECT sits FROM transaction 
+        WHERE movie = %s AND room = %s
+        """
+        
+        cursor.execute(query, (movie_title, cinema_room))
+        results = cursor.fetchall()
+        
+        # Collect all seats from all transactions
+        occupied_seats = []
+        for row in results:
+            sits_str = row[0]  # Format: "A1, A2, B3" or "A3, A4, A6"
+            if sits_str:
+                # Split by comma and strip whitespace
+                seats = [seat.strip() for seat in sits_str.split(',')]
+                occupied_seats.extend(seats)
+        
+        print(f"Occupied seats for '{movie_title}' in Cinema {cinema_room}: {occupied_seats}")
+        return occupied_seats
+        
+    except Error as e:
+        print(f"Database error in get_occupied_seats: {e}")
+        return []
+        
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
 def format_datetime_for_db():
     """
     Format current datetime as MM/DD:HH

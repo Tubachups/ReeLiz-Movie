@@ -38,6 +38,89 @@ document.addEventListener("DOMContentLoaded", () => {
   // Create a wrapper function to call updateTicketInfo with the required parameters
   const update = () => updateTicketInfo(elements, BASE_PRICE);
 
+  // Store occupied seats data for both cinemas
+  const occupiedSeatsCache = {
+    '1': [],
+    '2': []
+  };
+
+  // Function to fetch occupied seats for a specific cinema
+  async function fetchOccupiedSeats(cinemaRoom) {
+    try {
+      const movieId = window.location.pathname.split('/').pop();
+      const response = await fetch(`/api/occupied-seats/${movieId}/${cinemaRoom}`);
+      const data = await response.json();
+      
+      if (data.success && data.occupied_seats) {
+        occupiedSeatsCache[cinemaRoom] = data.occupied_seats;
+        console.log(`Loaded occupied seats for Cinema ${cinemaRoom}:`, data.occupied_seats);
+        return data.occupied_seats;
+      }
+      return [];
+    } catch (error) {
+      console.error(`Error fetching occupied seats for cinema ${cinemaRoom}:`, error);
+      return [];
+    }
+  }
+
+  // Function to apply occupied seats to a specific cinema's DOM
+  function applyOccupiedSeats(cinemaRoom) {
+    const occupiedSeats = occupiedSeatsCache[cinemaRoom] || [];
+    
+    // Target seats in the specific cinema (using data-cinema attribute)
+    const cinemaSeats = document.querySelectorAll(`.seat[data-cinema="${cinemaRoom}"]`);
+    
+    cinemaSeats.forEach(seat => {
+      const seatCode = seat.textContent.trim();
+      
+      if (occupiedSeats.includes(seatCode)) {
+        // Mark as occupied (red)
+        seat.classList.remove('vacant', 'selected');
+        seat.classList.add('occupied');
+      } else {
+        // Mark as vacant if not already selected
+        if (!seat.classList.contains('selected')) {
+          seat.classList.remove('occupied');
+          seat.classList.add('vacant');
+        }
+      }
+    });
+    
+    console.log(`Applied occupied seats to Cinema ${cinemaRoom}`);
+  }
+
+  // Preload occupied seats for both cinemas
+  async function preloadAllOccupiedSeats() {
+    console.log('Preloading occupied seats for both cinemas...');
+    
+    // Show loading spinner, hide carousel
+    const loadingSpinner = document.getElementById('seatsLoadingSpinner');
+    const carousel = document.getElementById('cinemaCarousel');
+    
+    if (loadingSpinner) loadingSpinner.classList.remove('d-none');
+    if (carousel) carousel.classList.add('d-none');
+    
+    try {
+      // Fetch both cinemas in parallel
+      await Promise.all([
+        fetchOccupiedSeats('1'),
+        fetchOccupiedSeats('2')
+      ]);
+      
+      // Apply to both cinemas immediately
+      applyOccupiedSeats('1');
+      applyOccupiedSeats('2');
+      
+      console.log('✅ Occupied seats loaded successfully');
+    } catch (error) {
+      console.error('Error loading occupied seats:', error);
+    } finally {
+      // Hide loading spinner, show carousel
+      if (loadingSpinner) loadingSpinner.classList.add('d-none');
+      if (carousel) carousel.classList.remove('d-none');
+    }
+  }
+
   // Get movie schedule and generate appropriate dates
   const movieSchedule = getMovieSchedule();
   
@@ -51,14 +134,18 @@ document.addEventListener("DOMContentLoaded", () => {
     generateDates(update);
   }
 
+  // Preload occupied seats for both cinemas on initial page load
+  preloadAllOccupiedSeats();
+
   // Handle cinema carousel changes to update time slot and cinema display
   const cinemaCarousel = document.getElementById('cinemaCarousel');
   const cinemaNumberEl = document.getElementById('cinema-number');
   
   if (cinemaCarousel && movieSchedule) {
-    cinemaCarousel.addEventListener('slid.bs.carousel', function (e) {
-      const activeSlide = e.relatedTarget;
-      const cinemaNumber = activeSlide.querySelector('[data-cinema]')?.getAttribute('data-cinema');
+    // Use 'slide.bs.carousel' instead of 'slid.bs.carousel' to update before transition
+    cinemaCarousel.addEventListener('slide.bs.carousel', function (e) {
+      const nextSlide = e.relatedTarget;
+      const cinemaNumber = nextSlide.querySelector('[data-cinema]')?.getAttribute('data-cinema');
       
       if (cinemaNumber && showtimeSelect) {
         // Update cinema number display
@@ -313,6 +400,11 @@ if (confirmPaymentBtn) {
       bookingSection.classList.remove("d-none");
       bookingSection.style.transofrm = "translateY(0)";
       bookingSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      
+      // Load occupied seats after booking section is visible
+      setTimeout(() => {
+        loadOccupiedSeats();
+      }, 300);
     });
   }
 
