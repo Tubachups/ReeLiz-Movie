@@ -83,6 +83,56 @@ def get_movie_schedule(movie_index):
     }
 
 
+def has_complete_details(movie_id):
+    """
+    Check if a movie has complete details (cast, directors, producers, writers, certification)
+    """
+    try:
+        credits_url = f"{BASE_URL}/movie/{movie_id}/credits?api_key={API_KEY}&language=en-US"
+        release_url = f"{BASE_URL}/movie/{movie_id}/release_dates?api_key={API_KEY}"
+        
+        credits = requests.get(credits_url, timeout=10).json()
+        releases = requests.get(release_url, timeout=10).json()
+        
+        # Check cast (at least 1 cast member)
+        cast = credits.get("cast", [])
+        if not cast or len(cast) == 0:
+            return False
+        
+        # Check directors (at least 1)
+        directors = [crew for crew in credits.get("crew", []) if crew.get("job") == "Director"]
+        if not directors or len(directors) == 0:
+            return False
+        
+        # Check producers (at least 1)
+        producers = [crew for crew in credits.get("crew", []) if crew.get("job") == "Producer"]
+        if not producers or len(producers) == 0:
+            return False
+        
+        # Check writers (at least 1)
+        writers = [crew for crew in credits.get("crew", []) if crew.get("job") in ["Writer", "Screenplay", "Story"]]
+        if not writers or len(writers) == 0:
+            return False
+        
+        # Check certification
+        has_certification = False
+        for country in releases.get("results", []):
+            if country["iso_3166_1"] in ["PH", "US"]:
+                for release in country.get("release_dates", []):
+                    if release.get("certification"):
+                        has_certification = True
+                        break
+                if has_certification:
+                    break
+        
+        if not has_certification:
+            return False
+        
+        return True
+    except:
+        return False
+
+
 def get_movie_schedule_api(movie_id):
     """
     API endpoint to get schedule for a specific movie ID
@@ -104,37 +154,59 @@ def get_movie_schedule_api(movie_id):
 def get_movies(movie_type):
     try:
         def fetch_movies():
-            today = datetime.now().strftime('%Y-%m-%d')
-            one_week_ago = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
-            two_months_later = (datetime.now() + timedelta(days=60)).strftime('%Y-%m-%d')
-            url = f"{BASE_URL}/discover/movie?api_key={API_KEY}&language=en-US&region=PH&with_release_type=2|3&page=1"
+            today = datetime.now()
+            # Date range: From 1st day of current month to 14th day of current month
+            start_of_month = today.replace(day=1).strftime('%Y-%m-%d')
+            fourteenth_day = today.replace(day=14).strftime('%Y-%m-%d')
+            two_months_later = (today + timedelta(days=60)).strftime('%Y-%m-%d')
             
             if movie_type == "now":
-                # Filter to movies released in the last 7 days
-                url += f"&release_date.gte={one_week_ago}&release_date.lte={today}"
-                # Sort by release date (newest first)
-                url += "&sort_by=release_date.desc"
-            elif movie_type == "coming":
-                url += f"&release_date.gte={today}&release_date.lte={two_months_later}"
-            
-            response = requests.get(url, timeout=10)
-            data = response.json()
-            
-            # Filter out movies without poster images
-            if "results" in data:
-                data["results"] = [
-                    movie for movie in data["results"] 
-                    if movie.get("poster_path") is not None
-                ]
-            
-            # Limit "now showing" movies to 8 and add schedule info
-            if movie_type == "now" and "results" in data:
-                data["results"] = data["results"][:8]
+                # For "now showing", fetch multiple pages to find 8 movies with complete details
+                complete_movies = []
+                page = 1
+                max_pages = 10  # Increased to 10 pages to find more movies
+                
+                while len(complete_movies) < 8 and page <= max_pages:
+                    url = f"{BASE_URL}/discover/movie?api_key={API_KEY}&language=en-US&region=PH&with_release_type=2|3&page={page}"
+                    url += f"&release_date.gte={start_of_month}&release_date.lte={fourteenth_day}"
+                    url += "&sort_by=release_date.desc"
+                    
+                    response = requests.get(url, timeout=10)
+                    data = response.json()
+                    
+                    if "results" in data and len(data["results"]) > 0:
+                        for movie in data["results"]:
+                            # Check if movie has poster and complete details
+                            if movie.get("poster_path") is not None and has_complete_details(movie["id"]):
+                                complete_movies.append(movie)
+                                if len(complete_movies) >= 8:
+                                    break
+                    else:
+                        break  # No more results
+                    
+                    page += 1
+                
                 # Add schedule information to each movie
-                for index, movie in enumerate(data["results"]):
+                for index, movie in enumerate(complete_movies):
                     movie["schedule"] = get_movie_schedule(index)
-            
-            return data
+                
+                return {"results": complete_movies}
+                
+            elif movie_type == "coming":
+                url = f"{BASE_URL}/discover/movie?api_key={API_KEY}&language=en-US&region=PH&with_release_type=2|3&page=1"
+                url += f"&release_date.gte={today.strftime('%Y-%m-%d')}&release_date.lte={two_months_later}"
+                
+                response = requests.get(url, timeout=10)
+                data = response.json()
+                
+                # Filter out movies without poster images
+                if "results" in data:
+                    data["results"] = [
+                        movie for movie in data["results"] 
+                        if movie.get("poster_path") is not None
+                    ]
+                
+                return data
 
         cache_key = f"movies_{movie_type}"
         result = get_cached_or_fetch(cache_key, fetch_movies)

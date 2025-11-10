@@ -2,7 +2,6 @@ function updateTicketInfo(elements, BASE_PRICE) {
   const {
     selectedSeatsEl,
     seatCountEl,
-    seatQuantityEl,
     seatQuantityPanelEl,
     totalCostPanelEl,
     proceedBtn,
@@ -19,7 +18,6 @@ function updateTicketInfo(elements, BASE_PRICE) {
   selectedSeatsEl.textContent =
     seatNumbers.length > 0 ? seatNumbers.join(", ") : "None";
   seatCountEl.textContent = seatNumbers.length;
-  seatQuantityEl.textContent = seatNumbers.length;
 
   // only update new panel
   seatQuantityPanelEl.textContent = seatNumbers.length;

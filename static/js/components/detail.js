@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const seats = document.querySelectorAll(".seat");
   const selectedSeatsEl = document.getElementById("selected-seats");
   const seatCountEl = document.getElementById("seat-count");
-  const seatQuantityEl = document.getElementById("seat-quantity");
   const dateTimeEl = document.getElementById("selected-date-time");
   const showtimeSelect = document.getElementById("showtime");
 
@@ -29,7 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const elements = {
     selectedSeatsEl,
     seatCountEl,
-    seatQuantityEl,
     seatQuantityPanelEl,
     totalCostPanelEl,
     proceedBtn,
@@ -155,17 +153,149 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Store transaction data globally for later use
+  let currentTransactionData = null;
+
   if (confirmPaymentBtn) {
-    confirmPaymentBtn.addEventListener('click', () => {
-      // You can replace this with real checkout flow
+    confirmPaymentBtn.addEventListener('click', async () => {
       console.log('User selected payment method:', selectedPayment);
-      // Close payment method modal
-      var method = bootstrap.Modal.getInstance(document.getElementById('paymentMethodModal'));
-      if (method) method.hide();
       
-      // Show success modal with animation
-      var successModal = new bootstrap.Modal(document.getElementById('successModal'));
-      successModal.show();
+      // Gather transaction data
+      const selectedSeatsEl = document.getElementById('selected-seats');
+      const dateTimeEl = document.getElementById('selected-date-time');
+      const cinemaNumberEl = document.getElementById('cinema-number');
+      const totalCostPanelEl = document.getElementById('total-cost-panel');
+      
+      // Get movie title from the page
+      const movieTitleEl = document.querySelector('.movie-detail h1');
+      const movieTitle = movieTitleEl ? movieTitleEl.textContent : 'Unknown Movie';
+      
+      const prepareData = {
+        selectedDate: dateTimeEl.textContent,
+        cinemaRoom: cinemaNumberEl.textContent,
+        totalAmount: totalCostPanelEl.textContent
+      };
+      
+      console.log('Preparing transaction with data:', prepareData);
+      
+      // Keep payment method modal open - DON'T hide it yet
+      var method = bootstrap.Modal.getInstance(document.getElementById('paymentMethodModal'));
+      
+      // Show loading state
+      confirmPaymentBtn.disabled = true;
+      confirmPaymentBtn.textContent = 'Processing...';
+      
+      try {
+        // Step 1: Prepare transaction - get next ID and barcode
+        const response = await fetch('/api/prepare-transaction', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(prepareData)
+        });
+        
+        const result = await response.json();
+        
+        // NOW close payment method modal after we get response
+        if (method) method.hide();
+        
+        if (result.success) {
+          console.log('Transaction prepared:', result);
+          
+          // Store all transaction data for later confirmation
+          currentTransactionData = {
+            transaction_id: result.transaction_id,
+            barcode: result.barcode,
+            db_date: result.db_date,
+            selectedDate: dateTimeEl.textContent,
+            cinemaRoom: cinemaNumberEl.textContent,
+            movieTitle: movieTitle,
+            selectedSeats: selectedSeatsEl.textContent,
+            totalAmount: totalCostPanelEl.textContent
+          };
+          
+          console.log('Stored transaction data:', currentTransactionData);
+          
+          // Show success modal with barcode
+          const barcodeEl = document.getElementById('transactionBarcode');
+          if (barcodeEl) {
+            barcodeEl.textContent = result.barcode;
+            // Store barcode as data attribute for later use
+            barcodeEl.setAttribute('data-barcode', result.barcode);
+          }
+          var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+          successModal.show();
+        } else {
+          console.error('Transaction preparation failed:', result.message);
+          // Show error modal
+          const errorMessageEl = document.getElementById('transactionErrorMessage');
+          if (errorMessageEl) {
+            errorMessageEl.textContent = result.message;
+          }
+          var failedModal = new bootstrap.Modal(document.getElementById('transactionFailedModal'));
+          failedModal.show();
+        }
+      } catch (error) {
+        console.error('Error preparing transaction:', error);
+        // Close payment modal on error too
+        if (method) method.hide();
+        // Show error modal
+        const errorMessageEl = document.getElementById('transactionErrorMessage');
+        if (errorMessageEl) {
+          errorMessageEl.textContent = 'Network error: Could not connect to server.';
+        }
+        var failedModal = new bootstrap.Modal(document.getElementById('transactionFailedModal'));
+        failedModal.show();
+      } finally {
+        // Reset button state
+        confirmPaymentBtn.disabled = false;
+        confirmPaymentBtn.textContent = 'Confirm Payment';
+      }
+    });
+  }
+
+  // Handle "Done" button in success modal to confirm and insert transaction
+  const successModalDoneBtn = document.querySelector('#successModal button[data-bs-dismiss="modal"]');
+  if (successModalDoneBtn) {
+    successModalDoneBtn.addEventListener('click', async () => {
+      if (currentTransactionData) {
+        try {
+          console.log('Confirming and inserting transaction:', currentTransactionData);
+          
+          // Step 2: Insert complete transaction with barcode
+          const response = await fetch('/api/confirm-transaction', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(currentTransactionData)
+          });
+          
+          const result = await response.json();
+          if (result.success) {
+            console.log('Transaction saved successfully to database!');
+            console.log('Transaction ID:', currentTransactionData.transaction_id);
+            console.log('Barcode:', currentTransactionData.barcode);
+            
+            // Reset transaction data
+            currentTransactionData = null;
+            
+            // Optionally redirect to home or show confirmation
+            setTimeout(() => {
+              window.location.href = '/';
+            }, 500);
+          } else {
+            console.error('Failed to save transaction:', result.message);
+            alert('Warning: Transaction may not be saved. Please contact support.');
+          }
+        } catch (error) {
+          console.error('Error saving transaction:', error);
+          alert('Warning: Could not save transaction. Please contact support.');
+        }
+      } else {
+        console.error('Missing transaction data');
+      }
     });
   }
 
