@@ -40,18 +40,101 @@ def get_genres():
         return jsonify({"error": str(e)}), 500
 
 
+def get_movie_schedule(movie_index):
+    """
+    Generate schedule for a movie based on its index (0-7)
+    Movies 0-3: Group A (Mon, Wed, Fri, Sun) - MWF pattern
+    Movies 4-7: Group B (Tue, Thu, Sat) - TTS pattern
+    Each movie shows twice per day across Cinema 1 and Cinema 2
+    
+    Time slot assignment to prevent conflicts:
+    - Movie 0: 10:00 AM (Cinema 1), 1:00 PM (Cinema 2)
+    - Movie 1: 1:00 PM (Cinema 1), 4:00 PM (Cinema 2)
+    - Movie 2: 4:00 PM (Cinema 1), 7:00 PM (Cinema 2)
+    - Movie 3: 7:00 PM (Cinema 1), 10:00 AM (Cinema 2)
+    - Movie 4-7: Same pattern for different days
+    """
+    # Time slots: 10:00 AM, 1:00 PM, 4:00 PM, 7:00 PM
+    time_slots = ["10:00 AM", "1:00 PM", "4:00 PM", "7:00 PM"]
+    
+    # Determine which group this movie belongs to
+    if movie_index < 4:
+        # Group A: Monday(1), Wednesday(3), Friday(5), Sunday(0)
+        allowed_weekdays = [1, 3, 5, 0]
+        # Each movie gets unique time slots
+        # Movie 0: slots 0,1 (10AM, 1PM)
+        # Movie 1: slots 1,2 (1PM, 4PM)
+        # Movie 2: slots 2,3 (4PM, 7PM)
+        # Movie 3: slots 3,0 (7PM, 10AM)
+        slot1_index = movie_index % 4
+        slot2_index = (movie_index + 1) % 4
+    else:
+        # Group B: Tuesday(2), Thursday(4), Saturday(6)
+        allowed_weekdays = [2, 4, 6]
+        # Movies 4-7 use the same time slot pattern as 0-3
+        adjusted_index = movie_index - 4
+        slot1_index = adjusted_index % 4
+        slot2_index = (adjusted_index + 1) % 4
+    
+    return {
+        "allowed_weekdays": allowed_weekdays,
+        "time_slots": [time_slots[slot1_index], time_slots[slot2_index]],
+        "all_times": time_slots  # All available times for display
+    }
+
+
+def get_movie_schedule_api(movie_id):
+    """
+    API endpoint to get schedule for a specific movie ID
+    """
+    try:
+        cache_key = "movies_now"
+        if cache_key in cache:
+            cached_movies, _ = cache[cache_key]
+            if "results" in cached_movies:
+                for index, movie in enumerate(cached_movies["results"]):
+                    if movie["id"] == movie_id:
+                        schedule = get_movie_schedule(index)
+                        return jsonify(schedule)
+        return jsonify({"error": "Movie not found in current schedule"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 def get_movies(movie_type):
     try:
         def fetch_movies():
             today = datetime.now().strftime('%Y-%m-%d')
+            one_week_ago = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
             two_months_later = (datetime.now() + timedelta(days=60)).strftime('%Y-%m-%d')
             url = f"{BASE_URL}/discover/movie?api_key={API_KEY}&language=en-US&region=PH&with_release_type=2|3&page=1"
+            
             if movie_type == "now":
-                url += f"&release_date.lte={today}"
+                # Filter to movies released in the last 7 days
+                url += f"&release_date.gte={one_week_ago}&release_date.lte={today}"
+                # Sort by release date (newest first)
+                url += "&sort_by=release_date.desc"
             elif movie_type == "coming":
                 url += f"&release_date.gte={today}&release_date.lte={two_months_later}"
+            
             response = requests.get(url, timeout=10)
-            return response.json()
+            data = response.json()
+            
+            # Filter out movies without poster images
+            if "results" in data:
+                data["results"] = [
+                    movie for movie in data["results"] 
+                    if movie.get("poster_path") is not None
+                ]
+            
+            # Limit "now showing" movies to 8 and add schedule info
+            if movie_type == "now" and "results" in data:
+                data["results"] = data["results"][:8]
+                # Add schedule information to each movie
+                for index, movie in enumerate(data["results"]):
+                    movie["schedule"] = get_movie_schedule(index)
+            
+            return data
 
         cache_key = f"movies_{movie_type}"
         result = get_cached_or_fetch(cache_key, fetch_movies)
@@ -94,13 +177,28 @@ def get_movie_details(movie_id):
         # Get writers
         writers = [crew["name"] for crew in credits.get("crew", []) if crew.get("job") in ["Writer", "Screenplay", "Story"]][:3]
 
+        # Get movie schedule from current "now showing" list
+        schedule = None
+        try:
+            cache_key = "movies_now"
+            if cache_key in cache:
+                cached_movies, _ = cache[cache_key]
+                if "results" in cached_movies:
+                    for index, cached_movie in enumerate(cached_movies["results"]):
+                        if cached_movie["id"] == movie_id:
+                            schedule = get_movie_schedule(index)
+                            break
+        except:
+            pass
+
         return {
             "movie": movie,
             "certification": certification,
             "cast": cast,
             "directors": directors,
             "producers": producers,
-            "writers": writers
+            "writers": writers,
+            "schedule": schedule
         }
     except Exception as e:
         raise Exception(f"Error fetching movie details: {str(e)}")

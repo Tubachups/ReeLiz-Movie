@@ -1,5 +1,6 @@
 import { generateDates } from '../utils/dateUtils.js';
 import { updateTicketInfo } from '../services/updateTicketInfo.js';
+import { getMovieSchedule, generateScheduledDates, populateTimeSlots } from '../utils/movieSchedule.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   const BASE_PRICE = 300;
@@ -39,8 +40,48 @@ document.addEventListener("DOMContentLoaded", () => {
   // Create a wrapper function to call updateTicketInfo with the required parameters
   const update = () => updateTicketInfo(elements, BASE_PRICE);
 
-  // Generate dates with callback
-  generateDates(update);
+  // Get movie schedule and generate appropriate dates
+  const movieSchedule = getMovieSchedule();
+  
+  if (movieSchedule && movieSchedule.allowedWeekdays.length > 0) {
+    // Generate only scheduled dates for this movie
+    generateScheduledDates(update, movieSchedule);
+    // Populate only scheduled time slots
+    populateTimeSlots(movieSchedule);
+  } else {
+    // Fallback to regular date generation if no schedule
+    generateDates(update);
+  }
+
+  // Handle cinema carousel changes to update time slot and cinema display
+  const cinemaCarousel = document.getElementById('cinemaCarousel');
+  const cinemaNumberEl = document.getElementById('cinema-number');
+  
+  if (cinemaCarousel && movieSchedule) {
+    cinemaCarousel.addEventListener('slid.bs.carousel', function (e) {
+      const activeSlide = e.relatedTarget;
+      const cinemaNumber = activeSlide.querySelector('[data-cinema]')?.getAttribute('data-cinema');
+      
+      if (cinemaNumber && showtimeSelect) {
+        // Update cinema number display
+        if (cinemaNumberEl) {
+          cinemaNumberEl.textContent = cinemaNumber;
+        }
+        
+        // Cinema 1 gets the first time slot, Cinema 2 gets the second time slot
+        const timeIndex = parseInt(cinemaNumber) - 1;
+        if (movieSchedule.timeSlots[timeIndex]) {
+          showtimeSelect.value = movieSchedule.timeSlots[timeIndex];
+          // Clear selected seats when changing cinema
+          document.querySelectorAll('.seat.selected').forEach(seat => {
+            seat.classList.remove('selected');
+            seat.classList.add('vacant');
+          });
+          update();
+        }
+      }
+    });
+  }
 
   // Toggle seat selection
   seats.forEach((seat) => {
@@ -52,10 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Showtime select change
-  if (showtimeSelect) {
-    showtimeSelect.addEventListener("change", update);
-  }
+  // Note: Showtime is now automatically set by cinema selection, no manual change needed
 
   // Cancel button redirect
   if (cancelBtn) {

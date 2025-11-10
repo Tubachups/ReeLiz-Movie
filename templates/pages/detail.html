@@ -12,6 +12,12 @@
 <!-- Hidden element to check auth status -->
 <div id="userAuthStatus" data-authenticated="{% if username %}true{% else %}false{% endif %}" style="display: none;"></div>
 
+<!-- Hidden element to store movie schedule -->
+<div id="movieSchedule" 
+     data-allowed-weekdays="{% if schedule %}{{ schedule.allowed_weekdays | join(',') }}{% endif %}"
+     data-time-slots="{% if schedule %}{{ schedule.time_slots | join(',') }}{% endif %}"
+     style="display: none;"></div>
+
 <!-- Movie Detail Section -->
 <section class="movie-detail py-5 d-flex align-items-center min-vh-100 overflow-hidden position-relative"
   style="--poster-url: url('https://image.tmdb.org/t/p/original{{ movie.poster_path }}');">
