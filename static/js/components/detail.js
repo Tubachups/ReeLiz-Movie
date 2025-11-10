@@ -156,19 +156,25 @@ document.addEventListener("DOMContentLoaded", () => {
   // Store transaction data globally for later use
   let currentTransactionData = null;
 
-  if (confirmPaymentBtn) {
-    confirmPaymentBtn.addEventListener('click', async () => {
-      console.log('User selected payment method:', selectedPayment);
-      
-      // Gather transaction data
-      const selectedSeatsEl = document.getElementById('selected-seats');
-      const dateTimeEl = document.getElementById('selected-date-time');
-      const cinemaNumberEl = document.getElementById('cinema-number');
-      const totalCostPanelEl = document.getElementById('total-cost-panel');
-      
-      // Get movie title from the page
-      const movieTitleEl = document.querySelector('.movie-detail h1');
-      const movieTitle = movieTitleEl ? movieTitleEl.textContent : 'Unknown Movie';
+if (confirmPaymentBtn) {
+  confirmPaymentBtn.addEventListener('click', async () => {
+    console.log('User selected payment method:', selectedPayment);
+    
+    // Gather transaction data
+    const dateTimeEl = document.getElementById('selected-date-time');
+    const cinemaNumberEl = document.getElementById('cinema-number');
+    const totalCostPanelEl = document.getElementById('total-cost-panel');
+    
+    // FIX: Get ALL selected seats directly from DOM, not from display text
+    const selectedSeats = Array.from(document.querySelectorAll('.seat.selected'))
+      .map(seat => seat.textContent.trim())
+      .join(', ');
+    
+    console.log('Selected seats:', selectedSeats); // Debug log
+    
+    // Get movie title from the page
+    const movieTitleEl = document.querySelector('.movie-detail h1');
+    const movieTitle = movieTitleEl ? movieTitleEl.textContent : 'Unknown Movie';
       
       const prepareData = {
         selectedDate: dateTimeEl.textContent,
@@ -204,16 +210,17 @@ document.addEventListener("DOMContentLoaded", () => {
           console.log('Transaction prepared:', result);
           
           // Store all transaction data for later confirmation
-          currentTransactionData = {
-            transaction_id: result.transaction_id,
-            barcode: result.barcode,
-            db_date: result.db_date,
-            selectedDate: dateTimeEl.textContent,
-            cinemaRoom: cinemaNumberEl.textContent,
-            movieTitle: movieTitle,
-            selectedSeats: selectedSeatsEl.textContent,
-            totalAmount: totalCostPanelEl.textContent
-          };
+         currentTransactionData = {
+        transaction_id: result.transaction_id,
+        barcode: result.barcode,
+        db_date: result.db_date,
+        selectedDate: dateTimeEl.textContent,
+        cinemaRoom: cinemaNumberEl.textContent,
+        movieTitle: movieTitle,
+        selectedSeats: selectedSeats, // Use the directly collected seats
+        totalAmount: totalCostPanelEl.textContent
+      };
+    
           
           console.log('Stored transaction data:', currentTransactionData);
           
