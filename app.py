@@ -240,13 +240,13 @@ def confirm_transaction():
 
 @app.route('/api/occupied-seats/<int:movie_id>/<cinema_room>', methods=['GET'])
 def get_occupied_seats(movie_id, cinema_room):
-    """Get occupied seats for a specific movie and cinema room (no date filtering)"""
+    """Get occupied seats for a specific movie and cinema room (today only, auto-cleanup old data)"""
     try:
         # Get movie title from movie_id
         movie_data = api.get_movie_details(movie_id)
         movie_title = movie_data['movie']['title']
         
-        # Get occupied seats from database (without date)
+        # Get occupied seats from database (automatically cleans up old transactions and returns today's data only)
         occupied = database.get_occupied_seats(movie_title, cinema_room)
         
         return jsonify({

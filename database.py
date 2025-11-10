@@ -123,10 +123,11 @@ def insert_transaction_with_barcode(transaction_id, date, name, room, movie, sit
         if connection and connection.is_connected():
             connection.close()
 
-def get_occupied_seats(movie_title, cinema_room):
+def cleanup_old_transactions():
     """
-    Get all occupied seats for a specific movie and cinema room (without date filtering)
-    Returns: list of seat codes (e.g., ['A1', 'A2', 'B3'])
+    Delete transactions ONLY from dates before today (past dates only)
+    This preserves advance bookings (future dates) and keeps current day bookings
+    Returns: tuple (success: bool, deleted_count: int)
     """
     connection = None
     cursor = None
@@ -134,11 +135,88 @@ def get_occupied_seats(movie_title, cinema_room):
     try:
         connection = get_db_connection()
         if not connection:
+            return False, 0
+        
+        cursor = connection.cursor()
+        
+        # Get today's date in MM/DD format
+        today = datetime.now()
+        today_month = int(today.strftime("%m"))
+        today_day = int(today.strftime("%d"))
+        
+        print(f"Cleaning up transactions from PAST dates only (before {today.strftime('%m/%d')})...")
+        
+        # Get all transactions to check dates
+        cursor.execute("SELECT id, date FROM transaction")
+        all_transactions = cursor.fetchall()
+        
+        ids_to_delete = []
+        for trans_id, trans_date in all_transactions:
+            # Extract MM/DD from format "MM/DD:HH"
+            date_part = trans_date.split(':')[0] if ':' in trans_date else trans_date
+            
+            try:
+                trans_month, trans_day = map(int, date_part.split('/'))
+                
+                # Delete only if transaction date is BEFORE today
+                # Compare: if trans_month < today_month OR (same month but trans_day < today_day)
+                is_past = False
+                if trans_month < today_month:
+                    is_past = True
+                elif trans_month == today_month and trans_day < today_day:
+                    is_past = True
+                
+                if is_past:
+                    ids_to_delete.append(trans_id)
+                    
+            except ValueError:
+                # Invalid date format, skip
+                continue
+        
+        # Delete past transactions
+        deleted_count = 0
+        if ids_to_delete:
+            placeholders = ','.join(['%s'] * len(ids_to_delete))
+            delete_query = f"DELETE FROM transaction WHERE id IN ({placeholders})"
+            cursor.execute(delete_query, ids_to_delete)
+            connection.commit()
+            deleted_count = len(ids_to_delete)
+        
+        print(f"✓ Deleted {deleted_count} past transaction(s) (keeping today and future bookings)")
+        return True, deleted_count
+        
+    except Error as e:
+        if connection:
+            connection.rollback()
+        print(f"Database error in cleanup_old_transactions: {e}")
+        return False, 0
+        
+    finally:
+        if cursor:
+            cursor.close()
+        if connection and connection.is_connected():
+            connection.close()
+
+def get_occupied_seats(movie_title, cinema_room):
+    """
+    Get all occupied seats for a specific movie and cinema room (all dates including advance bookings)
+    Automatically cleans up past transactions before fetching
+    Returns: list of seat codes (e.g., ['A1', 'A2', 'B3'])
+    """
+    connection = None
+    cursor = None
+    
+    try:
+        # Clean up past transactions first (keeps today and future bookings)
+        cleanup_old_transactions()
+        
+        connection = get_db_connection()
+        if not connection:
             return []
         
         cursor = connection.cursor()
         
-        # Query to get all seats for matching movie and room (no date filter)
+        # Query to get all seats for matching movie and room (all dates - today and future)
         query = """
         SELECT sits FROM transaction 
         WHERE movie = %s AND room = %s
@@ -156,7 +234,7 @@ def get_occupied_seats(movie_title, cinema_room):
                 seats = [seat.strip() for seat in sits_str.split(',')]
                 occupied_seats.extend(seats)
         
-        print(f"Occupied seats for '{movie_title}' in Cinema {cinema_room}: {occupied_seats}")
+        print(f"Occupied seats for '{movie_title}' in Cinema {cinema_room} (all dates): {occupied_seats}")
         return occupied_seats
         
     except Error as e:
