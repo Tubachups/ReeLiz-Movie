@@ -44,16 +44,46 @@ document.addEventListener("DOMContentLoaded", () => {
     '2': []
   };
 
-  // Function to fetch occupied seats for a specific cinema
+  // Helper function to get selected date in MM/DD format
+  function getSelectedDateFormatted() {
+    const selectedDatePill = document.querySelector('.date-pill.selected');
+    if (!selectedDatePill) return null;
+    
+    const month = selectedDatePill.querySelector('.date-month').textContent.trim();
+    const day = selectedDatePill.querySelector('.date-num').textContent.trim();
+    
+    // Convert month abbreviation to number
+    const monthMap = {
+      'JAN': '01', 'FEB': '02', 'MAR': '03', 'APR': '04',
+      'MAY': '05', 'JUN': '06', 'JUL': '07', 'AUG': '08',
+      'SEP': '09', 'OCT': '10', 'NOV': '11', 'DEC': '12'
+    };
+    
+    const monthNum = monthMap[month.toUpperCase()];
+    const dayNum = day.padStart(2, '0');
+    
+    return `${monthNum}/${dayNum}`;
+  }
+
+  // Function to fetch occupied seats for a specific cinema and date
   async function fetchOccupiedSeats(cinemaRoom) {
     try {
       const movieId = window.location.pathname.split('/').pop();
-      const response = await fetch(`/api/occupied-seats/${movieId}/${cinemaRoom}`);
+      const selectedDate = getSelectedDateFormatted();
+      
+      // Build URL with date parameter if available
+      let url = `/api/occupied-seats/${movieId}/${cinemaRoom}`;
+      if (selectedDate) {
+        url += `?date=${selectedDate}`;
+      }
+      
+      console.log(`Fetching occupied seats for Cinema ${cinemaRoom} on date ${selectedDate}`);
+      const response = await fetch(url);
       const data = await response.json();
       
       if (data.success && data.occupied_seats) {
         occupiedSeatsCache[cinemaRoom] = data.occupied_seats;
-        console.log(`Loaded occupied seats for Cinema ${cinemaRoom}:`, data.occupied_seats);
+        console.log(`Loaded occupied seats for Cinema ${cinemaRoom} on ${selectedDate}:`, data.occupied_seats);
         return data.occupied_seats;
       }
       return [];
@@ -64,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Function to apply occupied seats to a specific cinema's DOM
-  function applyOccupiedSeats(cinemaRoom) {
+  function applyOccupiedSeats(cinemaRoom, clearSelections = false) {
     const occupiedSeats = occupiedSeatsCache[cinemaRoom] || [];
     
     // Target seats in the specific cinema (using data-cinema attribute)
@@ -78,19 +108,19 @@ document.addEventListener("DOMContentLoaded", () => {
         seat.classList.remove('vacant', 'selected');
         seat.classList.add('occupied');
       } else {
-        // Mark as vacant if not already selected
-        if (!seat.classList.contains('selected')) {
-          seat.classList.remove('occupied');
+        // Mark as vacant (clear selection if requested or always reset to vacant)
+        if (clearSelections || !seat.classList.contains('selected')) {
+          seat.classList.remove('occupied', 'selected');
           seat.classList.add('vacant');
         }
       }
     });
     
-    console.log(`Applied occupied seats to Cinema ${cinemaRoom}`);
+    console.log(`Applied occupied seats to Cinema ${cinemaRoom} (clearSelections: ${clearSelections})`);
   }
 
   // Preload occupied seats for both cinemas
-  async function preloadAllOccupiedSeats() {
+  async function preloadAllOccupiedSeats(clearSelections = false) {
     console.log('Preloading occupied seats for both cinemas...');
     
     // Show loading spinner, hide carousel
@@ -107,9 +137,9 @@ document.addEventListener("DOMContentLoaded", () => {
         fetchOccupiedSeats('2')
       ]);
       
-      // Apply to both cinemas immediately
-      applyOccupiedSeats('1');
-      applyOccupiedSeats('2');
+      // Apply to both cinemas immediately (clear selections if date changed)
+      applyOccupiedSeats('1', clearSelections);
+      applyOccupiedSeats('2', clearSelections);
       
       console.log('✅ Occupied seats loaded successfully');
     } catch (error) {
@@ -121,21 +151,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Combined callback that updates ticket info AND reloads occupied seats for the new date
+  const updateWithSeats = async () => {
+    update(); // Update ticket info
+    await preloadAllOccupiedSeats(true); // Reload occupied seats for the new date and clear selections
+  };
+
   // Get movie schedule and generate appropriate dates
   const movieSchedule = getMovieSchedule();
   
   if (movieSchedule && movieSchedule.allowedWeekdays.length > 0) {
     // Generate only scheduled dates for this movie
-    generateScheduledDates(update, movieSchedule);
+    generateScheduledDates(updateWithSeats, movieSchedule);
     // Populate only scheduled time slots
     populateTimeSlots(movieSchedule);
   } else {
     // Fallback to regular date generation if no schedule
-    generateDates(update);
+    generateDates(updateWithSeats);
   }
 
-  // Preload occupied seats for both cinemas on initial page load
-  preloadAllOccupiedSeats();
+  // Preload occupied seats for both cinemas on initial page load (don't clear selections)
+  preloadAllOccupiedSeats(false);
 
   // Handle cinema carousel changes to update time slot and cinema display
   const cinemaCarousel = document.getElementById('cinemaCarousel');
@@ -396,6 +432,11 @@ if (confirmPaymentBtn) {
   // Book Now button functionality
   if (bookNowBtn && bookingSection) {
     bookNowBtn.addEventListener("click", () => {
+      // Don't do anything if button is disabled (coming soon movies)
+      if (bookNowBtn.hasAttribute('disabled')) {
+        return;
+      }
+      
       bookingSection.classList.add("d-block");
       bookingSection.classList.remove("d-none");
       bookingSection.style.transofrm = "translateY(0)";

@@ -197,10 +197,16 @@ def cleanup_old_transactions():
         if connection and connection.is_connected():
             connection.close()
 
-def get_occupied_seats(movie_title, cinema_room):
+def get_occupied_seats(movie_title, cinema_room, selected_date=None):
     """
-    Get all occupied seats for a specific movie and cinema room (all dates including advance bookings)
+    Get occupied seats for a specific movie, cinema room, and date
     Automatically cleans up past transactions before fetching
+    
+    Args:
+        movie_title: Title of the movie
+        cinema_room: Cinema room number (1 or 2)
+        selected_date: Date in MM/DD format (e.g., "11/14"). If None, returns all dates.
+    
     Returns: list of seat codes (e.g., ['A1', 'A2', 'B3'])
     """
     connection = None
@@ -216,16 +222,29 @@ def get_occupied_seats(movie_title, cinema_room):
         
         cursor = connection.cursor()
         
-        # Query to get all seats for matching movie and room (all dates - today and future)
-        query = """
-        SELECT sits FROM transaction 
-        WHERE movie = %s AND room = %s
-        """
+        # Query to get seats for matching movie, room, and optionally date
+        if selected_date:
+            # Filter by specific date (MM/DD format from database)
+            query = """
+            SELECT sits FROM transaction 
+            WHERE movie = %s AND room = %s AND date LIKE %s
+            """
+            # Match date pattern: MM/DD:HH -> we only match MM/DD part
+            date_pattern = f"{selected_date}%"
+            cursor.execute(query, (movie_title, cinema_room, date_pattern))
+            print(f"Querying occupied seats for '{movie_title}' in Cinema {cinema_room} on {selected_date}")
+        else:
+            # Get all dates
+            query = """
+            SELECT sits FROM transaction 
+            WHERE movie = %s AND room = %s
+            """
+            cursor.execute(query, (movie_title, cinema_room))
+            print(f"Querying occupied seats for '{movie_title}' in Cinema {cinema_room} (all dates)")
         
-        cursor.execute(query, (movie_title, cinema_room))
         results = cursor.fetchall()
         
-        # Collect all seats from all transactions
+        # Collect all seats from all matching transactions
         occupied_seats = []
         for row in results:
             sits_str = row[0]  # Format: "A1, A2, B3" or "A3, A4, A6"
@@ -234,7 +253,7 @@ def get_occupied_seats(movie_title, cinema_room):
                 seats = [seat.strip() for seat in sits_str.split(',')]
                 occupied_seats.extend(seats)
         
-        print(f"Occupied seats for '{movie_title}' in Cinema {cinema_room} (all dates): {occupied_seats}")
+        print(f"Occupied seats found: {occupied_seats}")
         return occupied_seats
         
     except Error as e:
