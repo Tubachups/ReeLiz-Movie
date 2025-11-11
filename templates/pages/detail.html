@@ -6,11 +6,16 @@
 <link rel="stylesheet" href="{{ url_for( 'static', filename='styles/layout-seat.css')}}" />
 <link rel="stylesheet"
   href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=shopping_cart" />
+<!-- JsBarcode for barcode generation -->
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 {% endblock %}
 
 {% block body %}
 <!-- Hidden element to check auth status -->
-<div id="userAuthStatus" data-authenticated="{% if username %}true{% else %}false{% endif %}" style="display: none;"></div>
+<div id="userAuthStatus" 
+     data-authenticated="{% if username %}true{% else %}false{% endif %}"
+     data-username="{% if username %}{{ username }}{% else %}Guest{% endif %}" 
+     style="display: none;"></div>
 
 <!-- Hidden element to store movie schedule -->
 <div id="movieSchedule" 
@@ -149,6 +154,113 @@
   </div>
 </div>
 
+<!-- Ticket Preview Modal -->
+<div class="modal fade" id="ticketPreviewModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header border-0 bg-dark text-white">
+        <h5 class="modal-title">
+          <i class="fa-solid fa-ticket me-2"></i>Ticket Preview
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <!-- Ticket Layout -->
+        <div class="ticket-invoice border rounded p-4 bg-light">
+          <!-- Logo and Header -->
+          <div class="text-center mb-4 pb-3 border-bottom">
+            <img src="{{ url_for('static', filename='styles/img/logo3.png') }}" 
+                 alt="ReeLiz Logo" 
+                 class="ticket-logo mb-3"
+                 style="max-width: 120px; height: auto;">
+            <h3 class="fw-bold mb-2">ReeLiz Cinema</h3>
+            <p class="mb-0 small text-muted">701P Mercedes Avenue,</p>
+            <p class="mb-0 small text-muted">San Miguel, Pasig City</p>
+          </div>
+
+          <!-- Movie Details -->
+          <div class="mb-4">
+            <h4 class="fw-bold mb-3 text-center" id="preview-movie-title">Movie Title</h4>
+            
+            <div class="row g-3">
+              <div class="col-12">
+                <p class="mb-2"><strong>Date and Time:</strong> <span id="preview-date-time">-</span></p>
+              </div>
+              
+              <div class="col-12">
+                <p class="mb-2"><strong>Number of Seats:</strong> <span id="preview-seat-count">0</span></p>
+                <p class="mb-2"><strong>Selected Seats:</strong></p>
+                <div class="bg-white border rounded p-3 text-center">
+                  <h5 class="mb-0" id="preview-seats">-</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking Summary -->
+          <div class="mb-4 pb-3 border-bottom">
+            <h5 class="fw-bold mb-3">Movie Tickets</h5>
+            <div class="row">
+              <div class="col-6">
+                <p class="mb-2 small"><strong>Date and Time:</strong></p>
+                <p class="mb-2 small" id="preview-date-time-2">-</p>
+              </div>
+              <div class="col-6">
+                <p class="mb-2 small"><strong>Cinema Room:</strong></p>
+                <p class="mb-2 small" id="preview-cinema">-</p>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-6">
+                <p class="mb-2 small"><strong>Tickets:</strong></p>
+                <p class="mb-2 small" id="preview-ticket-count">0</p>
+              </div>
+              <div class="col-6">
+                <p class="mb-2"><strong>Total Price:</strong></p>
+                <h5 class="text-primary mb-0">₱<span id="preview-total">0</span></h5>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reservation Details -->
+          <div class="mb-4">
+            <h5 class="fw-bold mb-3">Reservation</h5>
+            <p class="mb-2"><strong>Username:</strong> <span id="preview-username">-</span></p>
+            <p class="mb-2"><strong>Email Address:</strong> <span id="preview-email">-</span></p>
+          </div>
+
+          <!-- Barcode Section -->
+          <div class="barcode-section text-center mb-4 pb-3 border-bottom">
+            <div class="barcode-container bg-white border rounded p-3 d-inline-block">
+              <svg id="preview-barcode"></svg>
+            </div>
+            <p class="mb-0 mt-2 small"><strong>Barcode No.:</strong> <span id="preview-barcode-number">-</span></p>
+          </div>
+
+          <!-- Invoice Notice -->
+          <div class="bg-info bg-opacity-10 border border-info rounded p-3 mt-4">
+            <p class="mb-0 small text-center">
+              <i class="fa-solid fa-circle-info me-2"></i>
+              This will serve as your official invoice for your movie ticket reservation. 
+              Please keep this for your records.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 d-flex justify-content-center gap-3">
+        <button type="button" class="btn btn-primary" id="sendToEmailBtn">
+          <i class="fa-solid fa-envelope me-2"></i>Send to Email
+        </button>
+        <button type="button" class="btn btn-success" id="downloadCopyBtn">
+          <i class="fa-solid fa-download me-2"></i>Download Copy
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Success Modal with Animation -->
 <div class="modal fade" id="successModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-dialog-centered">
@@ -165,7 +277,7 @@
         <h3 class="text-success mb-3">Payment Successful!</h3>
         <p class="text-muted mb-4">Your booking has been confirmed.</p>
         <p class="small">Barcode: <strong id="transactionBarcode"></strong></p>
-        <p class="small">You will receive a invoice email shortly.</p>
+        <p class="small">You can download a soft copy of your ticket or send it via email.</p>
       </div>
       <div class="modal-footer border-0 d-flex justify-content-center">
         <button type="button" class="btn btn-success px-5" data-bs-dismiss="modal">Done</button>

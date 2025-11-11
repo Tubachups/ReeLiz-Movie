@@ -279,6 +279,87 @@ document.addEventListener("DOMContentLoaded", () => {
   // Store transaction data globally for later use
   let currentTransactionData = null;
 
+  // Function to populate ticket preview modal
+  function populateTicketPreview(transactionData, barcode) {
+    // Get username from session
+    const authStatus = document.getElementById('userAuthStatus');
+    const username = authStatus?.getAttribute('data-username') || 'Guest';
+    
+    // Populate all preview fields
+    document.getElementById('preview-movie-title').textContent = transactionData.movieTitle;
+    document.getElementById('preview-date-time').textContent = transactionData.selectedDate;
+    document.getElementById('preview-date-time-2').textContent = transactionData.selectedDate;
+    document.getElementById('preview-seat-count').textContent = transactionData.selectedSeats.split(',').length;
+    document.getElementById('preview-seats').textContent = transactionData.selectedSeats;
+    document.getElementById('preview-cinema').textContent = transactionData.cinemaRoom;
+    document.getElementById('preview-ticket-count').textContent = transactionData.selectedSeats.split(',').length;
+    document.getElementById('preview-total').textContent = transactionData.totalAmount;
+    document.getElementById('preview-username').textContent = username;
+    document.getElementById('preview-email').textContent = 'user@example.com'; // TODO: Get from user profile
+    
+    // Generate barcode
+    document.getElementById('preview-barcode-number').textContent = barcode;
+    try {
+      JsBarcode("#preview-barcode", barcode, {
+        format: "CODE128",
+        width: 2,
+        height: 60,
+        displayValue: false,
+        margin: 10
+      });
+    } catch (error) {
+      console.error('Error generating barcode:', error);
+    }
+  }
+
+  // Function to proceed to success modal from ticket preview
+  function proceedToSuccessModal() {
+    const ticketPreviewModal = bootstrap.Modal.getInstance(document.getElementById('ticketPreviewModal'));
+    if (ticketPreviewModal) ticketPreviewModal.hide();
+    
+    // Small delay to allow modal transition
+    setTimeout(() => {
+      const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+      successModal.show();
+    }, 300);
+  }
+
+  // Handle Send to Email button (placeholder)
+  const sendToEmailBtn = document.getElementById('sendToEmailBtn');
+  if (sendToEmailBtn) {
+    sendToEmailBtn.addEventListener('click', () => {
+      console.log('Send to Email clicked');
+      // TODO: Implement email sending functionality
+      alert('Email functionality will be implemented soon!');
+      // Don't close modal yet - let user choose to download or close
+    });
+  }
+
+  // Handle Download Copy button (placeholder)
+  const downloadCopyBtn = document.getElementById('downloadCopyBtn');
+  if (downloadCopyBtn) {
+    downloadCopyBtn.addEventListener('click', () => {
+      console.log('Download Copy clicked');
+      // TODO: Implement PDF download functionality
+      alert('Download functionality will be implemented soon!');
+      // Don't close modal yet - let user choose to email or close
+    });
+  }
+
+  // When success modal is closed, show ticket preview modal
+  const successModalEl = document.getElementById('successModal');
+  if (successModalEl) {
+    successModalEl.addEventListener('hidden.bs.modal', function (e) {
+      // Only show ticket preview if we have transaction data
+      if (currentTransactionData) {
+        setTimeout(() => {
+          const ticketPreviewModal = new bootstrap.Modal(document.getElementById('ticketPreviewModal'));
+          ticketPreviewModal.show();
+        }, 300);
+      }
+    });
+  }
+
 if (confirmPaymentBtn) {
   confirmPaymentBtn.addEventListener('click', async () => {
     console.log('User selected payment method:', selectedPayment);
@@ -347,13 +428,17 @@ if (confirmPaymentBtn) {
           
           console.log('Stored transaction data:', currentTransactionData);
           
-          // Show success modal with barcode
+          // Populate ticket preview modal (prepare it for later)
+          populateTicketPreview(currentTransactionData, result.barcode);
+          
+          // Store barcode for success modal
           const barcodeEl = document.getElementById('transactionBarcode');
           if (barcodeEl) {
             barcodeEl.textContent = result.barcode;
-            // Store barcode as data attribute for later use
             barcodeEl.setAttribute('data-barcode', result.barcode);
           }
+          
+          // Show success modal FIRST
           var successModal = new bootstrap.Modal(document.getElementById('successModal'));
           successModal.show();
         } else {
@@ -385,7 +470,7 @@ if (confirmPaymentBtn) {
     });
   }
 
-  // Handle "Done" button in success modal to confirm and insert transaction
+  // Handle "Done" button in success modal - save transaction and show ticket preview
   const successModalDoneBtn = document.querySelector('#successModal button[data-bs-dismiss="modal"]');
   if (successModalDoneBtn) {
     successModalDoneBtn.addEventListener('click', async () => {
@@ -393,7 +478,7 @@ if (confirmPaymentBtn) {
         try {
           console.log('Confirming and inserting transaction:', currentTransactionData);
           
-          // Step 2: Insert complete transaction with barcode
+          // Insert complete transaction with barcode
           const response = await fetch('/api/confirm-transaction', {
             method: 'POST',
             headers: {
@@ -408,13 +493,7 @@ if (confirmPaymentBtn) {
             console.log('Transaction ID:', currentTransactionData.transaction_id);
             console.log('Barcode:', currentTransactionData.barcode);
             
-            // Reset transaction data
-            currentTransactionData = null;
-            
-            // Optionally redirect to home or show confirmation
-            setTimeout(() => {
-              window.location.href = '/';
-            }, 500);
+            // Transaction saved successfully - modal will close and show ticket preview via hidden.bs.modal event
           } else {
             console.error('Failed to save transaction:', result.message);
             alert('Warning: Transaction may not be saved. Please contact support.');
@@ -426,6 +505,18 @@ if (confirmPaymentBtn) {
       } else {
         console.error('Missing transaction data');
       }
+    });
+  }
+
+  // Handle closing of ticket preview modal - just redirect home
+  const ticketPreviewModalEl = document.getElementById('ticketPreviewModal');
+  if (ticketPreviewModalEl) {
+    ticketPreviewModalEl.addEventListener('hidden.bs.modal', function (e) {
+      // Reset transaction data and redirect to home
+      currentTransactionData = null;
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 300);
     });
   }
 
