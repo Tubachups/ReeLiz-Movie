@@ -186,25 +186,39 @@ def get_movies(movie_type):
                     
                     page += 1
                 
-                # Add schedule information to each movie
+                # Add schedule information to each movie and mark as now showing
                 for index, movie in enumerate(complete_movies):
                     movie["schedule"] = get_movie_schedule(index)
+                    movie["is_now_showing"] = True
                 
                 return {"results": complete_movies}
                 
             elif movie_type == "coming":
+                # Get the list of "now showing" movie IDs to exclude them
+                now_showing_cache_key = "movies_now"
+                now_showing_ids = []
+                if now_showing_cache_key in cache:
+                    cached_now, _ = cache[now_showing_cache_key]
+                    if "results" in cached_now:
+                        now_showing_ids = [m["id"] for m in cached_now["results"]]
+                
+                # For "coming soon", start from 15th day of current month to avoid overlap
+                fifteenth_day = today.replace(day=15).strftime('%Y-%m-%d')
                 url = f"{BASE_URL}/discover/movie?api_key={API_KEY}&language=en-US&region=PH&with_release_type=2|3&page=1"
-                url += f"&release_date.gte={today.strftime('%Y-%m-%d')}&release_date.lte={two_months_later}"
+                url += f"&release_date.gte={fifteenth_day}&release_date.lte={two_months_later}"
                 
                 response = requests.get(url, timeout=10)
                 data = response.json()
                 
-                # Filter out movies without poster images
+                # Filter out movies without poster images and movies already in "now showing"
                 if "results" in data:
                     data["results"] = [
                         movie for movie in data["results"] 
-                        if movie.get("poster_path") is not None
+                        if movie.get("poster_path") is not None and movie["id"] not in now_showing_ids
                     ]
+                    # Mark all coming soon movies
+                    for movie in data["results"]:
+                        movie["is_now_showing"] = False
                 
                 return data
 
@@ -249,8 +263,9 @@ def get_movie_details(movie_id):
         # Get writers
         writers = [crew["name"] for crew in credits.get("crew", []) if crew.get("job") in ["Writer", "Screenplay", "Story"]][:3]
 
-        # Get movie schedule from current "now showing" list
+        # Get movie schedule from current "now showing" list and check if it's now showing
         schedule = None
+        is_now_showing = False
         try:
             cache_key = "movies_now"
             if cache_key in cache:
@@ -259,6 +274,7 @@ def get_movie_details(movie_id):
                     for index, cached_movie in enumerate(cached_movies["results"]):
                         if cached_movie["id"] == movie_id:
                             schedule = get_movie_schedule(index)
+                            is_now_showing = True
                             break
         except:
             pass
@@ -270,7 +286,8 @@ def get_movie_details(movie_id):
             "directors": directors,
             "producers": producers,
             "writers": writers,
-            "schedule": schedule
+            "schedule": schedule,
+            "is_now_showing": is_now_showing
         }
     except Exception as e:
         raise Exception(f"Error fetching movie details: {str(e)}")

@@ -52,8 +52,8 @@
           <p><strong>Writers:</strong> {{ writers | join(', ') if writers else 'N/A' }}</p>
         </div>
 
-          <button id="bookNowBtn" class="btn btn-primary mt-1 rounded-3">
-            <span class="btn-text">Book Now</span>
+          <button id="bookNowBtn" class="btn {% if is_now_showing %}btn-primary{% else %}btn-secondary{% endif %} mt-1 rounded-3" {% if not is_now_showing %}disabled{% endif %}>
+            <span class="btn-text">{% if is_now_showing %}Book Now{% else %}Coming Soon{% endif %}</span>
             <i class="fa-solid fa-calendar-days btn-icon"></i>
           </button>
       </div>

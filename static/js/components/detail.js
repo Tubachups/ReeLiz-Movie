@@ -432,6 +432,11 @@ if (confirmPaymentBtn) {
   // Book Now button functionality
   if (bookNowBtn && bookingSection) {
     bookNowBtn.addEventListener("click", () => {
+      // Don't do anything if button is disabled (coming soon movies)
+      if (bookNowBtn.hasAttribute('disabled')) {
+        return;
+      }
+      
       bookingSection.classList.add("d-block");
       bookingSection.classList.remove("d-none");
       bookingSection.style.transofrm = "translateY(0)";

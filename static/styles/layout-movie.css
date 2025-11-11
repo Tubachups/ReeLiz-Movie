@@ -26,22 +26,19 @@ h1 {
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 1.5rem;
   margin-top: 20px;
-    padding: 15px;
+  padding: 15px;
 }
 
-
 .movie-card {
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   overflow: hidden;
-  transition: transform .3s ease;
-  
+  transition: transform 0.3s ease;
 }
 
 .movie-card:hover {
   transform: scale(1.1);
   z-index: 5;
 }
-
 
 .movie-img-wrapper {
   position: relative;
@@ -88,7 +85,6 @@ h1 {
   font-size: 12px;
   margin-bottom: 4px;
 }
-
 
 .movie-title {
   font-size: 16px;
@@ -166,7 +162,7 @@ h1 {
   transform: translateY(0);
 }
 
-@media (min-width:768px) {
+@media (min-width: 768px) {
   #movies {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
