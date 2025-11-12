@@ -55,8 +55,9 @@ def movie_schedule(movie_id):
 def movie_detail(movie_id):
     try:
         username = session.get('username')
+        email = session.get('email', 'guest@reeliz.com')
         movie_data = api.get_movie_details(movie_id)
-        return render_template("pages/detail.html", username=username, **movie_data)
+        return render_template("pages/detail.html", username=username, email=email, **movie_data)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     

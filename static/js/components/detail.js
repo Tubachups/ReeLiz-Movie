@@ -281,21 +281,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to populate ticket preview modal
   function populateTicketPreview(transactionData, barcode) {
-    // Get username from session
+    // Get username and email from session
     const authStatus = document.getElementById('userAuthStatus');
     const username = authStatus?.getAttribute('data-username') || 'Guest';
+    const email = authStatus?.getAttribute('data-email') || 'guest@reeliz.com';
     
     // Populate all preview fields
     document.getElementById('preview-movie-title').textContent = transactionData.movieTitle;
     document.getElementById('preview-date-time').textContent = transactionData.selectedDate;
-    document.getElementById('preview-date-time-2').textContent = transactionData.selectedDate;
     document.getElementById('preview-seat-count').textContent = transactionData.selectedSeats.split(',').length;
     document.getElementById('preview-seats').textContent = transactionData.selectedSeats;
     document.getElementById('preview-cinema').textContent = transactionData.cinemaRoom;
     document.getElementById('preview-ticket-count').textContent = transactionData.selectedSeats.split(',').length;
     document.getElementById('preview-total').textContent = transactionData.totalAmount;
     document.getElementById('preview-username').textContent = username;
-    document.getElementById('preview-email').textContent = 'user@example.com'; // TODO: Get from user profile
+    document.getElementById('preview-email').textContent = email;
     
     // Generate barcode
     document.getElementById('preview-barcode-number').textContent = barcode;
