@@ -14,7 +14,8 @@
 <!-- Hidden element to check auth status -->
 <div id="userAuthStatus" 
      data-authenticated="{% if username %}true{% else %}false{% endif %}"
-     data-username="{% if username %}{{ username }}{% else %}Guest{% endif %}" 
+     data-username="{% if username %}{{ username }}{% else %}Guest{% endif %}"
+     data-email="{% if email %}{{ email }}{% else %}guest@reeliz.com{% endif %}" 
      style="display: none;"></div>
 
 <!-- Hidden element to store movie schedule -->
@@ -185,14 +186,10 @@
             
             <div class="row g-3">
               <div class="col-12">
-                <p class="mb-2"><strong>Date and Time:</strong> <span id="preview-date-time">-</span></p>
-              </div>
-              
-              <div class="col-12">
-                <p class="mb-2"><strong>Number of Seats:</strong> <span id="preview-seat-count">0</span></p>
-                <p class="mb-2"><strong>Selected Seats:</strong></p>
+                <p class="mb-2 fs-5"><strong>Number of Seats:</strong> <span id="preview-seat-count">0</span></p>
+                <p class="mb-2 fs-5"><strong>Selected Seats:</strong></p>
                 <div class="bg-white border rounded p-3 text-center">
-                  <h5 class="mb-0" id="preview-seats">-</h5>
+                  <h4 class="mb-0 fw-bold" id="preview-seats">-</h4>
                 </div>
               </div>
             </div>
@@ -203,22 +200,22 @@
             <h5 class="fw-bold mb-3">Movie Tickets</h5>
             <div class="row">
               <div class="col-6">
-                <p class="mb-2 small"><strong>Date and Time:</strong></p>
-                <p class="mb-2 small" id="preview-date-time-2">-</p>
+                <p class="mb-2"><strong>Date and Time:</strong></p>
+                <p class="mb-2 fs-6" id="preview-date-time">-</p>
               </div>
               <div class="col-6">
-                <p class="mb-2 small"><strong>Cinema Room:</strong></p>
-                <p class="mb-2 small" id="preview-cinema">-</p>
+                <p class="mb-2"><strong>Cinema Room:</strong></p>
+                <p class="mb-2 fs-5 fw-bold" id="preview-cinema">-</p>
               </div>
             </div>
             <div class="row mt-2">
               <div class="col-6">
-                <p class="mb-2 small"><strong>Tickets:</strong></p>
-                <p class="mb-2 small" id="preview-ticket-count">0</p>
+                <p class="mb-2"><strong>Tickets:</strong></p>
+                <p class="mb-2 fs-5 fw-bold" id="preview-ticket-count">0</p>
               </div>
               <div class="col-6">
                 <p class="mb-2"><strong>Total Price:</strong></p>
-                <h5 class="text-primary mb-0">₱<span id="preview-total">0</span></h5>
+                <h3 class="text-primary mb-0">₱<span id="preview-total">0</span></h3>
               </div>
             </div>
           </div>
@@ -226,16 +223,14 @@
           <!-- Reservation Details -->
           <div class="mb-4">
             <h5 class="fw-bold mb-3">Reservation</h5>
-            <p class="mb-2"><strong>Username:</strong> <span id="preview-username">-</span></p>
-            <p class="mb-2"><strong>Email Address:</strong> <span id="preview-email">-</span></p>
+            <p class="mb-2 fs-5"><strong>Username:</strong> <span id="preview-username">-</span></p>
+            <p class="mb-2 fs-5"><strong>Email Address:</strong> <span id="preview-email">-</span></p>
           </div>
 
           <!-- Barcode Section -->
-          <div class="barcode-section text-center mb-4 pb-3 border-bottom">
-            <div class="barcode-container bg-white border rounded p-3 d-inline-block">
-              <svg id="preview-barcode"></svg>
-            </div>
-            <p class="mb-0 mt-2 small"><strong>Barcode No.:</strong> <span id="preview-barcode-number">-</span></p>
+          <div class="barcode-section text-center mb-4 pb-3">
+            <svg id="preview-barcode"></svg>
+            <p class="mb-0 mt-3"><strong>Barcode No.:</strong> <span id="preview-barcode-number">-</span></p>
           </div>
 
           <!-- Invoice Notice -->

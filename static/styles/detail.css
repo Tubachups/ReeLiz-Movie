@@ -366,29 +366,12 @@
 /* Ticket Preview Modal Styles */
 .ticket-invoice {
   font-family: "Courier New", monospace;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border: none;
 }
 
 .ticket-invoice h3 {
-  color: #2c3e50;
-  font-weight: 800;
-  margin-top: 0;
-  padding-top: 0;
-}
-
-.ticket-invoice h4 {
   color: #34495e;
-}
-
-.ticket-invoice h5 {
-  color: #34495e;
-  font-weight: 700;
-}
-
-.ticket-invoice .border-bottom {
-  border-color: #95a5a6 !important;
+  font-weight: bold;
 }
 
 #preview-seats {
@@ -427,25 +410,20 @@
 }
 
 .barcode-section {
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 15px 0;
+  background: transparent;
+  padding: 20px 15px;
 }
 
-.barcode-container {
-  display: inline-block;
-  padding: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.barcode-container svg {
+.barcode-section svg {
   max-width: 100%;
   height: auto;
+  display: block;
+  margin: 0 auto;
 }
 
 #preview-barcode-number {
   font-family: "Courier New", monospace;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: bold;
   color: #2c3e50;
   letter-spacing: 1px;
