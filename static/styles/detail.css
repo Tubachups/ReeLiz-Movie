@@ -370,14 +370,12 @@
 }
 
 .ticket-invoice h3 {
-  color: #34495e;
   font-weight: bold;
 }
 
 #preview-seats {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #2c3e50;
   letter-spacing: 2px;
 }
 
@@ -413,14 +411,19 @@
   background: white;
   padding: 20px 15px;
   border-radius: 5px;
+  text-align: center;
 }
 
 .barcode-section svg {
-  max-width: 100%;
+  max-width: 400px;
+  width: 100%;
   height: auto;
-  display: block;
+  display: inline-block;
   margin: 0 auto;
   background: white;
+  image-rendering: crisp-edges;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
 }
 
 #preview-barcode-number {
