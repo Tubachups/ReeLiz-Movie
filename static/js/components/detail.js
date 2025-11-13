@@ -302,22 +302,29 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       JsBarcode("#preview-barcode", barcode, {
         format: "CODE128",
-        width: 3,
-        height: 100,
+        width: 2,
+        height: 80,
         displayValue: false,
-        margin: 20,
+        margin: 10,
         background: "#ffffff",
         lineColor: "#000000",
         fontSize: 0,
-        textMargin: 0
+        textMargin: 0,
+        valid: function(valid) {
+          if (!valid) {
+            console.error('Invalid barcode');
+          }
+        }
       });
       
       // Ensure SVG is properly sized after generation
       const barcodeElement = document.getElementById('preview-barcode');
       if (barcodeElement) {
         barcodeElement.style.display = 'block';
-        barcodeElement.style.maxWidth = '100%';
+        barcodeElement.style.width = '100%';
+        barcodeElement.style.maxWidth = '400px';
         barcodeElement.style.height = 'auto';
+        barcodeElement.setAttribute('preserveAspectRatio', 'xMidYMid meet');
       }
     } catch (error) {
       console.error('Error generating barcode:', error);
@@ -368,75 +375,103 @@ document.addEventListener("DOMContentLoaded", () => {
         downloadCopyBtn.disabled = true;
         downloadCopyBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Generating PDF...';
 
-        // Wait longer for barcode SVG to fully render
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Wait for barcode SVG to fully render
+        await new Promise(resolve => setTimeout(resolve, 1500));
 
-        // Use html2canvas to capture the ticket with better settings
+        // Store original styles to restore later
+        const originalOverflow = ticketElement.style.overflow;
+        const originalHeight = ticketElement.style.height;
+        
+        // Temporarily remove any height/overflow constraints for full capture
+        ticketElement.style.overflow = 'visible';
+        ticketElement.style.height = 'auto';
+        
+        // Force a reflow to apply changes
+        ticketElement.offsetHeight;
+        
+        // Take a complete "long screenshot" of the entire ticket
         const canvas = await html2canvas(ticketElement, {
-          scale: 3, // Higher scale for better SVG capture
+          scale: 3, // Higher quality for crisp barcode
           backgroundColor: '#f8f9fa',
-          logging: true, // Enable logging to debug
+          logging: false,
           useCORS: true,
           allowTaint: true,
-          foreignObjectRendering: false, // Better SVG handling
+          foreignObjectRendering: false,
+          scrollY: 0,
+          scrollX: 0,
+          windowWidth: ticketElement.scrollWidth,
           windowHeight: ticketElement.scrollHeight,
-          height: ticketElement.scrollHeight, // Capture full height
-          width: ticketElement.scrollWidth,
-          scrollY: -window.scrollY,
-          scrollX: -window.scrollX,
           onclone: (clonedDoc) => {
-            // Ensure barcode SVG is visible and properly sized in clone
+            const clonedTicket = clonedDoc.querySelector('.ticket-invoice');
+            if (clonedTicket) {
+              // Ensure full content is visible in clone
+              clonedTicket.style.overflow = 'visible';
+              clonedTicket.style.height = 'auto';
+              clonedTicket.style.maxHeight = 'none';
+              clonedTicket.style.display = 'block';
+              clonedTicket.style.paddingBottom = '30px';
+            }
+            
+            // Ensure all sections are visible
+            const allSections = clonedDoc.querySelectorAll('.ticket-invoice > *');
+            allSections.forEach(section => {
+              section.style.display = 'block';
+              section.style.visibility = 'visible';
+              section.style.opacity = '1';
+            });
+            
+            // Barcode specific fixes - ensure proper dimensions
             const clonedBarcode = clonedDoc.querySelector('#preview-barcode');
             if (clonedBarcode) {
               clonedBarcode.style.display = 'block';
               clonedBarcode.style.visibility = 'visible';
-              clonedBarcode.style.opacity = '1';
-              clonedBarcode.style.maxWidth = '100%';
+              clonedBarcode.style.width = '100%';
+              clonedBarcode.style.maxWidth = '400px';
               clonedBarcode.style.height = 'auto';
+              clonedBarcode.style.margin = '0 auto';
+              // Preserve SVG aspect ratio
+              clonedBarcode.setAttribute('preserveAspectRatio', 'xMidYMid meet');
             }
             
-            // Ensure barcode section is visible
             const barcodeSection = clonedDoc.querySelector('.barcode-section');
             if (barcodeSection) {
               barcodeSection.style.display = 'block';
               barcodeSection.style.visibility = 'visible';
-              barcodeSection.style.overflow = 'visible';
+              barcodeSection.style.pageBreakInside = 'avoid';
+              barcodeSection.style.textAlign = 'center';
             }
           }
         });
+        
+        // Restore original styles
+        ticketElement.style.overflow = originalOverflow;
+        ticketElement.style.height = originalHeight;
 
-        // Get jsPDF from the global window object (loaded via CDN)
+        // Get jsPDF
         const { jsPDF } = window.jspdf;
         
-        // Calculate dynamic PDF dimensions based on content
-        // Convert canvas dimensions to mm (scale factor 3)
-        const canvasWidthMM = (canvas.width / 3) * 0.264583; // Convert px to mm
-        const canvasHeightMM = (canvas.height / 3) * 0.264583;
+        // Calculate dimensions for dynamic PDF size
+        const imgWidth = 210; // A4 width in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
         
-        // Add margins
-        const margin = 10; // 10mm margins
-        const pdfWidth = canvasWidthMM + (margin * 2);
-        const pdfHeight = canvasHeightMM + (margin * 2);
+        // Add some margin for the PDF
+        const margin = 15;
+        const pdfHeight = imgHeight + (margin * 2);
         
-        // Use standard width (A4-like) but dynamic height
-        const standardWidth = 210; // A4 width in mm
-        const aspectRatio = canvas.height / canvas.width;
-        const adjustedHeight = (standardWidth - (margin * 2)) * aspectRatio + (margin * 2);
-        
-        // Create PDF with custom size - single page that fits all content
+        // Create PDF with exact size needed for the image
         const pdf = new jsPDF({
           orientation: 'portrait',
           unit: 'mm',
-          format: [standardWidth, adjustedHeight], // Custom dynamic size
+          format: [imgWidth, pdfHeight],
           compress: true
         });
 
-        // Add image to PDF - fill the page with margins
+        // Convert canvas to image
         const imgData = canvas.toDataURL('image/png', 1.0);
-        const contentWidth = standardWidth - (margin * 2);
-        const contentHeight = adjustedHeight - (margin * 2);
         
-        pdf.addImage(imgData, 'PNG', margin, margin, contentWidth, contentHeight);
+        // Add the complete ticket image to PDF (fills the entire page)
+        pdf.addImage(imgData, 'PNG', 0, margin, imgWidth, imgHeight);
+
 
         // Save PDF with formatted filename
         const filename = `ReeLizCinema_${barcodeNumber}.pdf`;
