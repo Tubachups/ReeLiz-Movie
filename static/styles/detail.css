@@ -410,8 +410,9 @@
 }
 
 .barcode-section {
-  background: transparent;
+  background: white;
   padding: 20px 15px;
+  border-radius: 5px;
 }
 
 .barcode-section svg {
@@ -419,6 +420,7 @@
   height: auto;
   display: block;
   margin: 0 auto;
+  background: white;
 }
 
 #preview-barcode-number {

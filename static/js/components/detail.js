@@ -302,11 +302,23 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       JsBarcode("#preview-barcode", barcode, {
         format: "CODE128",
-        width: 2,
-        height: 60,
+        width: 3,
+        height: 100,
         displayValue: false,
-        margin: 10
+        margin: 20,
+        background: "#ffffff",
+        lineColor: "#000000",
+        fontSize: 0,
+        textMargin: 0
       });
+      
+      // Ensure SVG is properly sized after generation
+      const barcodeElement = document.getElementById('preview-barcode');
+      if (barcodeElement) {
+        barcodeElement.style.display = 'block';
+        barcodeElement.style.maxWidth = '100%';
+        barcodeElement.style.height = 'auto';
+      }
     } catch (error) {
       console.error('Error generating barcode:', error);
     }
@@ -335,14 +347,123 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Handle Download Copy button (placeholder)
+  // Handle Download Copy button - Generate PDF
   const downloadCopyBtn = document.getElementById('downloadCopyBtn');
   if (downloadCopyBtn) {
-    downloadCopyBtn.addEventListener('click', () => {
-      console.log('Download Copy clicked');
-      // TODO: Implement PDF download functionality
-      alert('Download functionality will be implemented soon!');
-      // Don't close modal yet - let user choose to email or close
+    downloadCopyBtn.addEventListener('click', async () => {
+      try {
+        // Get the barcode number for filename
+        const barcodeNumber = document.getElementById('preview-barcode-number')?.textContent || 'TICKET';
+        
+        // Get the ticket invoice element
+        const ticketElement = document.querySelector('.ticket-invoice');
+        
+        if (!ticketElement) {
+          console.error('Ticket element not found');
+          alert('Error: Cannot generate PDF');
+          return;
+        }
+
+        // Show loading state
+        downloadCopyBtn.disabled = true;
+        downloadCopyBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Generating PDF...';
+
+        // Wait longer for barcode SVG to fully render
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Use html2canvas to capture the ticket with better settings
+        const canvas = await html2canvas(ticketElement, {
+          scale: 3, // Higher scale for better SVG capture
+          backgroundColor: '#f8f9fa',
+          logging: true, // Enable logging to debug
+          useCORS: true,
+          allowTaint: true,
+          foreignObjectRendering: false, // Better SVG handling
+          windowHeight: ticketElement.scrollHeight,
+          height: ticketElement.scrollHeight, // Capture full height
+          width: ticketElement.scrollWidth,
+          scrollY: -window.scrollY,
+          scrollX: -window.scrollX,
+          onclone: (clonedDoc) => {
+            // Ensure barcode SVG is visible and properly sized in clone
+            const clonedBarcode = clonedDoc.querySelector('#preview-barcode');
+            if (clonedBarcode) {
+              clonedBarcode.style.display = 'block';
+              clonedBarcode.style.visibility = 'visible';
+              clonedBarcode.style.opacity = '1';
+              clonedBarcode.style.maxWidth = '100%';
+              clonedBarcode.style.height = 'auto';
+            }
+            
+            // Ensure barcode section is visible
+            const barcodeSection = clonedDoc.querySelector('.barcode-section');
+            if (barcodeSection) {
+              barcodeSection.style.display = 'block';
+              barcodeSection.style.visibility = 'visible';
+              barcodeSection.style.overflow = 'visible';
+            }
+          }
+        });
+
+        // Get jsPDF from the global window object (loaded via CDN)
+        const { jsPDF } = window.jspdf;
+        
+        // Calculate dynamic PDF dimensions based on content
+        // Convert canvas dimensions to mm (scale factor 3)
+        const canvasWidthMM = (canvas.width / 3) * 0.264583; // Convert px to mm
+        const canvasHeightMM = (canvas.height / 3) * 0.264583;
+        
+        // Add margins
+        const margin = 10; // 10mm margins
+        const pdfWidth = canvasWidthMM + (margin * 2);
+        const pdfHeight = canvasHeightMM + (margin * 2);
+        
+        // Use standard width (A4-like) but dynamic height
+        const standardWidth = 210; // A4 width in mm
+        const aspectRatio = canvas.height / canvas.width;
+        const adjustedHeight = (standardWidth - (margin * 2)) * aspectRatio + (margin * 2);
+        
+        // Create PDF with custom size - single page that fits all content
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: [standardWidth, adjustedHeight], // Custom dynamic size
+          compress: true
+        });
+
+        // Add image to PDF - fill the page with margins
+        const imgData = canvas.toDataURL('image/png', 1.0);
+        const contentWidth = standardWidth - (margin * 2);
+        const contentHeight = adjustedHeight - (margin * 2);
+        
+        pdf.addImage(imgData, 'PNG', margin, margin, contentWidth, contentHeight);
+
+        // Save PDF with formatted filename
+        const filename = `ReeLizCinema_${barcodeNumber}.pdf`;
+        pdf.save(filename);
+
+        // Reset button state
+        downloadCopyBtn.disabled = false;
+        downloadCopyBtn.innerHTML = '<i class="fa-solid fa-download me-2"></i>Download Copy';
+
+        // Close modal and redirect to home after short delay
+        setTimeout(() => {
+          const ticketModal = bootstrap.Modal.getInstance(document.getElementById('ticketPreviewModal'));
+          if (ticketModal) {
+            ticketModal.hide();
+          }
+          // Redirect to home page
+          window.location.href = '/';
+        }, 1000);
+
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        alert('Error generating PDF. Please try again.');
+        
+        // Reset button state
+        downloadCopyBtn.disabled = false;
+        downloadCopyBtn.innerHTML = '<i class="fa-solid fa-download me-2"></i>Download Copy';
+      }
     });
   }
 
