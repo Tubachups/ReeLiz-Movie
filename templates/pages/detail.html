@@ -283,6 +283,84 @@
   </div>
 </div>
 
+<!-- Email Sent Success Modal -->
+<div class="modal fade" id="emailSuccessModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-body text-center p-5">
+        <!-- Email Icon Animation -->
+        <div class="email-sent-icon mb-4">
+          <div class="email-animation">
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+              <circle cx="18" cy="18" r="3" fill="#28a745" stroke="white" stroke-width="2">
+                <animate attributeName="r" from="0" to="3" dur="0.5s" begin="0.3s" fill="freeze"/>
+              </circle>
+              <path d="M16.5 18l0.75 0.75 1.5-1.5" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="0.5s" fill="freeze"/>
+              </path>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Success Message -->
+        <h3 class="text-success fw-bold mb-3">
+          <i class="bi bi-check-circle-fill me-2"></i>Email Sent Successfully!
+        </h3>
+        <p class="text-muted mb-4">Your ticket has been sent to:</p>
+        <p class="fw-bold text-primary mb-4" id="emailSuccessAddress" style="font-size: 1.1rem;">email@example.com</p>
+        
+        <!-- Additional Info -->
+        <div class="alert alert-info border-0 bg-info bg-opacity-10 mb-0">
+          <i class="bi bi-info-circle me-2"></i>
+          <small>Please check your inbox (and spam folder if needed)</small>
+        </div>
+      </div>
+      
+      <div class="modal-footer border-0 bg-light d-flex justify-content-center pb-4">
+        <button type="button" class="btn btn-success px-5 rounded-pill" id="emailSuccessOkBtn">
+          <i class="bi bi-check-lg me-2"></i>OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Email Sent Modal Animations */
+  .email-sent-icon {
+    animation: scaleIn 0.5s ease-out;
+  }
+  
+  @keyframes scaleIn {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  .email-animation svg {
+    filter: drop-shadow(0 4px 6px rgba(40, 167, 69, 0.2));
+  }
+  
+  #emailSuccessModal .modal-content {
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  
+  #emailSuccessModal .alert {
+    border-radius: 10px;
+  }
+</style>
+
 <!-- Transaction Failed Modal -->
 <div class="modal fade" id="transactionFailedModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-dialog-centered">

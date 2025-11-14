@@ -456,22 +456,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await response.json();
         
         if (result.success) {
-          // Show success message
-          alert(`✓ Ticket sent successfully to ${email}!\n\nPlease check your email inbox (and spam folder if needed).`);
-          
           // Reset button state
           sendToEmailBtn.disabled = false;
           sendToEmailBtn.innerHTML = '<i class="bi bi-envelope-fill me-2"></i>Send to Email';
           
-          // Close modal and redirect to home after short delay
-          setTimeout(() => {
-            const ticketModal = bootstrap.Modal.getInstance(document.getElementById('ticketPreviewModal'));
-            if (ticketModal) {
-              ticketModal.hide();
-            }
-            // Redirect to home page
-            window.location.href = '/';
-          }, 1000);
+          // Close ticket preview modal
+          const ticketModal = bootstrap.Modal.getInstance(document.getElementById('ticketPreviewModal'));
+          if (ticketModal) {
+            ticketModal.hide();
+          }
+          
+          // Show elegant success modal
+          document.getElementById('emailSuccessAddress').textContent = email;
+          const emailSuccessModal = new bootstrap.Modal(document.getElementById('emailSuccessModal'));
+          emailSuccessModal.show();
         } else {
           // Show error message
           console.error('Email send failed:', result);
@@ -801,12 +799,34 @@ if (confirmPaymentBtn) {
     });
   }
 
-  // Handle closing of ticket preview modal - just redirect home
+  // Handle closing of ticket preview modal - only redirect if no other modal is showing
   const ticketPreviewModalEl = document.getElementById('ticketPreviewModal');
   if (ticketPreviewModalEl) {
     ticketPreviewModalEl.addEventListener('hidden.bs.modal', function (e) {
-      // Reset transaction data and redirect to home
-      currentTransactionData = null;
+      // Check if email success modal is showing
+      const emailSuccessModal = document.getElementById('emailSuccessModal');
+      const isEmailModalShowing = emailSuccessModal && emailSuccessModal.classList.contains('show');
+      
+      // Only redirect if email modal is not showing
+      if (!isEmailModalShowing) {
+        currentTransactionData = null;
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 300);
+      }
+    });
+  }
+
+  // Handle "OK" button in email success modal - close modal and redirect to home
+  const emailSuccessOkBtn = document.getElementById('emailSuccessOkBtn');
+  if (emailSuccessOkBtn) {
+    emailSuccessOkBtn.addEventListener('click', () => {
+      // Close modal
+      const emailSuccessModal = bootstrap.Modal.getInstance(document.getElementById('emailSuccessModal'));
+      if (emailSuccessModal) {
+        emailSuccessModal.hide();
+      }
+      // Redirect to home after modal closes
       setTimeout(() => {
         window.location.href = '/';
       }, 300);
