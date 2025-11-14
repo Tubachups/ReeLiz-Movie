@@ -343,14 +343,149 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 300);
   }
 
-  // Handle Send to Email button (placeholder)
+  // Handle Send to Email button - Generate same visual as PDF
   const sendToEmailBtn = document.getElementById('sendToEmailBtn');
   if (sendToEmailBtn) {
-    sendToEmailBtn.addEventListener('click', () => {
+    sendToEmailBtn.addEventListener('click', async () => {
       console.log('Send to Email clicked');
-      // TODO: Implement email sending functionality
-      alert('Email functionality will be implemented soon!');
-      // Don't close modal yet - let user choose to download or close
+      
+      // Disable button while sending
+      sendToEmailBtn.disabled = true;
+      sendToEmailBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Sending...';
+      
+      try {
+        // Get email from auth status
+        const authStatus = document.getElementById('userAuthStatus');
+        const email = authStatus?.getAttribute('data-email') || 'guest@reeliz.com';
+        const username = authStatus?.getAttribute('data-username') || 'Guest';
+        
+        // Get the ticket invoice element
+        const ticketElement = document.querySelector('.ticket-invoice');
+        
+        if (!ticketElement) {
+          console.error('Ticket element not found');
+          alert('Error: Cannot generate ticket');
+          return;
+        }
+
+        // Store original styles to restore later
+        const originalOverflow = ticketElement.style.overflow;
+        const originalHeight = ticketElement.style.height;
+        
+        // Temporarily remove any height/overflow constraints for full capture
+        ticketElement.style.overflow = 'visible';
+        ticketElement.style.height = 'auto';
+        
+        // Force a reflow to apply changes
+        ticketElement.offsetHeight;
+        
+        // Wait for barcode SVG to fully render
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Take a complete "long screenshot" of the entire ticket
+        const canvas = await html2canvas(ticketElement, {
+          scale: 3, // Higher quality
+          backgroundColor: '#f8f9fa',
+          logging: false,
+          useCORS: true,
+          allowTaint: true,
+          foreignObjectRendering: false,
+          scrollY: 0,
+          scrollX: 0,
+          windowWidth: ticketElement.scrollWidth,
+          windowHeight: ticketElement.scrollHeight,
+          onclone: (clonedDoc) => {
+            const clonedTicket = clonedDoc.querySelector('.ticket-invoice');
+            if (clonedTicket) {
+              clonedTicket.style.overflow = 'visible';
+              clonedTicket.style.height = 'auto';
+              clonedTicket.style.maxHeight = 'none';
+              clonedTicket.style.display = 'block';
+              clonedTicket.style.paddingBottom = '30px';
+            }
+            
+            // Ensure all sections are visible
+            const allSections = clonedDoc.querySelectorAll('.ticket-invoice > *');
+            allSections.forEach(section => {
+              section.style.display = 'block';
+              section.style.visibility = 'visible';
+              section.style.opacity = '1';
+            });
+            
+            // Barcode specific fixes
+            const clonedBarcode = clonedDoc.querySelector('#preview-barcode');
+            if (clonedBarcode) {
+              clonedBarcode.style.display = 'block';
+              clonedBarcode.style.visibility = 'visible';
+              clonedBarcode.style.width = '100%';
+              clonedBarcode.style.maxWidth = '400px';
+              clonedBarcode.style.height = 'auto';
+              clonedBarcode.style.margin = '0 auto';
+              clonedBarcode.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+            }
+            
+            const barcodeSection = clonedDoc.querySelector('.barcode-section');
+            if (barcodeSection) {
+              barcodeSection.style.display = 'block';
+              barcodeSection.style.visibility = 'visible';
+              barcodeSection.style.textAlign = 'center';
+            }
+          }
+        });
+        
+        // Restore original styles
+        ticketElement.style.overflow = originalOverflow;
+        ticketElement.style.height = originalHeight;
+
+        // Convert canvas to base64 image
+        const imgData = canvas.toDataURL('image/png', 1.0);
+        
+        // Send email with image
+        const response = await fetch('/api/send-ticket-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: email,
+            username: username,
+            ticketImage: imgData
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          // Reset button state
+          sendToEmailBtn.disabled = false;
+          sendToEmailBtn.innerHTML = '<i class="bi bi-envelope-fill me-2"></i>Send to Email';
+          
+          // Close ticket preview modal
+          const ticketModal = bootstrap.Modal.getInstance(document.getElementById('ticketPreviewModal'));
+          if (ticketModal) {
+            ticketModal.hide();
+          }
+          
+          // Show elegant success modal
+          document.getElementById('emailSuccessAddress').textContent = email;
+          const emailSuccessModal = new bootstrap.Modal(document.getElementById('emailSuccessModal'));
+          emailSuccessModal.show();
+        } else {
+          // Show error message
+          console.error('Email send failed:', result);
+          alert(`✗ Failed to send email: ${result.message}\n\nPlease try again or contact support.`);
+          // Re-enable button on error
+          sendToEmailBtn.disabled = false;
+          sendToEmailBtn.innerHTML = '<i class="bi bi-envelope-fill me-2"></i>Send to Email';
+        }
+      } catch (error) {
+        console.error('Error sending email:', error);
+        console.error('Error details:', error.message, error.stack);
+        alert(`✗ An error occurred while sending the email.\n\nError: ${error.message}\n\nPlease try again or contact support.`);
+        // Re-enable button on error
+        sendToEmailBtn.disabled = false;
+        sendToEmailBtn.innerHTML = '<i class="bi bi-envelope-fill me-2"></i>Send to Email';
+      }
     });
   }
 
@@ -664,12 +799,34 @@ if (confirmPaymentBtn) {
     });
   }
 
-  // Handle closing of ticket preview modal - just redirect home
+  // Handle closing of ticket preview modal - only redirect if no other modal is showing
   const ticketPreviewModalEl = document.getElementById('ticketPreviewModal');
   if (ticketPreviewModalEl) {
     ticketPreviewModalEl.addEventListener('hidden.bs.modal', function (e) {
-      // Reset transaction data and redirect to home
-      currentTransactionData = null;
+      // Check if email success modal is showing
+      const emailSuccessModal = document.getElementById('emailSuccessModal');
+      const isEmailModalShowing = emailSuccessModal && emailSuccessModal.classList.contains('show');
+      
+      // Only redirect if email modal is not showing
+      if (!isEmailModalShowing) {
+        currentTransactionData = null;
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 300);
+      }
+    });
+  }
+
+  // Handle "OK" button in email success modal - close modal and redirect to home
+  const emailSuccessOkBtn = document.getElementById('emailSuccessOkBtn');
+  if (emailSuccessOkBtn) {
+    emailSuccessOkBtn.addEventListener('click', () => {
+      // Close modal
+      const emailSuccessModal = bootstrap.Modal.getInstance(document.getElementById('emailSuccessModal'));
+      if (emailSuccessModal) {
+        emailSuccessModal.hide();
+      }
+      // Redirect to home after modal closes
       setTimeout(() => {
         window.location.href = '/';
       }, 300);
