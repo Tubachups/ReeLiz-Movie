@@ -200,7 +200,7 @@ def cleanup_old_transactions():
 def get_occupied_seats(movie_title, cinema_room, selected_date=None):
     """
     Get occupied seats for a specific movie, cinema room, and date
-    Automatically cleans up past transactions before fetching
+    Only returns seats for the selected date (current or future bookings)
     
     Args:
         movie_title: Title of the movie
@@ -213,9 +213,6 @@ def get_occupied_seats(movie_title, cinema_room, selected_date=None):
     cursor = None
     
     try:
-        # Clean up past transactions first (keeps today and future bookings)
-        cleanup_old_transactions()
-        
         connection = get_db_connection()
         if not connection:
             return []
