@@ -13,21 +13,21 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Get data from command line arguments
-    $email = isset($argv[1]) ? $argv[1] : '';
+    $username = isset($argv[1]) ? $argv[1] : '';
     $pass = isset($argv[2]) ? $argv[2] : '';
     
     // Validate inputs
-    if (empty($email) || empty($pass)) {
+    if (empty($username) || empty($pass)) {
         echo json_encode([
             'status' => 'error',
-            'message' => 'Email and password are required'
+            'message' => 'Username and password are required'
         ]);
         exit;
     }
     
-    // Get user by email
-    $stmt = $pdo->prepare("SELECT id, username, email, password FROM users WHERE email = ?");
-    $stmt->execute([$email]);
+    // Get user by username
+    $stmt = $pdo->prepare("SELECT id, username, email, password FROM users WHERE username = ?");
+    $stmt->execute([$username]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if (!$user) {
