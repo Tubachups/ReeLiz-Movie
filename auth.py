@@ -3,12 +3,12 @@ from call_php import run_php_script
 
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')
+        username = request.form.get('username')
         password = request.form.get('password')
         remember = request.form.get('remember')
         
         # Call PHP login handler
-        output = run_php_script('php/login_handler.php', [email, password])
+        output = run_php_script('php/login_handler.php', [username, password])
         
         try:
             result = json.loads(output)
