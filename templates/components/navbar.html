@@ -15,7 +15,7 @@
           <a class="nav-link" href="#" data-page="coming">Coming Soon</a>
         </li>
 
-        <li class="nav-item me-1 me-lg-4 dropdown">
+        <li class="nav-item me-1 me-lg-4 dropdown" id="genres-nav-item">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
             Genres
           </a>
@@ -53,5 +53,20 @@
     </div>
   </div>
 </nav>
+
+<script>
+  // Hide Genres dropdown on landing and login pages
+  document.addEventListener('DOMContentLoaded', function() {
+    const currentPath = window.location.pathname;
+    const genresItem = document.getElementById('genres-nav-item');
+    
+    // Hide genres on landing and login pages
+    if (currentPath === '/landing' || currentPath === '/login') {
+      if (genresItem) {
+        genresItem.style.display = 'none';
+      }
+    }
+  });
+</script>
 
 <script src="{{ url_for('static', filename='js/utils/searchFilter.js') }}"></script>
