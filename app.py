@@ -1,32 +1,43 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, session, request
 from livereload import Server
 from dotenv import load_dotenv
 import api
+import auth
+import database
+import os
+import traceback
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 load_dotenv()
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "your-secret-key-here")  # Add to .env file
 app.debug = True
-
 
 @app.route("/")
 def home():
-    return render_template("pages/index.html")
+    username = session.get('username')
+    return render_template("pages/index.html", username=username)
 
 
 @app.route("/about")
 def about():
-    return render_template("pages/about.html")
+    username = session.get('username')
+    return render_template("pages/about.html", username=username)
 
 
 @app.route("/contact")
 def contact():
-    return render_template("pages/contact.html")
+    username = session.get('username')
+    return render_template("pages/contact.html", username=username)
 
 
 @app.route("/landing")
 def landing():
-    return render_template("pages/landing.html")
+    username = session.get('username')
+    return render_template("pages/landing.html", username=username)
 
 
 @app.route("/api/genres")
@@ -39,14 +50,408 @@ def movies_route(movie_type):
     return api.get_movies(movie_type)
 
 
+@app.route("/api/movie/<int:movie_id>/schedule")
+def movie_schedule(movie_id):
+    return api.get_movie_schedule_api(movie_id)
+
+
 @app.route("/movie/<int:movie_id>")
 def movie_detail(movie_id):
     try:
+        username = session.get('username')
+        email = session.get('email', 'guest@reeliz.com')
         movie_data = api.get_movie_details(movie_id)
-        return render_template("pages/detail.html", **movie_data)
+        return render_template("pages/detail.html", username=username, email=email, **movie_data)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    return auth.login()
+    
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    return auth.signup()
+
+@app.route('/logout')
+def logout():
+    return auth.logout()
+
+@app.route('/api/prepare-transaction', methods=['POST'])
+def prepare_transaction():
+    """Get next transaction ID and generate barcode for display in modal"""
+    try:
+        data = request.json
+        
+        # Extract data from request
+        selected_date = data.get('selectedDate')  # Format: "Jan 15 (Mon), 10:00 AM"
+        cinema_room = str(data.get('cinemaRoom', ''))  # 1 or 2
+        total_amount_raw = data.get('totalAmount', '')
+        
+        # Clean and convert total_amount (remove ₱ symbol if present)
+        total_amount = str(total_amount_raw).replace('₱', '').replace(',', '').strip()
+        
+        print(f"=== PREPARE TRANSACTION ===")
+        print(f"Selected date: {selected_date}")
+        print(f"Cinema room: {cinema_room}")
+        print(f"Total amount: {total_amount}")
+        
+        # Validate required fields
+        if not all([selected_date, cinema_room, total_amount]):
+            return jsonify({
+                'success': False,
+                'message': 'Missing required fields for transaction preparation'
+            }), 400
+        
+        # Format date for database (MM/DD:HH)
+        from datetime import datetime
+        try:
+            # Extract date and time from format like "Jan 15 (Mon), 10:00 AM"
+            date_part = selected_date.split(',')[0].strip()  # "Jan 15 (Mon)"
+            time_part = selected_date.split(',')[1].strip()  # "10:00 AM"
+            
+            # Parse month and day
+            month_day = date_part.split('(')[0].strip()  # "Jan 15"
+            month_str, day_str = month_day.split()
+            
+            # Convert month name to number
+            month_map = {
+                'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04',
+                'May': '05', 'Jun': '06', 'Jul': '07', 'Aug': '08',
+                'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
+            }
+            month_num = month_map.get(month_str, '01')
+            
+            # Parse hour from time (convert to 24-hour format)
+            time_obj = datetime.strptime(time_part, "%I:%M %p")
+            hour = time_obj.strftime("%H")
+            
+            # Format as MM/DD:HH
+            db_date = f"{month_num}/{day_str.zfill(2)}:{hour}"
+            
+        except Exception as e:
+            print(f"Date parsing error: {e}")
+            # Fallback to current date/time
+            db_date = database.format_datetime_for_db()
+        
+        # Get next transaction ID
+        success, next_id, _ = database.get_next_transaction_id()
+        
+        if not success or next_id is None:
+            return jsonify({
+                'success': False,
+                'message': 'Failed to get next transaction ID'
+            }), 500
+        
+        # Generate barcode: id+date+room+amount
+        date_formatted = db_date.replace('/', '').replace(':', '')
+        barcode = f"{next_id}{date_formatted}{cinema_room}{total_amount}"
+        
+        print(f"Next ID: {next_id}")
+        print(f"DB Date: {db_date}")
+        print(f"Barcode: {barcode}")
+        
+        return jsonify({
+            'success': True,
+            'transaction_id': next_id,
+            'barcode': barcode,
+            'db_date': db_date
+        }), 200
+        
+    except Exception as e:
+        print(f"Error in prepare_transaction: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'success': False,
+            'message': f'Server error: {str(e)}'
+        }), 500
+
+@app.route('/api/confirm-transaction', methods=['POST'])
+def confirm_transaction():
+    """Insert complete transaction when user clicks Done on success modal"""
+    try:
+        data = request.json
+        
+        # Extract data from request
+        transaction_id = data.get('transaction_id')
+        barcode = data.get('barcode')
+        db_date = data.get('db_date')
+        username = session.get('username', 'Guest')
+        cinema_room = str(data.get('cinemaRoom', ''))
+        movie_title = data.get('movieTitle', '')
+        selected_seats = data.get('selectedSeats', '')
+        total_amount = str(data.get('totalAmount', '')).replace('₱', '').replace(',', '').strip()
+        
+        print(f"=== CONFIRM TRANSACTION ===")
+        print(f"Transaction ID: {transaction_id}")
+        print(f"Barcode: {barcode}")
+        print(f"Username: {username}")
+        print(f"DB Date: {db_date}")
+        print(f"Cinema room: {cinema_room}")
+        print(f"Movie title: {movie_title}")
+        print(f"Selected seats: {selected_seats}")
+        print(f"Total amount: {total_amount}")
+        print(f"Session data: {dict(session)}")
+        
+        # Validate required fields
+        if not all([transaction_id, barcode, db_date, cinema_room, movie_title, selected_seats, total_amount]):
+            missing = []
+            if not transaction_id: missing.append('transaction_id')
+            if not barcode: missing.append('barcode')
+            if not db_date: missing.append('db_date')
+            if not cinema_room: missing.append('cinemaRoom')
+            if not movie_title: missing.append('movieTitle')
+            if not selected_seats: missing.append('selectedSeats')
+            if not total_amount: missing.append('totalAmount')
+            
+            return jsonify({
+                'success': False,
+                'message': f'Missing required fields: {", ".join(missing)}'
+            }), 400
+        
+        # Insert the complete transaction with barcode
+        success, message = database.insert_transaction_with_barcode(
+            transaction_id=transaction_id,
+            date=db_date,
+            name=username,
+            room=cinema_room,
+            movie=movie_title,
+            sits=selected_seats,
+            amount=total_amount,
+            barcode=barcode
+        )
+        
+        if success:
+            return jsonify({
+                'success': True,
+                'message': message
+            }), 200
+        else:
+            return jsonify({
+                'success': False,
+                'message': message
+            }), 500
+            
+    except Exception as e:
+        print(f"Error in confirm_transaction: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'success': False,
+            'message': f'Server error: {str(e)}'
+        }), 500
+
+@app.route('/api/occupied-seats/<int:movie_id>/<cinema_room>', methods=['GET'])
+def get_occupied_seats(movie_id, cinema_room):
+    """Get occupied seats for a specific movie, cinema room, and date"""
+    try:
+        # Get movie title from movie_id
+        movie_data = api.get_movie_details(movie_id)
+        movie_title = movie_data['movie']['title']
+        
+        # Get selected date from query parameter (format: MM/DD)
+        selected_date = request.args.get('date', None)
+        
+        print(f"Fetching occupied seats - Movie: {movie_title}, Room: {cinema_room}, Date: {selected_date}")
+        
+        # Get occupied seats from database filtered by date
+        occupied = database.get_occupied_seats(movie_title, cinema_room, selected_date)
+        
+        return jsonify({
+            'success': True,
+            'occupied_seats': occupied,
+            'movie': movie_title,
+            'room': cinema_room,
+            'date': selected_date
+        }), 200
+        
+    except Exception as e:
+        print(f"Error getting occupied seats: {e}")
+        return jsonify({
+            'success': False,
+            'message': str(e),
+            'occupied_seats': []
+        }), 500
+
+@app.route('/api/send-ticket-email', methods=['POST'])
+def send_ticket_email():
+    """Send ticket details via email with embedded image"""
+    try:
+        data = request.json
+        
+        # Extract data from request
+        recipient_email = data.get('email')
+        username = data.get('username', 'Guest')
+        ticket_image = data.get('ticketImage')  # Base64 encoded image
+        
+        print(f"=== SENDING EMAIL ===")
+        print(f"To: {recipient_email}")
+        print(f"Username: {username}")
+        
+        # Validate required fields
+        if not all([recipient_email, ticket_image]):
+            print(f"✗ Missing fields - email: {recipient_email}, ticket_image: {bool(ticket_image)}")
+            return jsonify({"success": False, "message": "Missing required fields"}), 400
+        
+        # Create email content
+        sender_email = "cinemareeliz@gmail.com"
+        sender_password = "grmxczoonfgajmgn"  # App password without spaces
+        
+        # Create message
+        msg = MIMEMultipart('related')
+        msg['From'] = sender_email
+        msg['To'] = recipient_email
+        msg['Subject'] = "Your Reeliz Movie Ticket"
+        
+        # HTML email body with embedded image
+        html = f"""
+        <html>
+          <head>
+            <style>
+              body {{
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                background-color: #f0f0f0;
+                padding: 20px;
+              }}
+              .email-container {{
+                max-width: 650px;
+                margin: 0 auto;
+                background-color: white;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+              }}
+              .header {{
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 30px;
+                text-align: center;
+              }}
+              .header h1 {{
+                margin: 0;
+                font-size: 28px;
+              }}
+              .content {{
+                padding: 30px;
+                background-color: white;
+              }}
+              .ticket-image {{
+                width: 100%;
+                height: auto;
+                display: block;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+              }}
+              .message {{
+                text-align: center;
+                margin: 20px 0;
+                color: #555;
+              }}
+              .footer {{
+                background-color: #f8f9fa;
+                padding: 20px;
+                text-align: center;
+                color: #777;
+                font-size: 14px;
+              }}
+              .footer p {{
+                margin: 5px 0;
+              }}
+            </style>
+          </head>
+          <body>
+            <div class="email-container">
+              <div class="header">
+                <h1>🎬 ReeLiz Cinema</h1>
+                <p style="margin: 10px 0 0 0; font-size: 16px;">Your Movie Ticket</p>
+              </div>
+              
+              <div class="content">
+                <div class="message">
+                  <p><strong>Dear {username},</strong></p>
+                  <p>Thank you for booking with ReeLiz Cinema! Your ticket is attached below.</p>
+                  <p>Please present this ticket at the cinema entrance.</p>
+                </div>
+                
+                <img src="cid:ticket_image" alt="Movie Ticket" class="ticket-image">
+                
+                <div class="message" style="margin-top: 30px;">
+                  <p style="color: #007bff; font-weight: bold;">📧 This is your official ticket confirmation.</p>
+                  <p style="font-size: 14px; color: #666;">Save this email or take a screenshot for easy access at the cinema.</p>
+                </div>
+              </div>
+              
+              <div class="footer">
+                <p><strong>ReeLiz Cinema</strong></p>
+                <p>701P Mercedes Avenue, San Miguel, Pasig City</p>
+                <p>Thank you for choosing ReeLiz Cinema!</p>
+                <p style="margin-top: 15px;">&copy; 2025 ReeLiz Cinema. All rights reserved.</p>
+              </div>
+            </div>
+          </body>
+        </html>
+        """
+        
+        # Attach HTML content
+        html_part = MIMEText(html, 'html')
+        msg.attach(html_part)
+        
+        # Process and attach the ticket image
+        import base64
+        from email.mime.image import MIMEImage
+        
+        # Remove the data URL prefix if present
+        if ',' in ticket_image:
+            ticket_image = ticket_image.split(',')[1]
+        
+        # Decode base64 image
+        image_data = base64.b64decode(ticket_image)
+        
+        # Create image attachment
+        image = MIMEImage(image_data, name='ticket.png')
+        image.add_header('Content-ID', '<ticket_image>')
+        image.add_header('Content-Disposition', 'inline', filename='ReeLiz_Ticket.png')
+        msg.attach(image)
+        
+        # Send email via Gmail SMTP
+        try:
+            print("Connecting to Gmail SMTP server...")
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            print("Starting TLS...")
+            server.starttls()
+            print("Logging in...")
+            server.login(sender_email, sender_password)
+            print("Sending message...")
+            server.send_message(msg)
+            print("Closing connection...")
+            server.quit()
+            
+            print(f"✓ Email sent successfully to {recipient_email}")
+            return jsonify({"success": True, "message": "Email sent successfully"}), 200
+            
+        except smtplib.SMTPAuthenticationError as auth_error:
+            print(f"✗ Authentication error: {auth_error}")
+            traceback.print_exc()
+            return jsonify({"success": False, "message": "Email authentication failed. Please check credentials."}), 500
+            
+        except smtplib.SMTPException as smtp_error:
+            print(f"✗ SMTP error: {smtp_error}")
+            traceback.print_exc()
+            return jsonify({"success": False, "message": f"Email server error: {str(smtp_error)}"}), 500
+            
+        except Exception as e:
+            print(f"✗ Unexpected error in SMTP: {e}")
+            traceback.print_exc()
+            return jsonify({"success": False, "message": f"Unexpected error: {str(e)}"}), 500
+            
+    except Exception as e:
+        print(f"✗ Error in send_ticket_email: {e}")
+        traceback.print_exc()
+        return jsonify({"success": False, "message": str(e)}), 500
 
 if __name__ == "__main__":
     server = Server(app.wsgi_app)

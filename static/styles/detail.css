@@ -39,9 +39,121 @@
   font-size: 17px;
 }
 
-.btn-primary:hover {
-  background-color: #248d3c !important;
-  border-color: #248d3c !important;
+/* Base style */
+#bookNowBtn {
+  position: relative;
+  background-color: #222222;
+  color: #fff;
+  border: 2px solid #000000;
+  overflow: hidden;
+  transition: color 0.3s ease, border-color 0.3s ease;
+  padding: 14px 40px;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+}
+
+/* Bubble effect */
+#bookNowBtn::before {
+  content: "";
+  position: absolute;
+  bottom: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #34a209;
+  border-color: #34a209;
+  z-index: 0;
+  border-radius: 50% 50% 0 0;
+  transition: all 0.3s ease-in-out;
+}
+
+#bookNowBtn:hover::before {
+  bottom: 0;
+  border-radius: 0;
+}
+
+/* Keep text & icon above bubble */
+#bookNowBtn * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Icon setup */
+.btn-icon {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  font-size: 1.1rem;
+}
+
+/* Text setup */
+.btn-text {
+  transition: all 0.4s ease;
+  text-align: center;
+}
+
+/* Hover animation */
+#bookNowBtn:hover .btn-text {
+  transform: translateX(-10px);
+}
+
+#bookNowBtn:hover .btn-icon {
+  opacity: 1;
+  animation: iconBounce 0.5s ease forwards;
+}
+
+/* Fade out smoothly when unhovered */
+#bookNowBtn:not(:hover) .btn-icon {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  animation: none; /* disables bounce on fade-out */
+}
+
+/* Disabled state for coming soon movies */
+#bookNowBtn:disabled {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #fff;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+#bookNowBtn:disabled::before {
+  display: none;
+}
+
+#bookNowBtn:disabled:hover {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+#bookNowBtn:disabled:hover .btn-text {
+  transform: none;
+}
+
+#bookNowBtn:disabled:hover .btn-icon {
+  opacity: 0;
+}
+
+/* Bounce animation */
+@keyframes iconBounce {
+  0% {
+    transform: translateY(8px);
+  }
+  60% {
+    transform: translateY(-6px);
+  }
+  80% {
+    transform: translateY(2px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 .btn-outline-secondary:hover {
@@ -59,9 +171,8 @@
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(to bottom, #212529 1%, transparent 10%), 
-    linear-gradient(to bottom, transparent 75%, #ffffff 100%); 
+  background: linear-gradient(to bottom, #212529 1%, transparent 10%),
+    linear-gradient(to bottom, transparent 75%, #ffffff 100%);
   z-index: 2;
   pointer-events: none;
 }
@@ -80,4 +191,245 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Payment method option styles */
+.payment-option {
+  border: 2px solid transparent;
+  border-radius: 8px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+.payment-option:hover {
+  transform: translateY(-4px);
+}
+.payment-option.active {
+  border-color: #0d6efd;
+  box-shadow: 0 6px 18px rgba(13, 110, 253, 0.18);
+}
+
+.success-checkmark {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+}
+
+.success-checkmark .check-icon {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  border-radius: 50%;
+  box-sizing: content-box;
+  border: 4px solid #198754;
+}
+
+.success-checkmark .check-icon::before {
+  top: 3px;
+  left: -2px;
+  width: 30px;
+  transform-origin: 100% 50%;
+  border-radius: 100px 0 0 100px;
+}
+
+.success-checkmark .check-icon::after {
+  top: 0;
+  left: 30px;
+  width: 60px;
+  transform-origin: 0 50%;
+  border-radius: 0 100px 100px 0;
+  animation: rotate-circle 4.25s ease-in;
+}
+
+.success-checkmark .check-icon::before,
+.success-checkmark .check-icon::after {
+  content: "";
+  height: 100px;
+  position: absolute;
+  background: #fff;
+  transform: rotate(-45deg);
+}
+
+.success-checkmark .icon-line {
+  height: 5px;
+  background-color: #198754;
+  display: block;
+  border-radius: 2px;
+  position: absolute;
+  z-index: 10;
+}
+
+.success-checkmark .icon-line.line-tip {
+  top: 46px;
+  left: 14px;
+  width: 25px;
+  transform: rotate(45deg);
+  animation: icon-line-tip 0.75s;
+}
+
+.success-checkmark .icon-line.line-long {
+  top: 38px;
+  right: 8px;
+  width: 47px;
+  transform: rotate(-45deg);
+  animation: icon-line-long 0.75s;
+}
+
+.success-checkmark .icon-circle {
+  top: -4px;
+  left: -4px;
+  z-index: 10;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  position: absolute;
+  box-sizing: content-box;
+  border: 4px solid rgba(25, 135, 84, 0.5);
+}
+
+.success-checkmark .icon-fix {
+  top: 8px;
+  width: 5px;
+  left: 26px;
+  z-index: 1;
+  height: 85px;
+  position: absolute;
+  transform: rotate(-45deg);
+  background-color: #fff;
+}
+
+@keyframes rotate-circle {
+  0% {
+    transform: rotate(-45deg);
+  }
+  5% {
+    transform: rotate(-45deg);
+  }
+  12% {
+    transform: rotate(-405deg);
+  }
+  100% {
+    transform: rotate(-405deg);
+  }
+}
+
+@keyframes icon-line-tip {
+  0% {
+    width: 0;
+    left: 1px;
+    top: 19px;
+  }
+  54% {
+    width: 0;
+    left: 1px;
+    top: 19px;
+  }
+  70% {
+    width: 50px;
+    left: -8px;
+    top: 37px;
+  }
+  84% {
+    width: 17px;
+    left: 21px;
+    top: 48px;
+  }
+  100% {
+    width: 25px;
+    left: 14px;
+    top: 45px;
+  }
+}
+
+@keyframes icon-line-long {
+  0% {
+    width: 0;
+    right: 46px;
+    top: 54px;
+  }
+  65% {
+    width: 0;
+    right: 46px;
+    top: 54px;
+  }
+  84% {
+    width: 55px;
+    right: 0px;
+    top: 35px;
+  }
+  100% {
+    width: 47px;
+    right: 8px;
+    top: 38px;
+  }
+}
+
+/* Ticket Preview Modal Styles */
+.ticket-invoice {
+  font-family: "Courier New", monospace;
+  border: none;
+}
+
+.ticket-invoice h3 {
+  font-weight: bold;
+}
+
+#preview-seats {
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+#ticketPreviewModal .modal-lg {
+  max-width: 700px;
+}
+
+#ticketPreviewModal .modal-content {
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+#ticketPreviewModal .btn {
+  padding: 10px 24px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+#ticketPreviewModal .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ticket-logo {
+  display: block;
+  margin: 0 auto 5px auto;
+  max-width: 120px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.barcode-section {
+  background: white;
+  padding: 20px 15px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.barcode-section svg {
+  max-width: 400px;
+  width: 100%;
+  height: auto;
+  display: inline-block;
+  margin: 0 auto;
+  background: white;
+  image-rendering: crisp-edges;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+#preview-barcode-number {
+  font-family: "Courier New", monospace;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #2c3e50;
+  letter-spacing: 1px;
 }

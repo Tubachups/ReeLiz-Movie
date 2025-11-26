@@ -1,15 +1,5 @@
-<style>
-  .dropdown-menu {
-    min-width: 275px;
-  }
 
-  .genres-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-  }
-</style>
-
-
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/navbar.css')}}">
 <nav class="navbar navbar-expand-md bg-dark " data-bs-theme="dark">
   <div class="container-fluid mx-3">
     <a class="navbar-brand " href="{{ url_for('landing') }}">ReeLiz</a>
@@ -18,13 +8,14 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mx-auto mb-2 mb-md-0 text-start   ">
-        <li class="nav-item me-2 me-lg-4">
+        <li class="nav-item me-1 me-lg-4">
           <a class="nav-link " href="#" data-page="now">Now Showing</a>
         </li>
-        <li class="nav-item me-2 me-lg-4">
+        <li class="nav-item me-1 me-lg-4">
           <a class="nav-link" href="#" data-page="coming">Coming Soon</a>
         </li>
-        <li class="nav-item me-2 me-lg-4 dropdown">
+
+        <li class="nav-item me-1 me-lg-4 dropdown" id="genres-nav-item">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
             Genres
           </a>
@@ -32,6 +23,29 @@
 
           </ul>
         </li>
+        
+        {% if session.get('username') %}
+        <!-- Logged-in user dropdown -->
+        <li class="nav-item me-1 me-lg-4 dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="fa-solid fa-user"></i> {{ session.get('username') }}
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="{{ url_for('logout') }}">
+                <i class="fa-solid fa-right-from-bracket me-1"></i> Sign Out
+              </a>
+            </li>
+          </ul>
+        </li>
+        {% else %}
+        <!-- Not logged in -->
+        <li class="nav-item me-1 me-lg-4">
+          <a class="nav-link" href="{{ url_for('login') }}">
+            <i class="fa-solid fa-user"></i> Log-In
+          </a>
+        </li>
+        {% endif %}
       </ul>
       <form class="d-flex" role="search">
         <input class="form-control me-2" id="search-input" type="search" placeholder="Search movies...">
@@ -40,5 +54,19 @@
   </div>
 </nav>
 
+<script>
+  // Hide Genres dropdown on landing and login pages
+  document.addEventListener('DOMContentLoaded', function() {
+    const currentPath = window.location.pathname;
+    const genresItem = document.getElementById('genres-nav-item');
+    
+    // Hide genres on landing and login pages
+    if (currentPath === '/landing' || currentPath === '/login') {
+      if (genresItem) {
+        genresItem.style.display = 'none';
+      }
+    }
+  });
+</script>
 
 <script src="{{ url_for('static', filename='js/utils/searchFilter.js') }}"></script>

@@ -6,9 +6,27 @@
 <link rel="stylesheet" href="{{ url_for( 'static', filename='styles/layout-seat.css')}}" />
 <link rel="stylesheet"
   href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=shopping_cart" />
+<!-- JsBarcode for barcode generation -->
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<!-- html2canvas and jsPDF for PDF generation -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 {% endblock %}
 
 {% block body %}
+<!-- Hidden element to check auth status -->
+<div id="userAuthStatus" 
+     data-authenticated="{% if username %}true{% else %}false{% endif %}"
+     data-username="{% if username %}{{ username }}{% else %}Guest{% endif %}"
+     data-email="{% if email %}{{ email }}{% else %}guest@reeliz.com{% endif %}" 
+     style="display: none;"></div>
+
+<!-- Hidden element to store movie schedule -->
+<div id="movieSchedule" 
+     data-allowed-weekdays="{% if schedule %}{{ schedule.allowed_weekdays | join(',') }}{% endif %}"
+     data-time-slots="{% if schedule %}{{ schedule.time_slots | join(',') }}{% endif %}"
+     style="display: none;"></div>
+
 <!-- Movie Detail Section -->
 <section class="movie-detail py-5 d-flex align-items-center min-vh-100 overflow-hidden position-relative"
   style="--poster-url: url('https://image.tmdb.org/t/p/original{{ movie.poster_path }}');">
@@ -43,9 +61,10 @@
           <p><strong>Writers:</strong> {{ writers | join(', ') if writers else 'N/A' }}</p>
         </div>
 
-        <button id="bookNowBtn" class="btn btn-primary mt-1 px-4 py-2 rounded-3">
-          Book Now
-        </button>
+          <button id="bookNowBtn" class="btn {% if is_now_showing %}btn-primary{% else %}btn-secondary{% endif %} mt-1 rounded-3" {% if not is_now_showing %}disabled{% endif %}>
+            <span class="btn-text">{% if is_now_showing %}Book Now{% else %}Coming Soon{% endif %}</span>
+            <i class="fa-solid fa-calendar-days btn-icon"></i>
+          </button>
       </div>
     </div>
   </div>
@@ -71,8 +90,301 @@
       </div>
 
       <div class="modal-footer border-0 d-flex justify-content-center gap-3">
-        <button type="button" class="btn btn-primary">Proceed</button>
+        <button type="button" class="btn btn-primary" id="paymentModalProceedBtn">Proceed</button>
         <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sign In Required Modal -->
+<div class="modal fade" id="signInRequiredModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title d-flex align-items-center gap-2" id="signInRequiredModalLabel">
+          Log In Required
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body text-center">
+        <h5 class="mb-3">You need to log in to continue with your booking.</h5>
+        <h3 class="text-muted small">Please log in or create an account to proceed to checkout.</h3>
+      </div>
+
+      <div class="modal-footer border-0 d-flex justify-content-center gap-3">
+        <a href="{{ url_for('login') }}" class="btn btn-primary">
+          <i class="fa-solid fa-right-to-bracket me-2"></i>log In
+        </a>
+        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<!-- Payment Method Modal (Bank / GCash) -->
+<div class="modal fade" id="paymentMethodModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title d-flex align-items-center gap-2" id="paymentMethodModalLabel">
+          <span class="material-symbols-outlined"></span>
+          Choose Payment Method
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body text-center">
+        <p>Please select a payment method:</p>
+        <div class="d-flex gap-3 justify-content-center align-items-center flex-wrap">
+          <button type="button" class="payment-option btn p-2 bg-transparent" data-method="bank" aria-pressed="false">
+            <img src="{{ url_for('static', filename='styles/img/Banks.jpeg') }}" alt="Bank" class="img-fluid" style="max-width:100px;" />
+            <!-- <div class="mt-2">Banks</div> -->
+          </button>
+
+          <button type="button" class="payment-option btn p-2 bg-transparent" data-method="gcash" aria-pressed="false">
+            <img src="{{ url_for('static', filename='styles/img/Ewallet.jpeg') }}" alt="GCash" class="img-fluid" style="max-width:100px;" />
+            <!-- <div class="mt-2">E-Wallet</div> -->
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 d-flex justify-content-center gap-3">
+        <button type="button" class="btn btn-primary" id="confirmPaymentBtn" disabled>Confirm Payment</button>
+        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ticket Preview Modal -->
+<div class="modal fade" id="ticketPreviewModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header border-0 bg-dark text-white">
+        <h5 class="modal-title">
+          <i class="fa-solid fa-ticket me-2"></i>Ticket Preview
+        </h5>
+      </div>
+
+      <div class="modal-body p-4">
+        <!-- Ticket Layout -->
+        <div class="ticket-invoice border rounded p-4 bg-light">
+          <!-- Logo and Header -->
+          <div class="text-center mb-4 pb-3 border-bottom">
+            <img src="{{ url_for('static', filename='styles/img/Reeliz_Receipt.png') }}" 
+                 alt="ReeLiz Logo" 
+                 class="ticket-logo mb-3"
+                 style="max-width: 120px; height: auto;">
+            <h3 class="fw-bold mb-2">ReeLiz Cinema</h3>
+            <p class="mb-0 small text-muted">701P Mercedes Avenue,</p>
+            <p class="mb-0 small text-muted">San Miguel, Pasig City</p>
+          </div>
+
+          <!-- Movie Details -->
+          <div class="mb-4">
+            <h4 class="fw-bold mb-3 text-center" id="preview-movie-title">Movie Title</h4>
+            
+            <div class="row g-3">
+              <div class="col-12">
+                <p class="mb-2 fs-5"><strong>Number of Seats:</strong> <span id="preview-seat-count">0</span></p>
+                <p class="mb-2 fs-5"><strong>Selected Seats:</strong></p>
+                <div class="bg-white border rounded p-3 text-center">
+                  <h4 class="mb-0 fw-bold" id="preview-seats">-</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking Summary -->
+          <div class="mb-4 pb-3 border-bottom">
+            <h5 class="fw-bold mb-3">Movie Tickets</h5>
+            <div class="row">
+              <div class="col-6">
+                <p class="mb-2"><strong>Date and Time:</strong></p>
+                <p class="mb-2 fs-6" id="preview-date-time">-</p>
+              </div>
+              <div class="col-6">
+                <p class="mb-2"><strong>Cinema Room:</strong></p>
+                <p class="mb-2 fs-5 fw-bold" id="preview-cinema">-</p>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-6">
+                <p class="mb-2"><strong>Tickets:</strong></p>
+                <p class="mb-2 fs-5 fw-bold" id="preview-ticket-count">0</p>
+              </div>
+              <div class="col-6">
+                <p class="mb-2"><strong>Total Price:</strong></p>
+                <h3 class="text-primary mb-0">₱<span id="preview-total">0</span></h3>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reservation Details -->
+          <div class="mb-4">
+            <h5 class="fw-bold mb-3">Reservation</h5>
+            <p class="mb-2 fs-5"><strong>Username:</strong> <span id="preview-username">-</span></p>
+            <p class="mb-2 fs-5"><strong>Email Address:</strong> <span id="preview-email">-</span></p>
+          </div>
+
+          <!-- Barcode Section -->
+          <div class="barcode-section text-center mb-4 pb-3">
+            <svg id="preview-barcode"></svg>
+            <p class="mb-0 mt-3"><strong>Barcode No.:</strong> <span id="preview-barcode-number">-</span></p>
+          </div>
+
+          <!-- Invoice Notice -->
+          <div class="bg-info bg-opacity-10 border border-info rounded p-3 mt-4">
+            <p class="mb-0 small text-center">
+              <i class="fa-solid fa-circle-info me-2"></i>
+              This will serve as your official invoice for your movie ticket reservation. 
+              Please keep this for your records.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 d-flex justify-content-center gap-3">
+        <button type="button" class="btn btn-primary" id="sendToEmailBtn">
+          <i class="fa-solid fa-envelope me-2"></i>Send to Email
+        </button>
+        <button type="button" class="btn btn-success" id="downloadCopyBtn">
+          <i class="fa-solid fa-download me-2"></i>Download Copy
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Success Modal with Animation -->
+<div class="modal fade" id="successModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body text-center py-5">
+        <div class="success-checkmark mb-4">
+          <div class="check-icon">
+            <span class="icon-line line-tip"></span>
+            <span class="icon-line line-long"></span>
+            <div class="icon-circle"></div>
+            <div class="icon-fix"></div>
+          </div>
+        </div>
+        <h3 class="text-success mb-3">Payment Successful!</h3>
+        <p class="text-muted mb-4">Your booking has been confirmed.</p>
+        <p class="small">Barcode: <strong id="transactionBarcode"></strong></p>
+        <p class="small">You can download a soft copy of your ticket or send it via email.</p>
+      </div>
+      <div class="modal-footer border-0 d-flex justify-content-center">
+        <button type="button" class="btn btn-success px-5" data-bs-dismiss="modal">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Email Sent Success Modal -->
+<div class="modal fade" id="emailSuccessModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-body text-center p-5">
+        <!-- Email Icon Animation -->
+        <div class="email-sent-icon mb-4">
+          <div class="email-animation">
+            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#28a745" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+              <circle cx="18" cy="18" r="3" fill="#28a745" stroke="white" stroke-width="2">
+                <animate attributeName="r" from="0" to="3" dur="0.5s" begin="0.3s" fill="freeze"/>
+              </circle>
+              <path d="M16.5 18l0.75 0.75 1.5-1.5" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="0.5s" fill="freeze"/>
+              </path>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Success Message -->
+        <h3 class="text-success fw-bold mb-3">
+          <i class="bi bi-check-circle-fill me-2"></i>Email Sent Successfully!
+        </h3>
+        <p class="text-muted mb-4">Your ticket has been sent to:</p>
+        <p class="fw-bold text-primary mb-4" id="emailSuccessAddress" style="font-size: 1.1rem;">email@example.com</p>
+        
+        <!-- Additional Info -->
+        <div class="alert alert-info border-0 bg-info bg-opacity-10 mb-0">
+          <i class="bi bi-info-circle me-2"></i>
+          <small>Please check your inbox (and spam folder if needed)</small>
+        </div>
+      </div>
+      
+      <div class="modal-footer border-0 bg-light d-flex justify-content-center pb-4">
+        <button type="button" class="btn btn-success px-5 rounded-pill" id="emailSuccessOkBtn">
+          <i class="bi bi-check-lg me-2"></i>OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Email Sent Modal Animations */
+  .email-sent-icon {
+    animation: scaleIn 0.5s ease-out;
+  }
+  
+  @keyframes scaleIn {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  .email-animation svg {
+    filter: drop-shadow(0 4px 6px rgba(40, 167, 69, 0.2));
+  }
+  
+  #emailSuccessModal .modal-content {
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  
+  #emailSuccessModal .alert {
+    border-radius: 10px;
+  }
+</style>
+
+<!-- Transaction Failed Modal -->
+<div class="modal fade" id="transactionFailedModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0 bg-danger text-white">
+        <h5 class="modal-title d-flex align-items-center gap-2" id="transactionFailedModalLabel">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          Transaction Failed
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body text-center py-4">
+        <div class="mb-4">
+          <i class="fa-solid fa-triangle-exclamation text-danger" style="font-size: 4rem;"></i>
+        </div>
+        <h4 class="text-danger mb-3">Transaction Could Not Be Completed</h4>
+        <p class="text-muted mb-2">We encountered an error while processing your transaction.</p>
+        <p class="text-muted small" id="transactionErrorMessage">Please try again or contact support if the issue persists.</p>
+      </div>
+
+      <div class="modal-footer border-0 d-flex justify-content-center gap-3">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Try Again</button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
       </div>
     </div>
   </div>
