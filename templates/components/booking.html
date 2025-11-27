@@ -12,13 +12,13 @@
           </div>
           <div class="time-select my-3">
             <h3 class="mb-4" style="text-align: center">Time Showing:</h3>
-            <input type="text" id="showtime" class="form-control text-center" readonly value="Select a cinema">
-            <small class="text-muted d-block mt-2 text-center">Time changes based on selected cinema</small>
+              <input type="text" id="showtime" class="form-control text-center text-white bg-dark border-secondary" readonly value="Select a cinema">
+            <small class="text-white-50 d-block mt-2 text-center">Time changes based on selected cinema</small>
           </div>
         </div>
 
         <!-- Ticket Summary Panel -->
-        <div class="ticketing bg-body-tertiary rounded-4 p-4 shadow sticky-lg-top">
+            <div class="ticketing bg-body-tertiary rounded-4 p-4 shadow sticky-lg-top">
           <h2 class="h4 mb-4">Selected Seats:</h2>
           <div class="ticket-info">
             <p>Number of Seats: <span id="seat-count">0</span></p>
@@ -40,15 +40,14 @@
               >
             </p>
             <div id="PaymentBtn" class="d-flex gap-2">
-            <button id="ProceedBtn" class="btn btn-primary flex-grow-1" disabled>
+            <button id="ProceedBtn" class="btn btn-primary flex-grow-1" style="border: 2px solid #0b44c1ff;" disabled>
               Proceed to Payment
             </button>
 
 
-          <button id="CancelBtn" class="btn btn-outline-secondary flex-grow-1 nav-link border border-dark" 
-                  data-page="now">
-            Cancel
-          </button>
+              <button id="CancelBtn" class="btn btn-outline-secondary flex-grow-1 nav-link" style="border: 2px solid #a83b08ff;">
+              Cancel
+              </button>
             </div>
           </div>
         </div>
@@ -74,13 +73,13 @@
           </div>
 
           <!-- Loading Spinner -->
-          <div id="seatsLoadingSpinner" class="text-center py-5" style="min-height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-            <div class="spinner-border text-primary mb-3" role="status" style="width: 3.5rem; height: 3.5rem; border-width: 0.3rem;">
-              <span class="visually-hidden">Loading...</span>
+            <div id="seatsLoadingSpinner" class="text-center py-5" style="min-height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+              <div class="spinner-border text-light mb-3" role="status" style="width: 3.5rem; height: 3.5rem; border-width: 0.3rem;">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <h5 class="text-white mb-2">Loading Available Seats</h5>
+              <p class="text-white-50 small">Please wait while we check seat availability...</p>
             </div>
-            <h5 class="text-primary mb-2">Loading Available Seats</h5>
-            <p class="text-muted small">Please wait while we check seat availability...</p>
-          </div>
 
           <!-- Cinema Carousel (hidden until seats are loaded) -->
           <div id="cinemaCarousel" class="carousel slide mb-3 d-none" data-bs-ride="false">

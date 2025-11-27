@@ -9,6 +9,7 @@
 
 .navbar {
   overflow: visible;
+  background-color: #000000 !important;
 }
 /* Make navbar indicator specific to navbar only */
 .navbar .nav-link.active {
@@ -22,7 +23,7 @@
   bottom: -1px;
   width: 60%;
   height: 4px;
-  background: #5a5858;
+  background: #ECB365;
   border-radius: 3px;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
 }
