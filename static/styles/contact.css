@@ -1,5 +1,15 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
+/* DARK THEME */
+body {
+  background: linear-gradient(135deg, #050517 0%, #0a1a4d 50%, #000000 100%);
+  min-height: 100vh;
+}
+
+.head1 {
+  color: #fff;
+}
+
 .contact-item, h1 {
   animation: fadeInUp 0.6s ease-out forwards; 
 }
@@ -26,14 +36,45 @@
   opacity: 0;
   animation: fadeInUp 0.6s ease-out forwards;
   animation-delay: 0.8s;
+  background-color: #061032 !important;
+  border: 2px solid #1a3a7d;
+}
+
+.contact-form label {
+  color: #fff;
+}
+
+.contact-form input,
+.contact-form textarea {
+  background-color: #061333 !important;
+  color: #fff !important;
+  border-color: #114c81 !important;
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+  color: #8ab4f8 !important;
 }
 
 .contact-form button {
   transition: 0.3s ease;
+  background-color: #1a3a7d !important;
+  border-color: #0f3669 !important;
+  color: #fff;
 }
 
 .contact-form button:hover {
   opacity: .9;
+  background-color: #2a5aad !important;
+}
+
+/* Contact info text colors */
+.contact-subitem p {
+  color: #fff;
+}
+
+.contact-subitem a {
+  color: #4da6ff !important;
 }
 
 
