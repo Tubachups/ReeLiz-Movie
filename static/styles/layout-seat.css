@@ -42,7 +42,7 @@
   height: 45px;
   transition: 0.2s;
   user-select: none;
-  color: white;
+  color: rgb(0, 15, 56);
 }
 
 /* Seat states */

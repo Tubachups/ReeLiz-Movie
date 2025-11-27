@@ -1,3 +1,33 @@
+.booking-section {
+  background: linear-gradient(135deg, #050517 0%, #071543 50%, #000000 100%);
+
+}
+
+.booking-section .ticketing {
+  background-color: #1a1a2e !important;
+  color: white;
+  border: 2px solid #2f0da8;
+
+}
+
+.legend,
+.legend .d-flex {
+  color: #fff;
+}
+
+
+
+.booking-section h2,
+.booking-section h3,
+.booking-section h4 {
+  color: #fff;
+}
+
+#showtime {
+  color: #fff !important;
+  border-color: #2f0da8 !important;
+}
+
 .thumbnail {
   max-width: 300px;
 }
@@ -12,19 +42,30 @@
   animation-delay: 0.4s;
 }
 
+
+.date-pill:active {
+  background: #1f1169;
+}
+
 .date-pill {
-  background: #f1f1f1;
+  background: #053a97;
   cursor: pointer;
   transition: 0.3s;
+  color: white;
 }
 
 .date-pill:hover {
-  background: #f9ffdf;
+  background: #261384;
   transform: translateY(-5px);
 }
 
 .date-pill.selected {
   font-weight: bold;
+  background: #107ebd;
+}
+
+.date-pill.selected:hover {
+  background: #6f01ff;
 }
 
 .date-month {
@@ -172,7 +213,7 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(to bottom, #212529 1%, transparent 10%),
-    linear-gradient(to bottom, transparent 75%, #ffffff 100%);
+    linear-gradient(to bottom, transparent 75%, #000000 100%);
   z-index: 2;
   pointer-events: none;
 }
