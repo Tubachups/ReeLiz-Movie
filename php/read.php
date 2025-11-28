@@ -28,7 +28,7 @@ try {
         
     } elseif ($table === 'transaction') {
         // Read all transactions
-        $stmt = $pdo->prepare("SELECT id, date, name, room, movie, sits, amount, barcode FROM transaction ORDER BY id DESC");
+        $stmt = $pdo->prepare("SELECT id, date, name, room, movie, sits, amount, barcode, remarks FROM transaction ORDER BY id DESC");
         $stmt->execute();
         $transactions = $stmt->fetchAll();
         

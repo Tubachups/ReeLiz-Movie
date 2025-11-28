@@ -9,7 +9,6 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        remember = request.form.get('remember')
         
         # Check for admin login
         if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:

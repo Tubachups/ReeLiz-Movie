@@ -61,13 +61,14 @@ try {
         $sits = isset($data['sits']) ? $data['sits'] : '';
         $amount = isset($data['amount']) ? $data['amount'] : 0;
         $barcode = isset($data['barcode']) ? $data['barcode'] : '';
+        $remarks = 'Active'; // Default value for new transactions
         
         if (empty($name) || empty($movie)) {
             sendResponse('error', 'Name and movie are required');
         }
         
-        $stmt = $pdo->prepare("INSERT INTO transaction (date, name, room, movie, sits, amount, barcode) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$date, $name, $room, $movie, $sits, $amount, $barcode]);
+        $stmt = $pdo->prepare("INSERT INTO transaction (date, name, room, movie, sits, amount, barcode, remarks) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$date, $name, $room, $movie, $sits, $amount, $barcode, $remarks]);
         
         sendResponse('success', 'Transaction created successfully', ['id' => $pdo->lastInsertId()]);
         
