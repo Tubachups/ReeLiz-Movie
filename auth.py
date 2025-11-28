@@ -1,13 +1,25 @@
 from flask import render_template, json, request, redirect, url_for, session
 from call_php import run_php_script
 
+# Admin credentials
+ADMIN_USERNAME = 'admin'
+ADMIN_PASSWORD = 'admin123'
+
 def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
         remember = request.form.get('remember')
         
-        # Call PHP login handler
+        # Check for admin login
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            session['user_id'] = 0
+            session['username'] = 'Admin'
+            session['email'] = 'admin@reeliz.com'
+            session['is_admin'] = True
+            return redirect(url_for('admin_dashboard'))
+        
+        # Call PHP login handler for regular users
         output = run_php_script('php/login_handler.php', [username, password])
         
         try:
@@ -17,6 +29,7 @@ def login():
                 session['user_id'] = result['user']['id']
                 session['username'] = result['user']['username']
                 session['email'] = result['user']['email']
+                session['is_admin'] = False
                 return redirect(url_for('landing'))
             else:
                 return render_template('pages/login.html', error=result['message'])
