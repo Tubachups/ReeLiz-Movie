@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, session, request
+from flask import Flask, render_template, jsonify, session, request, redirect, url_for
 from livereload import Server
 from dotenv import load_dotenv
 import api
@@ -7,8 +7,10 @@ import database
 import os
 import traceback
 import smtplib
+import json
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from call_php import run_php_script
 
 load_dotenv()
 app = Flask(__name__)
@@ -77,6 +79,134 @@ def signup():
 @app.route('/logout')
 def logout():
     return auth.logout()
+
+
+# Admin Dashboard Routes
+@app.route('/admin')
+def admin_dashboard():
+    """Admin dashboard page - only accessible by admin users"""
+    if not session.get('is_admin'):
+        return redirect(url_for('login'))
+    return render_template('pages/admin.html')
+
+
+@app.route('/api/admin/users')
+def admin_get_users():
+    """Get all users for admin dashboard"""
+    if not session.get('is_admin'):
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+    
+    try:
+        output = run_php_script('php/read.php', ['users'])
+        result = json.loads(output)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+@app.route('/api/admin/users/create', methods=['POST'])
+def admin_create_user():
+    """Create new user from admin dashboard"""
+    if not session.get('is_admin'):
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+    
+    try:
+        data = request.json
+        output = run_php_script('php/create.php', ['users', json.dumps(data)])
+        result = json.loads(output)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+@app.route('/api/admin/users/update', methods=['POST'])
+def admin_update_user():
+    """Update user from admin dashboard"""
+    if not session.get('is_admin'):
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+    
+    try:
+        data = request.json
+        output = run_php_script('php/update.php', ['users', json.dumps(data)])
+        result = json.loads(output)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+@app.route('/api/admin/users/delete', methods=['POST'])
+def admin_delete_user():
+    """Delete user from admin dashboard"""
+    if not session.get('is_admin'):
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+    
+    try:
+        data = request.json
+        output = run_php_script('php/delete.php', ['users', str(data.get('id'))])
+        result = json.loads(output)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+@app.route('/api/admin/transactions')
+def admin_get_transactions():
+    """Get all transactions for admin dashboard"""
+    if not session.get('is_admin'):
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+    
+    try:
+        output = run_php_script('php/read.php', ['transaction'])
+        result = json.loads(output)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+@app.route('/api/admin/transactions/create', methods=['POST'])
+def admin_create_transaction():
+    """Create new transaction from admin dashboard"""
+    if not session.get('is_admin'):
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+    
+    try:
+        data = request.json
+        output = run_php_script('php/create.php', ['transaction', json.dumps(data)])
+        result = json.loads(output)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+@app.route('/api/admin/transactions/update', methods=['POST'])
+def admin_update_transaction():
+    """Update transaction from admin dashboard"""
+    if not session.get('is_admin'):
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+    
+    try:
+        data = request.json
+        output = run_php_script('php/update.php', ['transaction', json.dumps(data)])
+        result = json.loads(output)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+@app.route('/api/admin/transactions/delete', methods=['POST'])
+def admin_delete_transaction():
+    """Delete transaction from admin dashboard"""
+    if not session.get('is_admin'):
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+    
+    try:
+        data = request.json
+        output = run_php_script('php/delete.php', ['transaction', str(data.get('id'))])
+        result = json.loads(output)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 
 @app.route('/api/prepare-transaction', methods=['POST'])
 def prepare_transaction():
