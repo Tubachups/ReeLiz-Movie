@@ -76,13 +76,14 @@ try {
         $sits = isset($data['sits']) ? $data['sits'] : '';
         $amount = isset($data['amount']) ? $data['amount'] : 0;
         $barcode = isset($data['barcode']) ? $data['barcode'] : '';
+        $remarks = isset($data['remarks']) ? $data['remarks'] : 'Active';
         
         if (empty($id)) {
             sendResponse('error', 'Transaction ID is required');
         }
         
-        $stmt = $pdo->prepare("UPDATE transaction SET date = ?, name = ?, room = ?, movie = ?, sits = ?, amount = ?, barcode = ? WHERE id = ?");
-        $stmt->execute([$date, $name, $room, $movie, $sits, $amount, $barcode, $id]);
+        $stmt = $pdo->prepare("UPDATE transaction SET date = ?, name = ?, room = ?, movie = ?, sits = ?, amount = ?, barcode = ?, remarks = ? WHERE id = ?");
+        $stmt->execute([$date, $name, $room, $movie, $sits, $amount, $barcode, $remarks, $id]);
         
         if ($stmt->rowCount() > 0) {
             sendResponse('success', 'Transaction updated successfully');

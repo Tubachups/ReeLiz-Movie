@@ -68,10 +68,6 @@
                     required>
                   <label for="loginPassword"><i class="fa-solid fa-lock me-1"></i> Password</label>
                 </div>
-                <div class="mb-3 form-check">
-                  <input type="checkbox" class="form-check-input" id="rememberMe" name="remember">
-                  <label class="form-check-label" for="rememberMe">Remember me</label>
-                </div>
                 <button type="submit" class="btn btn-ghost w-100 py-2">Login</button>
               </form>
 
@@ -240,6 +236,12 @@
     margin: 0 !important;
     max-width: 90vw !important;
     width: auto !important;
+  }
+  
+  /* Enable immediate smooth scroll for terms content */
+  #termsModal .modal-body {
+    scroll-behavior: auto !important;
+    -webkit-overflow-scrolling: touch;
   }
   
   /* Ensure it stays centered on small screens too */

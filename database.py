@@ -57,7 +57,7 @@ def get_next_transaction_id():
         if connection and connection.is_connected():
             connection.close()
 
-def insert_transaction_with_barcode(transaction_id, date, name, room, movie, sits, amount, barcode):
+def insert_transaction_with_barcode(transaction_id, date, name, room, movie, sits, amount, barcode, remarks='Active'):
     """
     Insert a complete transaction with barcode when user clicks "Done"
     The ID in the barcode determines the transaction ID
@@ -75,7 +75,7 @@ def insert_transaction_with_barcode(transaction_id, date, name, room, movie, sit
         
         print(f"=== INSERTING TRANSACTION ===")
         print(f"ID: {transaction_id}, Date: {date}, Name: {name}, Room: {room}")
-        print(f"Movie: {movie}, Sits: {sits}, Amount: {amount}, Barcode: {barcode}")
+        print(f"Movie: {movie}, Sits: {sits}, Amount: {amount}, Barcode: {barcode}, Remarks: {remarks}")
         
         # Ensure all values are strings for database insertion
         date_str = str(date)
@@ -85,25 +85,26 @@ def insert_transaction_with_barcode(transaction_id, date, name, room, movie, sit
         sits_str = str(sits)
         amount_str = str(amount)
         barcode_str = str(barcode)
+        remarks_str = str(remarks)
         
         # Insert the complete transaction with explicit ID and barcode
         insert_query = """
-        INSERT INTO transaction (id, date, name, room, movie, sits, amount, barcode)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO transaction (id, date, name, room, movie, sits, amount, barcode, remarks)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
         
-        cursor.execute(insert_query, (transaction_id, date_str, name_str, room_str, movie_str, sits_str, amount_str, barcode_str))
+        cursor.execute(insert_query, (transaction_id, date_str, name_str, room_str, movie_str, sits_str, amount_str, barcode_str, remarks_str))
         connection.commit()
         
         print(f"✓ Transaction inserted successfully with ID: {transaction_id}")
         
         # Verify insertion
-        cursor.execute("SELECT id, date, name, room, movie, sits, amount, barcode FROM transaction WHERE id = %s", (transaction_id,))
+        cursor.execute("SELECT id, date, name, room, movie, sits, amount, barcode, remarks FROM transaction WHERE id = %s", (transaction_id,))
         result = cursor.fetchone()
         if result:
             print(f"✓ Verified complete transaction:")
             print(f"  ID={result[0]}, Date={result[1]}, Name={result[2]}, Room={result[3]}")
-            print(f"  Movie={result[4]}, Sits={result[5]}, Amount={result[6]}, Barcode={result[7]}")
+            print(f"  Movie={result[4]}, Sits={result[5]}, Amount={result[6]}, Barcode={result[7]}, Remarks={result[8]}")
             return True, "Transaction saved successfully"
         else:
             print(f"✗ Warning: Could not verify transaction ID {transaction_id}")

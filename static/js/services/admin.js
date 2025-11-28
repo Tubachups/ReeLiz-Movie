@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (data.status === 'success' && data.data) {
           data.data.forEach(trans => {
             const row = document.createElement('tr');
+            const remarksClass = trans.remarks === 'Active' ? 'text-success' : 'text-secondary';
             row.innerHTML = `
               <td>${trans.id}</td>
               <td>${trans.date || 'N/A'}</td>
@@ -71,13 +72,16 @@ document.addEventListener('DOMContentLoaded', function() {
               <td>${trans.sits}</td>
               <td>₱${trans.amount}</td>
               <td><small>${trans.barcode}</small></td>
+              <td><span class="${remarksClass} fw-bold">${trans.remarks || 'Active'}</span></td>
               <td>
-                <button class="btn btn-sm btn-primary btn-action me-1" onclick='editTransaction(${JSON.stringify(trans)})'>
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-                <button class="btn btn-sm btn-danger btn-action" onclick="deleteTransaction(${trans.id})">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
+                <div class="d-flex gap-1">
+                  <button class="btn btn-sm btn-primary btn-action" onclick='editTransaction(${JSON.stringify(trans)})'>
+                    <i class="fa-solid fa-pen"></i>
+                  </button>
+                  <button class="btn btn-sm btn-danger btn-action" onclick="deleteTransaction(${trans.id})">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
               </td>
             `;
             tbody.appendChild(row);
@@ -240,7 +244,8 @@ document.addEventListener('DOMContentLoaded', function() {
       movie: document.getElementById('editTransMovie').value,
       sits: document.getElementById('editTransSeats').value,
       amount: document.getElementById('editTransAmount').value,
-      barcode: document.getElementById('editTransBarcode').value
+      barcode: document.getElementById('editTransBarcode').value,
+      remarks: document.getElementById('editTransRemarks').value
     };
 
     fetch('/api/admin/transactions/update', {
@@ -311,6 +316,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('editTransSeats').value = trans.sits;
     document.getElementById('editTransAmount').value = trans.amount;
     document.getElementById('editTransBarcode').value = trans.barcode;
+    document.getElementById('editTransRemarks').value = trans.remarks || 'Active';
     new bootstrap.Modal(document.getElementById('editTransactionModal')).show();
   };
 

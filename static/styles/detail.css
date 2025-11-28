@@ -1,21 +1,17 @@
 .booking-section {
   background: linear-gradient(135deg, #050517 0%, #071543 50%, #000000 100%);
-
 }
 
 .booking-section .ticketing {
   background-color: #1a1a2e !important;
   color: white;
   border: 2px solid #2f0da8;
-
 }
 
 .legend,
 .legend .d-flex {
   color: #fff;
 }
-
-
 
 .booking-section h2,
 .booking-section h3,
@@ -41,7 +37,6 @@
 .fadeInUp {
   animation-delay: 0.4s;
 }
-
 
 .date-pill:active {
   background: #1f1169;
@@ -105,7 +100,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #34a209;
+  background-color: #091da2;
   border-color: #34a209;
   z-index: 0;
   border-radius: 50% 50% 0 0;
