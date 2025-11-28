@@ -118,14 +118,84 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
+  // Email validation helper function
+  function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  // Helper function to show alert in modal
+  function showModalAlert(alertId, message, type = 'danger') {
+    const alertEl = document.getElementById(alertId);
+    const messageEl = document.getElementById(alertId + 'Message');
+    alertEl.classList.remove('d-none', 'alert-danger', 'alert-success', 'alert-warning');
+    alertEl.classList.add('alert-' + type);
+    messageEl.textContent = message;
+  }
+
+  // Helper function to hide alert in modal
+  function hideModalAlert(alertId) {
+    const alertEl = document.getElementById(alertId);
+    if (alertEl) {
+      alertEl.classList.add('d-none');
+    }
+  }
+
+  // Helper function to clear validation states
+  function clearValidationStates() {
+    const inputs = document.querySelectorAll('#addUserForm .form-control');
+    inputs.forEach(input => {
+      input.classList.remove('is-invalid', 'is-valid');
+    });
+    hideModalAlert('addUserAlert');
+  }
+
+  // Clear validation when modal is opened
+  document.getElementById('addUserModal').addEventListener('show.bs.modal', function() {
+    clearValidationStates();
+    document.getElementById('addUserForm').reset();
+  });
+
   // Save new user
   document.getElementById('saveUserBtn').addEventListener('click', function() {
-    const username = document.getElementById('newUsername').value;
-    const email = document.getElementById('newEmail').value;
+    const username = document.getElementById('newUsername').value.trim();
+    const email = document.getElementById('newEmail').value.trim();
     const password = document.getElementById('newPassword').value;
 
-    if (!username || !email || !password) {
-      showToast('Error', 'All fields are required', 'error');
+    // Clear previous validation
+    clearValidationStates();
+
+    // Validate fields
+    let hasError = false;
+
+    if (!username) {
+      document.getElementById('newUsername').classList.add('is-invalid');
+      document.getElementById('newUsernameError').textContent = 'Username is required';
+      hasError = true;
+    }
+
+    if (!email) {
+      document.getElementById('newEmail').classList.add('is-invalid');
+      document.getElementById('newEmailError').textContent = 'Email is required';
+      hasError = true;
+    } else if (!isValidEmail(email)) {
+      document.getElementById('newEmail').classList.add('is-invalid');
+      document.getElementById('newEmailError').textContent = 'Please enter a valid email address (e.g., user@example.com)';
+      hasError = true;
+    }
+
+    if (!password) {
+      document.getElementById('newPassword').classList.add('is-invalid');
+      document.getElementById('newPasswordError').textContent = 'Password is required';
+      hasError = true;
+    } else if (password.length < 4) {
+      document.getElementById('newPassword').classList.add('is-invalid');
+      document.getElementById('newPasswordError').textContent = 'Password must be at least 4 characters';
+      hasError = true;
+    }
+
+    if (hasError) {
+      showModalAlert('addUserAlert', 'Please fix the errors below', 'danger');
       return;
     }
 
@@ -140,13 +210,24 @@ document.addEventListener('DOMContentLoaded', function() {
         showToast('Success', 'User created successfully', 'success');
         bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();
         document.getElementById('addUserForm').reset();
+        clearValidationStates();
         loadUsers();
       } else {
-        showToast('Error', data.message, 'error');
+        // Show error in modal alert
+        showModalAlert('addUserAlert', data.message, 'danger');
+        
+        // Highlight specific field if error is about email or username
+        if (data.message.toLowerCase().includes('email')) {
+          document.getElementById('newEmail').classList.add('is-invalid');
+          document.getElementById('newEmailError').textContent = data.message;
+        } else if (data.message.toLowerCase().includes('username')) {
+          document.getElementById('newUsername').classList.add('is-invalid');
+          document.getElementById('newUsernameError').textContent = data.message;
+        }
       }
     })
     .catch(error => {
-      showToast('Error', 'Failed to create user', 'error');
+      showModalAlert('addUserAlert', 'Failed to create user. Please try again.', 'danger');
     });
   });
 
@@ -156,6 +237,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const username = document.getElementById('editUsername').value;
     const email = document.getElementById('editEmail').value;
     const password = document.getElementById('editPassword').value;
+
+    if (!username || !email) {
+      showToast('Error', 'Username and email are required', 'error');
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      showToast('Error', 'Please enter a valid email address', 'error');
+      document.getElementById('editEmail').focus();
+      return;
+    }
 
     fetch('/api/admin/users/update', {
       method: 'POST',

@@ -26,6 +26,15 @@ try {
         exit;
     }
     
+    // Validate password length
+    if (strlen($pass) < 4) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Password must be at least 4 characters'
+        ]);
+        exit;
+    }
+    
     // Check if email already exists
     $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
     $stmt->execute([$email]);
@@ -53,14 +62,26 @@ try {
     // Hash password
     $hashedPassword = password_hash($pass, PASSWORD_DEFAULT);
     
-    // Insert new user
-    $stmt = $pdo->prepare("INSERT INTO users (username, email, password, created_at) VALUES (?, ?, ?, NOW())");
-    $stmt->execute([$user, $email, $hashedPassword]);
+    // Find the lowest available ID
+    $stmt = $pdo->query("SELECT id FROM users ORDER BY id");
+    $existingIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    $newId = 1;
+    foreach ($existingIds as $id) {
+        if ($id == $newId) {
+            $newId++;
+        } else {
+            break;
+        }
+    }
+    
+    // Insert new user with specific ID
+    $stmt = $pdo->prepare("INSERT INTO users (id, username, email, password, created_at) VALUES (?, ?, ?, ?, NOW())");
+    $stmt->execute([$newId, $user, $email, $hashedPassword]);
     
     echo json_encode([
         'status' => 'success',
         'message' => 'User registered successfully',
-        'user_id' => $pdo->lastInsertId()
+        'user_id' => $newId
     ]);
     
 } catch (PDOException $e) {

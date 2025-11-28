@@ -45,12 +45,24 @@ try {
             sendResponse('error', 'Username already taken');
         }
         
-        // Hash password and insert
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $pdo->prepare("INSERT INTO users (username, email, password, created_at) VALUES (?, ?, ?, NOW())");
-        $stmt->execute([$username, $email, $hashedPassword]);
+        // Find the lowest available ID
+        $stmt = $pdo->query("SELECT id FROM users ORDER BY id");
+        $existingIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $newId = 1;
+        foreach ($existingIds as $id) {
+            if ($id == $newId) {
+                $newId++;
+            } else {
+                break;
+            }
+        }
         
-        sendResponse('success', 'User created successfully', ['id' => $pdo->lastInsertId()]);
+        // Hash password and insert with specific ID
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $stmt = $pdo->prepare("INSERT INTO users (id, username, email, password, created_at) VALUES (?, ?, ?, ?, NOW())");
+        $stmt->execute([$newId, $username, $email, $hashedPassword]);
+        
+        sendResponse('success', 'User created successfully', ['id' => $newId]);
         
     } elseif ($table === 'transaction') {
         // Create new transaction

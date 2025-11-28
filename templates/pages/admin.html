@@ -44,7 +44,7 @@
   .search-box {
     max-width: 300px;
   }
-  
+
   .modal-header {
     background-color: #212529;
     color: white;
@@ -52,6 +52,72 @@
   
   .modal-header .btn-close {
     filter: invert(1);
+  }
+
+  /* Force all admin modals to stay centered in viewport immediately */
+  #addUserModal,
+  #editUserModal,
+  #deleteUserModal,
+  #addTransactionModal,
+  #editTransactionModal,
+  #deleteTransactionModal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+    display: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  #addUserModal.show,
+  #editUserModal.show,
+  #deleteUserModal.show,
+  #addTransactionModal.show,
+  #editTransactionModal.show,
+  #deleteTransactionModal.show {
+    display: flex !important;
+  }
+  
+  #addUserModal .modal-dialog,
+  #editUserModal .modal-dialog,
+  #deleteUserModal .modal-dialog,
+  #addTransactionModal .modal-dialog,
+  #editTransactionModal .modal-dialog,
+  #deleteTransactionModal .modal-dialog {
+    position: relative !important;
+    margin: 0 !important;
+  }
+  
+  /* Enable immediate scroll (no animation delay) for modal content */
+  #addUserModal .modal-body,
+  #editUserModal .modal-body,
+  #deleteUserModal .modal-body,
+  #addTransactionModal .modal-body,
+  #editTransactionModal .modal-body,
+  #deleteTransactionModal .modal-body {
+    scroll-behavior: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Fixed modal content size to prevent dynamic resizing on validation */
+  #addUserModal .modal-content {
+    min-height: 420px;
+       width: 600px
+  }
+  
+  #addUserModal .modal-body {
+    min-height: 280px;
+  }
+  
+  #addUserModal .alert {
+    margin-bottom: 1rem;
+  }
+  
+  #addUserModal .invalid-feedback {
+    font-size: 0.8rem;
   }
 </style>
 {% endblock %}
@@ -176,25 +242,33 @@
 
 <!-- Add User Modal -->
 <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addUserModalLabel"><i class="fa-solid fa-user-plus me-2"></i>Add New User</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+        <!-- Validation Alert -->
+        <div id="addUserAlert" class="alert d-none" role="alert">
+          <i class="fa-solid fa-circle-exclamation me-2"></i>
+          <span id="addUserAlertMessage"></span>
+        </div>
         <form id="addUserForm">
           <div class="mb-3">
             <label for="newUsername" class="form-label">Username</label>
             <input type="text" class="form-control" id="newUsername" name="username" required>
+            <div class="invalid-feedback" id="newUsernameError"></div>
           </div>
           <div class="mb-3">
             <label for="newEmail" class="form-label">Email</label>
             <input type="email" class="form-control" id="newEmail" name="email" required>
+            <div class="invalid-feedback" id="newEmailError"></div>
           </div>
           <div class="mb-3">
             <label for="newPassword" class="form-label">Password</label>
             <input type="password" class="form-control" id="newPassword" name="password" required>
+            <div class="invalid-feedback" id="newPasswordError"></div>
           </div>
         </form>
       </div>
@@ -226,7 +300,7 @@
             <input type="email" class="form-control" id="editEmail" name="email" required>
           </div>
           <div class="mb-3">
-            <label for="editPassword" class="form-label">New Password (leave blank to keep current)</label>
+            <label for="editPassword" class="form-label">New Password (leave blank to keep current password)</label>
             <input type="password" class="form-control" id="editPassword" name="password">
           </div>
         </form>
