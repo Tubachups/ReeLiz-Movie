@@ -1,16 +1,14 @@
 /* GRADIENT CSS */
 /* Welcome Text in Hero */
 body {
-  background:#040a45;
-
+  background: #040a45;
 }
-
 
 .welcome-text {
   font-weight: 250;
   font-size: 5rem;
   color: #fff !important;
-  font-family: 'Praise', sans-serif;
+  font-family: "Praise", sans-serif;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   animation: fadeIn 0.8s ease-out;
 }
@@ -50,9 +48,7 @@ body {
     min-height: 80vh;
     padding-top: 3rem;
   }
-
 }
-
 
 .fade-section {
   opacity: 0;
@@ -93,8 +89,11 @@ body {
   z-index: 0;
 
   /* 🔥 Gradient overlay to #040a45 at bottom */
-  background-image:
-    linear-gradient(to bottom, rgba(8, 80, 109, 0.461) 50%, rgba(4, 10, 69, 1) 100%),
+  background-image: linear-gradient(
+      to bottom,
+      rgba(8, 80, 109, 0.461) 50%,
+      rgba(4, 10, 69, 1) 100%
+    ),
     var(--bg-image);
 }
 .hero-header::before {
@@ -109,10 +108,12 @@ body {
 
 /* fade animation */
 @keyframes bgFade {
-  0%, 45% {
+  0%,
+  45% {
     opacity: 1;
   }
-  50%, 95% {
+  50%,
+  95% {
     opacity: 0;
   }
   100% {
@@ -143,7 +144,6 @@ body {
   position: relative;
   z-index: 2;
 }
-
 
 .hero-header img {
   filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
@@ -198,7 +198,6 @@ header.fade-section {
 section.fade-section h2 {
   color: #fff !important;
 }
-
 
 /* Accordion dark theme */
 .accordion-item {

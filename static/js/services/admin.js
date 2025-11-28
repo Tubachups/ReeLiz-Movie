@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (data.status === 'success' && data.data) {
           data.data.forEach(trans => {
             const row = document.createElement('tr');
-            const remarksClass = trans.remarks === 'Active' ? 'text-success' : 'text-secondary';
+            const remarksClass = trans.remarks === 'Active' ? 'text-success' : 'text-danger';
             row.innerHTML = `
               <td>${trans.id}</td>
               <td>${trans.date || 'N/A'}</td>
