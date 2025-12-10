@@ -85,8 +85,15 @@ init();
         clearActive();
         currentLink.classList.add('active');
       }
+    } else if (location.pathname === '/' || location.pathname === '/index' || location.pathname === '/index.html') {
+      // Default to Now Showing on index page
+      const nowShowingLink = document.querySelector('.nav-link[data-page="now"]');
+      if (nowShowingLink) {
+        clearActive();
+        nowShowingLink.classList.add('active');
+      }
     } else {
-      // no page param -> ensure no page-link is active (landing / login / other pages)
+      // no page param and not on index -> ensure no page-link is active (landing / login / other pages)
       clearActive();
     }
 

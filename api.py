@@ -155,20 +155,20 @@ def get_movies(movie_type):
     try:
         def fetch_movies():
             today = datetime.now()
-            # Date range: From 1st day of current month to 14th day of current month
-            start_of_month = today.replace(day=1).strftime('%Y-%m-%d')
-            fourteenth_day = today.replace(day=14).strftime('%Y-%m-%d')
+            # Date range: From 30 days ago to 14th day of current month (wider range for more movies)
+            thirty_days_ago = (today - timedelta(days=30)).strftime('%Y-%m-%d')
+            fourteenth_day = today.replace(day=14).strftime('%Y-%m-%d') if today.day <= 14 else today.strftime('%Y-%m-%d')
             two_months_later = (today + timedelta(days=60)).strftime('%Y-%m-%d')
             
             if movie_type == "now":
                 # For "now showing", fetch multiple pages to find 8 movies with complete details
                 complete_movies = []
                 page = 1
-                max_pages = 10  # Increased to 10 pages to find more movies
+                max_pages = 15  # Increased to find more movies
                 
                 while len(complete_movies) < 8 and page <= max_pages:
                     url = f"{BASE_URL}/discover/movie?api_key={API_KEY}&language=en-US&region=PH&with_release_type=2|3&page={page}"
-                    url += f"&release_date.gte={start_of_month}&release_date.lte={fourteenth_day}"
+                    url += f"&release_date.gte={thirty_days_ago}&release_date.lte={fourteenth_day}"
                     url += "&sort_by=release_date.desc"
                     
                     response = requests.get(url, timeout=10)
@@ -202,10 +202,10 @@ def get_movies(movie_type):
                     if "results" in cached_now:
                         now_showing_ids = [m["id"] for m in cached_now["results"]]
                 
-                # For "coming soon", start from 15th day of current month to avoid overlap
-                fifteenth_day = today.replace(day=15).strftime('%Y-%m-%d')
+                # For "coming soon", start from tomorrow to get upcoming movies
+                tomorrow = (today + timedelta(days=1)).strftime('%Y-%m-%d')
                 url = f"{BASE_URL}/discover/movie?api_key={API_KEY}&language=en-US&region=PH&with_release_type=2|3&page=1"
-                url += f"&release_date.gte={fifteenth_day}&release_date.lte={two_months_later}"
+                url += f"&release_date.gte={tomorrow}&release_date.lte={two_months_later}"
                 
                 response = requests.get(url, timeout=10)
                 data = response.json()
@@ -266,6 +266,7 @@ def get_movie_details(movie_id):
         # Get movie schedule from current "now showing" list and check if it's now showing
         schedule = None
         is_now_showing = False
+        cached_release_date = None  # Store the release date from the movie list (more accurate for PH)
         try:
             cache_key = "movies_now"
             if cache_key in cache:
@@ -275,9 +276,21 @@ def get_movie_details(movie_id):
                         if cached_movie["id"] == movie_id:
                             schedule = get_movie_schedule(index)
                             is_now_showing = True
+                            # Get the release date from the cached movie list (this matches the thumbnail)
+                            cached_release_date = cached_movie.get("release_date")
                             break
         except:
             pass
+
+        # Use the cached release date (from discover API) if available, as it's more accurate for PH
+        # Otherwise fall back to the movie details API release date
+        raw_release_date = cached_release_date or movie.get("release_date", "")
+        if raw_release_date:
+            try:
+                release_date_obj = datetime.strptime(raw_release_date, "%Y-%m-%d")
+                movie["release_date"] = release_date_obj.strftime("%B %d, %Y")
+            except:
+                pass  # Keep original if parsing fails
 
         return {
             "movie": movie,

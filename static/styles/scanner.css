@@ -1,0 +1,566 @@
+/* Scanner Page - Full Screen Clean Layout */
+/* Color scheme matching booking section */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.scanner-body {
+  background: linear-gradient(135deg, #050517 0%, #071543 50%, #000000 100%);
+  min-height: 100vh;
+  font-family: "Barlow Condensed", sans-serif;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Logout Button */
+.logout-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 0, 0, 0.3);
+  border-color: #ff4444;
+  color: #ff4444;
+  transform: scale(1.1);
+}
+
+/* ===================== */
+/* SCANNER STATUS INDICATOR */
+/* ===================== */
+.scanner-status {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #888;
+  transition: all 0.3s ease;
+}
+
+.status-dot.connected {
+  background: #4caf50;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+  animation: statusPulse 2s infinite;
+}
+
+.status-dot.disconnected {
+  background: #f44336;
+  box-shadow: 0 0 10px rgba(244, 67, 54, 0.5);
+}
+
+.status-dot.cooldown {
+  background: #ff9800;
+  box-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
+}
+
+@keyframes statusPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.status-text {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.cooldown-timer {
+  padding: 8px 16px;
+  background: rgba(255, 152, 0, 0.3);
+  border: 1px solid rgba(255, 152, 0, 0.5);
+  border-radius: 20px;
+  color: #ffb74d;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Scanner Container */
+.scanner-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 60px 20px 40px 20px;
+  box-sizing: border-box;
+}
+
+/* Scanner States */
+.scanner-state {
+  display: none;
+  width: 100%;
+  max-width: 800px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.scanner-state.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===================== */
+/* PROCESSING STATE STYLES */
+/* ===================== */
+.processing-content {
+  text-align: center;
+  color: white;
+}
+
+.processing-icon {
+  font-size: 100px;
+  color: #00c6ff;
+  margin-bottom: 20px;
+}
+
+.processing-title {
+  font-size: 42px;
+  margin-bottom: 10px;
+  color: #00c6ff;
+}
+
+.processing-subtitle {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 30px;
+}
+
+.processing-barcode {
+  font-size: 28px;
+  font-family: monospace;
+  color: #00c6ff;
+  background: rgba(0, 198, 255, 0.1);
+  padding: 15px 30px;
+  border-radius: 10px;
+  border: 2px solid rgba(0, 198, 255, 0.3);
+  display: inline-block;
+}
+
+/* ===================== */
+/* WELCOME STATE STYLES */
+/* ===================== */
+.welcome-content {
+  text-align: center;
+  color: white;
+}
+
+.logo-container {
+  margin-bottom: 30px;
+}
+
+.logo-icon {
+  font-size: 80px;
+  color: #00c6ff;
+  margin-bottom: 10px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.logo-text {
+  font-family: "Fjalla One", sans-serif;
+  font-size: 60px;
+  background: linear-gradient(to right, #00c6ff, #0073ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+.welcome-message h2 {
+  font-size: 42px;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.welcome-message p {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 50px;
+}
+
+/* Scanner Animation */
+.scanner-animation {
+  position: relative;
+  width: 300px;
+  height: 150px;
+  margin: 0 auto 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  border: 2px solid rgba(0, 198, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.barcode-icon {
+  font-size: 80px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.scan-line {
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    #00c6ff,
+    #0073ff,
+    #00c6ff,
+    transparent
+  );
+  animation: scan 2s infinite;
+  box-shadow: 0 0 20px #00c6ff;
+}
+
+@keyframes scan {
+  0%,
+  100% {
+    top: 10%;
+  }
+  50% {
+    top: 90%;
+  }
+}
+
+.waiting-text {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ===================== */
+/* SUCCESS STATE STYLES */
+/* ===================== */
+.success-content {
+  text-align: center;
+  color: white;
+  animation: successPop 0.5s ease-out;
+}
+
+@keyframes successPop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.success-icon {
+  font-size: 80px;
+  color: #4caf50;
+  margin-bottom: 15px;
+  animation: checkBounce 0.5s ease-out;
+}
+
+@keyframes checkBounce {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.success-title {
+  font-size: 36px;
+  margin-bottom: 8px;
+  color: #4caf50;
+}
+
+.success-subtitle {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 20px;
+}
+
+/* Ticket Info Card */
+.ticket-info-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  border: 2px solid rgba(76, 175, 80, 0.5);
+  overflow: hidden;
+  margin: 0 auto 30px;
+  max-width: 600px;
+  width: 100%;
+}
+
+.ticket-header {
+  background: linear-gradient(to right, #4caf50, #45a049);
+  padding: 12px 20px;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.ticket-details {
+  padding: 15px 20px;
+}
+
+.ticket-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 15px;
+}
+
+.ticket-row:last-child {
+  border-bottom: none;
+}
+
+.ticket-label {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ticket-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  text-align: right;
+  word-break: break-word;
+  max-width: 65%;
+}
+
+.door-status {
+  background: linear-gradient(to right, #4caf50, #45a049);
+  padding: 15px 30px;
+  border-radius: 50px;
+  font-size: 18px;
+  font-weight: 700;
+  display: inline-block;
+  animation: doorPulse 1.5s infinite;
+}
+
+@keyframes doorPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(76, 175, 80, 0.8);
+  }
+}
+
+/* ===================== */
+/* ERROR STATE STYLES */
+/* ===================== */
+.error-content {
+  text-align: center;
+  color: white;
+  animation: errorShake 0.5s ease-out;
+}
+
+@keyframes errorShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-10px);
+  }
+  40%,
+  80% {
+    transform: translateX(10px);
+  }
+}
+
+.error-icon {
+  font-size: 120px;
+  color: #f44336;
+  margin-bottom: 20px;
+}
+
+.error-title {
+  font-size: 48px;
+  margin-bottom: 10px;
+  color: #f44336;
+}
+
+.error-message {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 30px;
+}
+
+.error-details {
+  background: rgba(244, 67, 54, 0.2);
+  border: 2px solid rgba(244, 67, 54, 0.5);
+  border-radius: 15px;
+  padding: 25px;
+  max-width: 600px;
+  margin: 0 auto 30px;
+  text-align: left;
+}
+
+.error-details p {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.error-details p:last-child {
+  margin-bottom: 0;
+}
+
+.error-details .error-highlight {
+  color: #ff6b6b;
+  font-weight: 700;
+}
+
+.assistance-message {
+  background: linear-gradient(to right, #ff9800, #f57c00);
+  padding: 20px 40px;
+  border-radius: 50px;
+  font-size: 22px;
+  font-weight: 700;
+  display: inline-block;
+  animation: assistPulse 1.5s infinite;
+}
+
+@keyframes assistPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(255, 152, 0, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 152, 0, 0.8);
+  }
+}
+
+/* Hidden barcode input */
+.barcode-input {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .logo-icon {
+    font-size: 60px;
+  }
+
+  .logo-text {
+    font-size: 40px;
+  }
+
+  .welcome-message h2 {
+    font-size: 32px;
+  }
+
+  .welcome-message p {
+    font-size: 18px;
+  }
+
+  .scanner-animation {
+    width: 250px;
+    height: 120px;
+  }
+
+  .barcode-icon {
+    font-size: 60px;
+  }
+
+  .success-icon,
+  .error-icon {
+    font-size: 80px;
+  }
+
+  .success-title,
+  .error-title {
+    font-size: 36px;
+  }
+
+  .ticket-value {
+    font-size: 16px;
+  }
+
+  .door-status,
+  .assistance-message {
+    padding: 15px 25px;
+    font-size: 18px;
+  }
+}
+
+/* Current Time Display (optional) */
+.current-time {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 16px;
+}

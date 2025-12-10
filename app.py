@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import api
 import auth
 import database
+import scanner
 import os
 import traceback
 import smtplib
@@ -15,7 +16,10 @@ from call_php import run_php_script
 load_dotenv()
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "your-secret-key-here")  # Add to .env file
+# Generate new secret key on each startup to auto-logout all sessions (including screen mode)
+# This ensures screen users must re-login after server restart
+import secrets
+app.config["SECRET_KEY"] = secrets.token_hex(32)
 app.debug = True
 
 @app.route("/")
@@ -79,6 +83,122 @@ def signup():
 @app.route('/logout')
 def logout():
     return auth.logout()
+
+
+# Scanner Routes
+@app.route('/scanner')
+def scanner_page():
+    """Scanner page - only accessible when logged in as scanner"""
+    if not session.get('is_screen_mode'):
+        return redirect(url_for('login'))
+    return render_template('pages/scanner.html')
+
+
+@app.route('/scanner/logout')
+def scanner_logout():
+    """Logout from scanner mode"""
+    return auth.scanner_logout()
+
+
+@app.route('/api/scanner/status')
+def scanner_status_api():
+    """Get scanner/Arduino status for the UI"""
+    if not session.get('is_screen_mode'):
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+    
+    try:
+        status = scanner.get_scanner_status()
+        return jsonify(status)
+    except Exception as e:
+        print(f"Error in scanner_status_api: {e}")
+        return jsonify({
+            'connected': False,
+            'ready': False,
+            'message': str(e),
+            'cooldown': 0
+        })
+
+
+@app.route('/api/scanner/poll')
+def scanner_poll_api():
+    """Poll for the latest scan result from the background scanner thread"""
+    if not session.get('is_screen_mode'):
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+    
+    try:
+        # Get the last scan result (if any)
+        result = scanner.get_last_scan_result()
+        
+        if result:
+            print(f"[POLL] Sending scan result to web: {result.get('status')}")
+            # Clear the result so it's not shown again
+            scanner.clear_scan_result()
+            return jsonify({
+                'has_scan': True,
+                'scan_result': result
+            })
+        else:
+            return jsonify({
+                'has_scan': False
+            })
+    except Exception as e:
+        print(f"Error in scanner_poll_api: {e}")
+        return jsonify({
+            'has_scan': False,
+            'error': str(e)
+        })
+
+
+@app.route('/api/scanner/validate', methods=['POST'])
+def validate_barcode_api():
+    """Validate barcode and return ticket information"""
+    if not session.get('is_screen_mode'):
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+    
+    try:
+        data = request.json
+        barcode = data.get('barcode', '').strip()
+        
+        if not barcode:
+            return jsonify({
+                'status': 'error',
+                'message': 'No barcode provided',
+                'error_type': 'empty_barcode'
+            })
+        
+        # Validate the barcode
+        result = scanner.validate_barcode(barcode)
+        
+        if result['status'] == 'success':
+            # Mark ticket as scanned
+            success, msg = scanner.mark_ticket_as_scanned(barcode)
+            
+            if success:
+                # Trigger door unlock
+                door_success, door_msg = scanner.trigger_door_unlock(result['room'])
+                
+                return jsonify({
+                    'status': 'success',
+                    'ticket': result,
+                    'door_unlocked': door_success
+                })
+            else:
+                return jsonify({
+                    'status': 'error',
+                    'message': 'Failed to process ticket',
+                    'error_type': 'processing_error'
+                })
+        else:
+            return jsonify(result)
+    
+    except Exception as e:
+        print(f"Error in validate_barcode_api: {e}")
+        traceback.print_exc()
+        return jsonify({
+            'status': 'error',
+            'message': 'Server error',
+            'error_type': 'server_error'
+        }), 500
 
 
 # Admin Dashboard Routes
@@ -584,5 +704,19 @@ def send_ticket_email():
         return jsonify({"success": False, "message": str(e)}), 500
 
 if __name__ == "__main__":
-    server = Server(app.wsgi_app)
-    server.serve(port=5500, host="127.0.0.1")
+    # Start the barcode scanner background thread
+    print("\n" + "=" * 50)
+    print("  ReeLiz Movie Booking System")
+    print("=" * 50)
+    print("Starting scanner thread...")
+    scanner.start_scanner_thread()
+    print("Starting web server on http://127.0.0.1:5500")
+    print("=" * 50 + "\n")
+    
+    try:
+        server = Server(app.wsgi_app)
+        server.serve(port=5500, host="127.0.0.1")
+    finally:
+        print("\n[APP] Shutting down scanner thread...")
+        scanner.stop_scanner_thread()
+        print("[APP] Goodbye!")

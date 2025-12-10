@@ -1,5 +1,16 @@
 function formatDate(dateString) {
+  // Handle missing or invalid date
+  if (!dateString) {
+    return "TBA";
+  }
+  
   const date = new Date(dateString);
+  
+  // Check for invalid date
+  if (isNaN(date.getTime())) {
+    return "TBA";
+  }
+  
   return date.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",

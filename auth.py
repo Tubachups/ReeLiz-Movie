@@ -5,10 +5,22 @@ from call_php import run_php_script
 ADMIN_USERNAME = 'admin'
 ADMIN_PASSWORD = 'admin123'
 
+# Screen mode credentials
+SCREEN_USERNAME = 'screen'
+SCREEN_PASSWORD = 'screen123'
+
 def login():
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+        
+        # Check for screen mode login
+        print(f"[LOGIN] Checking credentials - username: '{username}' vs '{SCREEN_USERNAME}', password match: {password == SCREEN_PASSWORD}")
+        if username == SCREEN_USERNAME and password == SCREEN_PASSWORD:
+            session['is_screen_mode'] = True
+            session['username'] = 'Scanner'
+            print(f"[LOGIN] ✓ Screen mode login successful!")
+            return redirect(url_for('scanner_page'))
         
         # Check for admin login
         if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
@@ -62,6 +74,11 @@ def signup():
           return render_template('pages/login.html', error='An error occurred. Please try again.')
       
   return render_template('pages/login.html')
+
+def scanner_logout():
+  """Logout from screen mode"""
+  session.clear()
+  return redirect(url_for('login'))
 
 def logout():
   session.clear()
