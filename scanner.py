@@ -160,16 +160,26 @@ def scanner_thread_function():
                             validation = validate_ticket_for_entry(result)
                             
                             if validation['valid']:
+                                seat_count = validation['seat_count']
+                                current_scans = validation['current_scans']
+                                scans_remaining = validation['scans_remaining']
+                                
                                 print(f"[SCANNER] ✓ Ticket VALID - Opening door {result['room']}")
+                                print(f"[SCANNER]   This is scan {current_scans + 1} of {seat_count}")
                                 
                                 # Send door command
                                 door_success, door_msg = scanner_state.send_door_command(result['room'])
                                 
-                                # # Mark as scanned in database
-                                # update_query = "UPDATE transaction SET Remarks = 'Scanned' WHERE barcode = %s"
-                                # cursor.execute(update_query, (barcode,))
-                                # db.commit()
-                                # print(f"[SCANNER] ✓ Ticket marked as 'Scanned'")
+                                # Update scan count in database
+                                scan_update = update_scan_count(cursor, db, barcode, seat_count, current_scans)
+                                print(f"[SCANNER] ✓ {scan_update['message']}")
+                                print(f"[SCANNER]   New status: {scan_update['new_remarks']}")
+                                
+                                # Build success message for web display
+                                if scan_update['all_scanned']:
+                                    web_message = f"All {seat_count} ticket(s) scanned!"
+                                else:
+                                    web_message = f"Ticket {scan_update['new_scan_count']} of {seat_count} : {scan_update['scans_remaining']} remaining"
                                 
                                 # Store result for web display
                                 scanner_state.set_scan_result({
@@ -185,7 +195,14 @@ def scanner_thread_function():
                                         'barcode': barcode
                                     },
                                     'door_unlocked': door_success,
-                                    'message': 'Access Granted!'
+                                    'message': 'Access Granted!',
+                                    'scan_info': {
+                                        'current_scan': scan_update['new_scan_count'],
+                                        'total_tickets': seat_count,
+                                        'scans_remaining': scan_update['scans_remaining'],
+                                        'all_scanned': scan_update['all_scanned'],
+                                        'scan_message': web_message
+                                    }
                                 })
                             else:
                                 print(f"[SCANNER] ✗ Ticket INVALID: {validation['reason']}")
@@ -250,13 +267,34 @@ def validate_ticket_for_entry(ticket):
     """
     remarks = ticket.get('Remarks', '')
     ticket_date = ticket.get('date', '')
+    sits = ticket.get('sits', '')
     
-    # Check if already scanned
-    if remarks != 'Active':
+    # Count number of seats (tickets)
+    seat_count = len([s.strip() for s in sits.split(',') if s.strip()]) if sits else 1
+    
+    # Check if already fully scanned
+    if remarks == 'Scanned':
         return {
             'valid': False,
             'error_type': 'already_scanned',
-            'reason': 'This ticket has already been used'
+            'reason': 'All tickets for this barcode have already been used'
+        }
+    
+    # Check scan count from remarks (format: "Active" or "Scanned:X" where X is scan count)
+    current_scans = 0
+    if remarks.startswith('Scanned:'):
+        try:
+            current_scans = int(remarks.split(':')[1])
+        except:
+            current_scans = 0
+    
+    # Check if there are scans remaining
+    scans_remaining = seat_count - current_scans
+    if scans_remaining <= 0:
+        return {
+            'valid': False,
+            'error_type': 'already_scanned',
+            'reason': 'All tickets for this barcode have already been used'
         }
     
     # DATE/TIME FILTERING DISABLED FOR TESTING
@@ -264,8 +302,47 @@ def validate_ticket_for_entry(ticket):
     # Currently allowing all tickets to test door functionality
     
     print(f"[SCANNER] Date filtering DISABLED - ticket date: {ticket_date}")
+    print(f"[SCANNER] Seats: {seat_count}, Scanned: {current_scans}, Remaining: {scans_remaining}")
     
-    return {'valid': True}
+    return {
+        'valid': True,
+        'seat_count': seat_count,
+        'current_scans': current_scans,
+        'scans_remaining': scans_remaining
+    }
+
+
+def update_scan_count(cursor, db, barcode, seat_count, current_scans):
+    """
+    Update the scan count for a barcode.
+    If all seats are scanned, mark as 'Scanned'.
+    Otherwise, mark as 'Scanned:X' where X is the new scan count.
+    """
+    new_scan_count = current_scans + 1
+    scans_remaining = seat_count - new_scan_count
+    
+    if scans_remaining <= 0:
+        # All tickets used - mark as fully scanned
+        new_remarks = 'Scanned'
+        message = f'All {seat_count} ticket(s) have been scanned for this barcode'
+        all_scanned = True
+    else:
+        # Still has remaining scans
+        new_remarks = f'Scanned:{new_scan_count}'
+        message = f'Ticket {new_scan_count} of {seat_count} scanned. {scans_remaining} remaining.'
+        all_scanned = False
+    
+    update_query = "UPDATE transaction SET Remarks = %s WHERE barcode = %s"
+    cursor.execute(update_query, (new_remarks, barcode))
+    db.commit()
+    
+    return {
+        'new_scan_count': new_scan_count,
+        'scans_remaining': scans_remaining,
+        'message': message,
+        'all_scanned': all_scanned,
+        'new_remarks': new_remarks
+    }
 
 
 def start_scanner_thread():
