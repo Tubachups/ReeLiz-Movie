@@ -4,6 +4,7 @@ import time
 from datetime import datetime, timedelta
 from flask import jsonify
 from dotenv import load_dotenv
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 load_dotenv()
 
@@ -12,7 +13,10 @@ if not API_KEY:
     raise ValueError("TMDB_API_KEY environment variable is not set")
 BASE_URL = "https://api.themoviedb.org/3"
 cache = {}
-CACHE_DURATION = 300
+CACHE_DURATION = 3600  # Increased to 1 hour (was 5 minutes) - movies don't change often
+
+# Create a session for connection pooling (reuses connections)
+session = requests.Session()
 
 
 def get_cached_or_fetch(cache_key, fetch_function):
@@ -31,7 +35,7 @@ def get_genres():
     try:
         def fetch_genres():
             url = f"{BASE_URL}/genre/movie/list?api_key={API_KEY}&language=en-US"
-            response = requests.get(url)
+            response = session.get(url, timeout=10)
             return response.json()
 
         result = get_cached_or_fetch("genres", fetch_genres)
@@ -86,32 +90,45 @@ def get_movie_schedule(movie_index):
 def has_complete_details(movie_id):
     """
     Check if a movie has complete details (cast, directors, producers, writers, certification)
+    Uses caching to avoid repeated API calls for the same movie
     """
+    # Check cache first
+    cache_key = f"movie_details_check_{movie_id}"
+    if cache_key in cache:
+        result, timestamp = cache[cache_key]
+        if time.time() - timestamp < CACHE_DURATION:
+            return result
+    
     try:
         credits_url = f"{BASE_URL}/movie/{movie_id}/credits?api_key={API_KEY}&language=en-US"
         release_url = f"{BASE_URL}/movie/{movie_id}/release_dates?api_key={API_KEY}"
         
-        credits = requests.get(credits_url, timeout=10).json()
-        releases = requests.get(release_url, timeout=10).json()
+        # Use session for connection pooling
+        credits = session.get(credits_url, timeout=5).json()
+        releases = session.get(release_url, timeout=5).json()
         
         # Check cast (at least 1 cast member)
         cast = credits.get("cast", [])
         if not cast or len(cast) == 0:
+            cache[cache_key] = (False, time.time())
             return False
         
         # Check directors (at least 1)
         directors = [crew for crew in credits.get("crew", []) if crew.get("job") == "Director"]
         if not directors or len(directors) == 0:
+            cache[cache_key] = (False, time.time())
             return False
         
         # Check producers (at least 1)
         producers = [crew for crew in credits.get("crew", []) if crew.get("job") == "Producer"]
         if not producers or len(producers) == 0:
+            cache[cache_key] = (False, time.time())
             return False
         
         # Check writers (at least 1)
         writers = [crew for crew in credits.get("crew", []) if crew.get("job") in ["Writer", "Screenplay", "Story"]]
         if not writers or len(writers) == 0:
+            cache[cache_key] = (False, time.time())
             return False
         
         # Check certification
@@ -126,10 +143,13 @@ def has_complete_details(movie_id):
                     break
         
         if not has_certification:
+            cache[cache_key] = (False, time.time())
             return False
         
+        cache[cache_key] = (True, time.time())
         return True
     except:
+        cache[cache_key] = (False, time.time())
         return False
 
 
@@ -161,30 +181,46 @@ def get_movies(movie_type):
             two_months_later = (today + timedelta(days=60)).strftime('%Y-%m-%d')
             
             if movie_type == "now":
-                # For "now showing", fetch multiple pages to find 8 movies with complete details
+                # For "now showing", fetch movies in batches and validate in parallel
                 complete_movies = []
                 page = 1
-                max_pages = 15  # Increased to find more movies
+                max_pages = 10
                 
                 while len(complete_movies) < 8 and page <= max_pages:
                     url = f"{BASE_URL}/discover/movie?api_key={API_KEY}&language=en-US&region=PH&with_release_type=2|3&page={page}"
                     url += f"&release_date.gte={thirty_days_ago}&release_date.lte={fourteenth_day}"
                     url += "&sort_by=release_date.desc"
                     
-                    response = requests.get(url, timeout=10)
+                    response = session.get(url, timeout=10)
                     data = response.json()
                     
                     if "results" in data and len(data["results"]) > 0:
-                        for movie in data["results"]:
-                            # Check if movie has poster and complete details
-                            if movie.get("poster_path") is not None and has_complete_details(movie["id"]):
-                                complete_movies.append(movie)
-                                if len(complete_movies) >= 8:
-                                    break
+                        # Filter movies with posters first (fast check)
+                        candidates = [m for m in data["results"] if m.get("poster_path")]
+                        
+                        # Validate movies in parallel using ThreadPoolExecutor
+                        def check_movie(movie):
+                            if has_complete_details(movie["id"]):
+                                return movie
+                            return None
+                        
+                        with ThreadPoolExecutor(max_workers=5) as executor:
+                            futures = {executor.submit(check_movie, m): m for m in candidates}
+                            for future in as_completed(futures):
+                                result = future.result()
+                                if result and len(complete_movies) < 8:
+                                    complete_movies.append(result)
                     else:
                         break  # No more results
                     
                     page += 1
+                    
+                    # Stop if we have enough movies
+                    if len(complete_movies) >= 8:
+                        break
+                
+                # Sort by release date descending and limit to 8
+                complete_movies = sorted(complete_movies, key=lambda x: x.get('release_date', ''), reverse=True)[:8]
                 
                 # Add schedule information to each movie and mark as now showing
                 for index, movie in enumerate(complete_movies):
@@ -207,7 +243,7 @@ def get_movies(movie_type):
                 url = f"{BASE_URL}/discover/movie?api_key={API_KEY}&language=en-US&region=PH&with_release_type=2|3&page=1"
                 url += f"&release_date.gte={tomorrow}&release_date.lte={two_months_later}"
                 
-                response = requests.get(url, timeout=10)
+                response = session.get(url, timeout=10)
                 data = response.json()
                 
                 # Filter out movies without poster images and movies already in "now showing"
@@ -231,14 +267,29 @@ def get_movies(movie_type):
 
 def get_movie_details(movie_id):
     try:
-        # Fetch movie details
+        # Check cache first for movie details
+        cache_key = f"movie_detail_{movie_id}"
+        if cache_key in cache:
+            cached_data, timestamp = cache[cache_key]
+            if time.time() - timestamp < CACHE_DURATION:
+                return cached_data
+        
+        # Fetch movie details in parallel using ThreadPoolExecutor
         movie_url = f"{BASE_URL}/movie/{movie_id}?api_key={API_KEY}&language=en-US"
         credits_url = f"{BASE_URL}/movie/{movie_id}/credits?api_key={API_KEY}&language=en-US"
         release_url = f"{BASE_URL}/movie/{movie_id}/release_dates?api_key={API_KEY}"
 
-        movie = requests.get(movie_url, timeout=10).json()
-        credits = requests.get(credits_url, timeout=10).json()
-        releases = requests.get(release_url, timeout=10).json()
+        def fetch_url(url):
+            return session.get(url, timeout=10).json()
+        
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            future_movie = executor.submit(fetch_url, movie_url)
+            future_credits = executor.submit(fetch_url, credits_url)
+            future_releases = executor.submit(fetch_url, release_url)
+            
+            movie = future_movie.result()
+            credits = future_credits.result()
+            releases = future_releases.result()
 
         # Get certification (Age Rating)
         certification = "N/A"
@@ -268,9 +319,9 @@ def get_movie_details(movie_id):
         is_now_showing = False
         cached_release_date = None  # Store the release date from the movie list (more accurate for PH)
         try:
-            cache_key = "movies_now"
-            if cache_key in cache:
-                cached_movies, _ = cache[cache_key]
+            now_cache_key = "movies_now"
+            if now_cache_key in cache:
+                cached_movies, _ = cache[now_cache_key]
                 if "results" in cached_movies:
                     for index, cached_movie in enumerate(cached_movies["results"]):
                         if cached_movie["id"] == movie_id:
@@ -292,7 +343,7 @@ def get_movie_details(movie_id):
             except:
                 pass  # Keep original if parsing fails
 
-        return {
+        result_data = {
             "movie": movie,
             "certification": certification,
             "cast": cast,
@@ -302,5 +353,10 @@ def get_movie_details(movie_id):
             "schedule": schedule,
             "is_now_showing": is_now_showing
         }
+        
+        # Cache the result
+        cache[f"movie_detail_{movie_id}"] = (result_data, time.time())
+        
+        return result_data
     except Exception as e:
         raise Exception(f"Error fetching movie details: {str(e)}")
