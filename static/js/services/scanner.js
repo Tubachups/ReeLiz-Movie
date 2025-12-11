@@ -75,7 +75,7 @@ function handleScanResult(result) {
     console.log('Received scan result:', result);
     
     if (result.status === 'success') {
-        showSuccess(result.ticket, result.door_unlocked);
+        showSuccess(result.ticket, result.door_unlocked, result.scan_info);
     } else {
         showError(result.error_type, result.message, result);
     }
@@ -90,7 +90,7 @@ function handleScanResult(result) {
 /**
  * Show success state with ticket information
  */
-function showSuccess(ticket, doorUnlocked = true) {
+function showSuccess(ticket, doorUnlocked = true, scanInfo = null) {
     hideAllStates();
     
     // Update ticket information
@@ -101,12 +101,23 @@ function showSuccess(ticket, doorUnlocked = true) {
     if (ticketSeats) ticketSeats.textContent = ticket.sits || '-';
     if (ticketDate) ticketDate.textContent = formatDate(ticket.date) || '-';
     
-    // Update door status
+    // Update door status with scan count info
     const doorStatus = document.querySelector('.door-status');
     if (doorStatus) {
         if (doorUnlocked) {
-            doorStatus.innerHTML = '<i class="fa-solid fa-door-open me-2"></i>Door is now open - Please proceed';
-            doorStatus.style.background = 'linear-gradient(to right, #4caf50, #45a049)';
+            // Show scan count info if available
+            if (scanInfo) {
+                if (scanInfo.all_scanned) {
+                    doorStatus.innerHTML = `<i class="fa-solid fa-check-double me-2"></i>All ${scanInfo.total_tickets} ticket(s) scanned - Entry complete!`;
+                    doorStatus.style.background = 'linear-gradient(to right, #2196f3, #1976d2)';
+                } else {
+                    doorStatus.innerHTML = `<i class="fa-solid fa-door-open me-2"></i>Ticket ${scanInfo.current_scan} of ${scanInfo.total_tickets} - ${scanInfo.scans_remaining} remaining`;
+                    doorStatus.style.background = 'linear-gradient(to right, #4caf50, #45a049)';
+                }
+            } else {
+                doorStatus.innerHTML = '<i class="fa-solid fa-door-open me-2"></i>Door is now open - Please proceed';
+                doorStatus.style.background = 'linear-gradient(to right, #4caf50, #45a049)';
+            }
         } else {
             doorStatus.innerHTML = '<i class="fa-solid fa-exclamation-triangle me-2"></i>Door issue - Staff will assist';
             doorStatus.style.background = 'linear-gradient(to right, #ff9800, #f57c00)';
@@ -116,7 +127,7 @@ function showSuccess(ticket, doorUnlocked = true) {
     // Show success state
     if (successState) successState.classList.add('active');
     
-    console.log('Showing success for:', ticket.name);
+    console.log('Showing success for:', ticket.name, scanInfo ? `(Scan ${scanInfo.current_scan}/${scanInfo.total_tickets})` : '');
 }
 
 /**
@@ -140,10 +151,10 @@ function showError(errorType, message, data = {}) {
             break;
             
         case 'already_scanned':
-            title = 'Ticket Already Used';
+            title = 'All Tickets Used';
             details = `
-                <p><i class="fa-solid fa-exclamation-triangle me-2"></i>This ticket has already been scanned and used.</p>
-                <p>Each ticket can only be used once.</p>
+                <p><i class="fa-solid fa-check-double me-2"></i>All tickets for this barcode have already been scanned.</p>
+                <p>Each seat ticket can only be used once for entry.</p>
             `;
             break;
             
