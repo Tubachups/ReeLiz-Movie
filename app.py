@@ -703,6 +703,25 @@ def send_ticket_email():
         traceback.print_exc()
         return jsonify({"success": False, "message": str(e)}), 500
 
+def preload_movie_cache():
+    """Preload movie data in background to speed up first page load"""
+    import threading
+    def load_cache():
+        try:
+            print("[CACHE] Preloading movie data...")
+            # This will trigger the cache to be populated
+            api.get_movies("now")
+            api.get_movies("coming")
+            api.get_genres()
+            print("[CACHE] ✓ Movie data preloaded successfully!")
+        except Exception as e:
+            print(f"[CACHE] Warning: Failed to preload cache: {e}")
+    
+    # Run in background thread so it doesn't block startup
+    cache_thread = threading.Thread(target=load_cache, daemon=True)
+    cache_thread.start()
+
+
 if __name__ == "__main__":
     # Start the barcode scanner background thread
     print("\n" + "=" * 50)
@@ -710,6 +729,10 @@ if __name__ == "__main__":
     print("=" * 50)
     print("Starting scanner thread...")
     scanner.start_scanner_thread()
+    
+    # Preload movie cache in background
+    preload_movie_cache()
+    
     print("Starting web server on http://127.0.0.1:5500")
     print("=" * 50 + "\n")
     
