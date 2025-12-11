@@ -101,7 +101,7 @@ function showSuccess(ticket, doorUnlocked = true, scanInfo = null) {
     if (ticketSeats) ticketSeats.textContent = ticket.sits || '-';
     if (ticketDate) ticketDate.textContent = formatDate(ticket.date) || '-';
     
-    // Update door status with scan count info
+    // Update door status with scan count info (now at top, centered)
     const doorStatus = document.querySelector('.door-status');
     if (doorStatus) {
         if (doorUnlocked) {
