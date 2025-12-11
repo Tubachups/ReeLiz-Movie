@@ -109,10 +109,11 @@ function showSuccess(ticket, doorUnlocked = true, scanInfo = null) {
             if (scanInfo) {
                 if (scanInfo.all_scanned) {
                     doorStatus.innerHTML = `<i class="fa-solid fa-check-double me-2"></i>All ${scanInfo.total_tickets} ticket(s) scanned - Entry complete!`;
-                    doorStatus.style.background = 'linear-gradient(to right, #2196f3, #1976d2)';
+                    doorStatus.style.background = 'linear-gradient(to right, #4caf50, #45a049)';
+                    doorStatus.style.color = '#fff';
                 } else {
                     doorStatus.innerHTML = `<i class="fa-solid fa-door-open me-2"></i>Ticket ${scanInfo.current_scan} of ${scanInfo.total_tickets} - ${scanInfo.scans_remaining} remaining`;
-                    doorStatus.style.background = 'linear-gradient(to right, #4caf50, #45a049)';
+                    doorStatus.style.background = 'linear-gradient(to right, #ffc107, #ff9800)';
                 }
             } else {
                 doorStatus.innerHTML = '<i class="fa-solid fa-door-open me-2"></i>Door is now open - Please proceed';

@@ -382,22 +382,21 @@
 }
 
 .door-status {
-  background: linear-gradient(to right, #4caf50, #45a049);
+  background: linear-gradient(to right, #ffc107, #ff9800);
   padding: 15px 30px;
   border-radius: 50px;
   font-size: 18px;
   font-weight: 700;
   display: inline-block;
-  animation: doorPulse 1.5s infinite;
 }
 
 @keyframes doorPulse {
   0%,
   100% {
-    box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
   }
   50% {
-    box-shadow: 0 0 40px rgba(76, 175, 80, 0.8);
+    box-shadow: 0 0 40px rgba(255, 193, 7, 0.8);
   }
 }
 
