@@ -198,43 +198,29 @@
   margin-bottom: 30px;
 }
 
-.logo-icon {
-  font-size: 80px;
-  color: #00c6ff;
-  margin-bottom: 10px;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
 .logo-text {
   font-family: "Fjalla One", sans-serif;
-  font-size: 60px;
+  font-size: 48px;
   background: linear-gradient(to right, #00c6ff, #0073ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin: 0;
+  margin: 0 0 10px 0;
 }
 
-.welcome-message h2 {
-  font-size: 42px;
-  margin-bottom: 10px;
-  font-weight: 700;
+.reeliz-text {
+  font-family: "Fjalla One", sans-serif;
+  font-size: 90px;
+  color: white;
+  margin: 0 0 15px 0;
+  text-shadow: 0 0 30px rgba(0, 198, 255, 0.5);
+  letter-spacing: 5px;
 }
 
-.welcome-message p {
-  font-size: 24px;
+.welcome-subtitle {
+  font-size: 22px;
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 
 /* Scanner Animation */
@@ -351,6 +337,7 @@
   margin: 0 auto 30px;
   max-width: 600px;
   width: 100%;
+  margin-top: 20px;
 }
 
 .ticket-header {
@@ -412,6 +399,48 @@
   50% {
     box-shadow: 0 0 40px rgba(76, 175, 80, 0.8);
   }
+}
+
+/* Ticket Remaining Card (Shown First for Multi-Seat) */
+.ticket-remaining-card {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 198, 255, 0.2),
+    rgba(0, 115, 255, 0.2)
+  );
+  border-radius: 20px;
+  border: 2px solid rgba(0, 198, 255, 0.5);
+  overflow: hidden;
+  margin: 0 auto 20px;
+  max-width: 400px;
+  width: 100%;
+}
+
+.remaining-header {
+  background: linear-gradient(to right, #00c6ff, #0073ff);
+  padding: 12px 20px;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  color: white;
+}
+
+.remaining-content {
+  padding: 20px;
+  text-align: center;
+}
+
+.remaining-number {
+  font-size: 48px;
+  font-weight: 700;
+  color: #00c6ff;
+  margin-bottom: 10px;
+  text-shadow: 0 0 20px rgba(0, 198, 255, 0.5);
+}
+
+.remaining-text {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 /* ===================== */
@@ -523,7 +552,7 @@
   }
 
   .welcome-message p {
-    font-size: 18px;
+    font-size: 30px;
   }
 
   .scanner-animation {

@@ -135,6 +135,10 @@ def scanner_thread_function():
                         print(f"\n[SCANNER] ========== BARCODE SCANNED ==========")
                         print(f"[SCANNER] Barcode: {barcode}")
                         
+                        # IMPORTANT: Commit before SELECT to see changes from other connections (admin panel)
+                        # Without this, the persistent connection caches old data
+                        db.commit()
+                        
                         # Lookup in database - fetch ALL fields
                         query = """
                             SELECT id, date, name, room, movie, sits, amount, barcode, Remarks 
