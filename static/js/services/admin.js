@@ -63,19 +63,23 @@ document.addEventListener('DOMContentLoaded', function() {
           data.data.forEach(trans => {
             const row = document.createElement('tr');
             const remarksClass = trans.remarks === 'Active' ? 'text-success' : 'text-danger';
+            
+            // Escape special characters for safe HTML attribute embedding
+            const transData = btoa(encodeURIComponent(JSON.stringify(trans)));
+            
             row.innerHTML = `
               <td>${trans.id}</td>
               <td>${trans.date || 'N/A'}</td>
-              <td>${trans.name}</td>
+              <td>${escapeHtml(trans.name)}</td>
               <td>${trans.room}</td>
-              <td>${trans.movie}</td>
-              <td>${trans.sits}</td>
+              <td>${escapeHtml(trans.movie)}</td>
+              <td>${escapeHtml(trans.sits)}</td>
               <td>₱${trans.amount}</td>
               <td><small>${trans.barcode}</small></td>
               <td><span class="${remarksClass} fw-bold">${trans.remarks || 'Active'}</span></td>
               <td>
                 <div class="d-flex gap-1">
-                  <button class="btn btn-sm btn-primary btn-action" onclick='editTransaction(${JSON.stringify(trans)})'>
+                  <button class="btn btn-sm btn-primary btn-action" data-trans="${transData}" onclick="editTransactionFromData(this)">
                     <i class="fa-solid fa-pen"></i>
                   </button>
                   <button class="btn btn-sm btn-danger btn-action" onclick="deleteTransaction(${trans.id})">
@@ -92,6 +96,14 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Error loading transactions:', error);
         document.getElementById('transactionsLoading').innerHTML = '<p class="text-danger">Error loading transactions</p>';
       });
+  }
+  
+  // Helper function to escape HTML special characters
+  function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
   }
 
   // Initial load
@@ -410,6 +422,18 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('editTransBarcode').value = trans.barcode;
     document.getElementById('editTransRemarks').value = trans.remarks || 'Active';
     new bootstrap.Modal(document.getElementById('editTransactionModal')).show();
+  };
+  
+  // Edit transaction from encoded data attribute (handles special characters safely)
+  window.editTransactionFromData = function(btn) {
+    try {
+      const transData = btn.getAttribute('data-trans');
+      const trans = JSON.parse(decodeURIComponent(atob(transData)));
+      window.editTransaction(trans);
+    } catch (e) {
+      console.error('Error parsing transaction data:', e);
+      alert('Error opening edit form. Please refresh the page and try again.');
+    }
   };
 
   window.deleteTransaction = function(id) {
