@@ -1,6 +1,6 @@
-import { generateDates } from '../utils/dateUtils.js';
+import { generateDates, filterPastTimeSlots, getSelectedDate } from '../utils/dateUtils.js';
 import { updateTicketInfo } from '../services/updateTicketInfo.js';
-import { getMovieSchedule, generateScheduledDates, populateTimeSlots } from '../utils/movieSchedule.js';
+import { getMovieSchedule, generateScheduledDates, populateTimeSlots, updateCinemaVisibility } from '../utils/movieSchedule.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   const BASE_PRICE = 300;
@@ -154,6 +154,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // Combined callback that updates ticket info AND reloads occupied seats for the new date
   const updateWithSeats = async () => {
     update(); // Update ticket info
+    
+    // Update time slots and cinema visibility based on selected date
+    const schedule = getMovieSchedule();
+    if (schedule) {
+      populateTimeSlots(schedule); // This now also handles cinema visibility
+    }
+    
     await preloadAllOccupiedSeats(true); // Reload occupied seats for the new date and clear selections
   };
 
@@ -181,6 +188,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Use 'slide.bs.carousel' instead of 'slid.bs.carousel' to update before transition
     cinemaCarousel.addEventListener('slide.bs.carousel', function (e) {
       const nextSlide = e.relatedTarget;
+      
+      // Prevent sliding to unavailable cinema
+      if (nextSlide.classList.contains('unavailable-cinema') || nextSlide.style.display === 'none') {
+        e.preventDefault();
+        return;
+      }
+      
       const cinemaNumber = nextSlide.querySelector('[data-cinema]')?.getAttribute('data-cinema');
       
       if (cinemaNumber && showtimeSelect) {
