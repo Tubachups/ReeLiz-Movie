@@ -160,8 +160,12 @@
               <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0"><i class="fa-solid fa-user-group me-2"></i>Users Management</h5>
                 <div class="d-flex gap-2">
-                  <input type="text" class="form-control search-box" style="width: 250px;"  id="userSearch" placeholder="Search users...">
-                  <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                  <select class="form-select" id="userFilter" style="width: 150px;">
+                    <option value="active" selected>Active Users</option>
+                    <option value="archived">Archived Users</option>
+                  </select>
+                  <input type="text" class="form-control search-box" style="width: 250px;" id="userSearch" placeholder="Search users...">
+                  <button class="btn btn-success" id="addUserBtn" data-bs-toggle="modal" data-bs-target="#addUserModal">
                     <i class="fa-solid fa-plus me-1"></i> Add User
                   </button>
                 </div>
@@ -195,6 +199,10 @@
               <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0"><i class="fa-solid fa-money-bill-transfer me-2"></i>Transactions Management</h5>
                 <div class="d-flex gap-2">
+                  <select class="form-select" id="transactionFilter" style="width: 150px;">
+                    <option value="active" selected>Active</option>
+                    <option value="archived">Archived</option>
+                  </select>
                   <input type="text" class="form-control search-box" id="transactionSearch" placeholder="Search transactions...">
                 </div>
               </div>
@@ -313,22 +321,22 @@
   </div>
 </div>
 
-<!-- Delete User Confirmation Modal -->
+<!-- Archive User Confirmation Modal -->
 <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="deleteUserModalLabel"><i class="fa-solid fa-trash me-2"></i>Confirm Delete</h5>
+        <h5 class="modal-title" id="deleteUserModalLabel"><i class="fa-solid fa-box-archive me-2"></i>Confirm Archive</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to delete user <strong id="deleteUserName"></strong>?</p>
-        <p class="text-muted small">This action cannot be undone.</p>
+        <p>Are you sure you want to archive user <strong id="deleteUserName"></strong>?</p>
+        <p class="text-muted small">This user will be moved to Archived Users.</p>
         <input type="hidden" id="deleteUserId">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-danger" id="confirmDeleteUserBtn">Delete</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteUserBtn">Archive</button>
       </div>
     </div>
   </div>
@@ -446,22 +454,22 @@
   </div>
 </div>
 
-<!-- Delete Transaction Confirmation Modal -->
+<!-- Archive Transaction Confirmation Modal -->
 <div class="modal fade" id="deleteTransactionModal" tabindex="-1" aria-labelledby="deleteTransactionModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="deleteTransactionModalLabel"><i class="fa-solid fa-trash me-2"></i>Confirm Delete</h5>
+        <h5 class="modal-title" id="deleteTransactionModalLabel"><i class="fa-solid fa-box-archive me-2"></i>Confirm Archive</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to delete transaction <strong id="deleteTransId"></strong>?</p>
-        <p class="text-muted small">This action cannot be undone.</p>
+        <p>Are you sure you want to archive transaction <strong id="deleteTransId"></strong>?</p>
+        <p class="text-muted small">This transaction will be moved to the Archive tab.</p>
         <input type="hidden" id="deleteTransactionId">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-danger" id="confirmDeleteTransactionBtn">Delete</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteTransactionBtn">Archive</button>
       </div>
     </div>
   </div>

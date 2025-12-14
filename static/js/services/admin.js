@@ -14,32 +14,51 @@ document.addEventListener('DOMContentLoaded', function() {
     toast.show();
   }
 
-  // Load users data
-  function loadUsers() {
-    fetch('/api/admin/users')
+  // Load users data (active or archived based on filter)
+  function loadUsers(archived = false) {
+    const endpoint = archived ? '/api/admin/archive_users' : '/api/admin/users';
+    fetch(endpoint)
       .then(response => response.json())
       .then(data => {
         document.getElementById('usersLoading').style.display = 'none';
         const tbody = document.getElementById('usersTableBody');
         tbody.innerHTML = '';
         
+        // Show/hide Add User button based on view
+        const addUserBtn = document.getElementById('addUserBtn');
+        if (addUserBtn) {
+          addUserBtn.style.display = archived ? 'none' : 'block';
+        }
+        
         if (data.status === 'success' && data.data) {
           data.data.forEach(user => {
             const row = document.createElement('tr');
-            row.innerHTML = `
-              <td>${user.id}</td>
-              <td>${user.username}</td>
-              <td>${user.email}</td>
-              <td>${user.created_at || 'N/A'}</td>
-              <td>
-                <button class="btn btn-sm btn-primary btn-action me-1" onclick="editUser(${user.id}, '${user.username}', '${user.email}')">
-                  <i class="fa-solid fa-pen"></i>
-                </button>
-                <button class="btn btn-sm btn-danger btn-action" onclick="deleteUser(${user.id}, '${user.username}')">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </td>
-            `;
+            if (archived) {
+              // Archived users - no action buttons
+              row.innerHTML = `
+                <td>${user.id}</td>
+                <td>${user.username}</td>
+                <td>${user.email}</td>
+                <td>${user.created_at || 'N/A'}</td>
+                <td><span class="text-muted">Archived</span></td>
+              `;
+            } else {
+              // Active users - with action buttons
+              row.innerHTML = `
+                <td>${user.id}</td>
+                <td>${user.username}</td>
+                <td>${user.email}</td>
+                <td>${user.created_at || 'N/A'}</td>
+                <td>
+                  <button class="btn btn-sm btn-primary btn-action me-1" onclick="editUser(${user.id}, '${user.username}', '${user.email}')">
+                    <i class="fa-solid fa-pen"></i>
+                  </button>
+                  <button class="btn btn-sm btn-danger btn-action" onclick="archiveUser(${user.id}, '${user.username}')">
+                    <i class="fa-solid fa-box-archive"></i>
+                  </button>
+                </td>
+              `;
+            }
             tbody.appendChild(row);
           });
         }
@@ -50,9 +69,10 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   }
 
-  // Load transactions data
-  function loadTransactions() {
-    fetch('/api/admin/transactions')
+  // Load transactions data (active or archived based on filter)
+  function loadTransactions(archived = false) {
+    const endpoint = archived ? '/api/admin/archive' : '/api/admin/transactions';
+    fetch(endpoint)
       .then(response => response.json())
       .then(data => {
         document.getElementById('transactionsLoading').style.display = 'none';
@@ -62,32 +82,49 @@ document.addEventListener('DOMContentLoaded', function() {
         if (data.status === 'success' && data.data) {
           data.data.forEach(trans => {
             const row = document.createElement('tr');
-            const remarksClass = trans.remarks === 'Active' ? 'text-success' : 'text-danger';
+            const remarksClass = trans.remarks === 'Active' ? 'text-success' : (trans.remarks === 'Archived' ? 'text-secondary' : 'text-danger');
             
             // Escape special characters for safe HTML attribute embedding
             const transData = btoa(encodeURIComponent(JSON.stringify(trans)));
             
-            row.innerHTML = `
-              <td>${trans.id}</td>
-              <td>${trans.date || 'N/A'}</td>
-              <td>${escapeHtml(trans.name)}</td>
-              <td>${trans.room}</td>
-              <td>${escapeHtml(trans.movie)}</td>
-              <td>${escapeHtml(trans.sits)}</td>
-              <td>₱${trans.amount}</td>
-              <td><small>${trans.barcode}</small></td>
-              <td><span class="${remarksClass} fw-bold">${trans.remarks || 'Active'}</span></td>
-              <td>
-                <div class="d-flex gap-1">
-                  <button class="btn btn-sm btn-primary btn-action" data-trans="${transData}" onclick="editTransactionFromData(this)">
-                    <i class="fa-solid fa-pen"></i>
-                  </button>
-                  <button class="btn btn-sm btn-danger btn-action" onclick="deleteTransaction(${trans.id})">
-                    <i class="fa-solid fa-trash"></i>
-                  </button>
-                </div>
-              </td>
-            `;
+            if (archived) {
+              // Archived transactions - no action buttons
+              row.innerHTML = `
+                <td>${trans.id}</td>
+                <td>${trans.date || 'N/A'}</td>
+                <td>${escapeHtml(trans.name)}</td>
+                <td>${trans.room}</td>
+                <td>${escapeHtml(trans.movie)}</td>
+                <td>${escapeHtml(trans.sits)}</td>
+                <td>₱${trans.amount}</td>
+                <td><small>${trans.barcode}</small></td>
+                <td><span class="${remarksClass} fw-bold">${trans.remarks || 'Archived'}</span></td>
+                <td><span class="text-muted">-</span></td>
+              `;
+            } else {
+              // Active transactions - with action buttons
+              row.innerHTML = `
+                <td>${trans.id}</td>
+                <td>${trans.date || 'N/A'}</td>
+                <td>${escapeHtml(trans.name)}</td>
+                <td>${trans.room}</td>
+                <td>${escapeHtml(trans.movie)}</td>
+                <td>${escapeHtml(trans.sits)}</td>
+                <td>₱${trans.amount}</td>
+                <td><small>${trans.barcode}</small></td>
+                <td><span class="${remarksClass} fw-bold">${trans.remarks || 'Active'}</span></td>
+                <td>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-primary btn-action" data-trans="${transData}" onclick="editTransactionFromData(this)">
+                      <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger btn-action" onclick="archiveTransaction(${trans.id})">
+                      <i class="fa-solid fa-box-archive"></i>
+                    </button>
+                  </div>
+                </td>
+              `;
+            }
             tbody.appendChild(row);
           });
         }
@@ -109,6 +146,20 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initial load
   loadUsers();
   loadTransactions();
+
+  // Filter functionality for users
+  document.getElementById('userFilter').addEventListener('change', function(e) {
+    const isArchived = e.target.value === 'archived';
+    document.getElementById('usersLoading').style.display = 'block';
+    loadUsers(isArchived);
+  });
+
+  // Filter functionality for transactions
+  document.getElementById('transactionFilter').addEventListener('change', function(e) {
+    const isArchived = e.target.value === 'archived';
+    document.getElementById('transactionsLoading').style.display = 'block';
+    loadTransactions(isArchived);
+  });
 
   // Search functionality for users
   document.getElementById('userSearch').addEventListener('input', function(e) {
@@ -281,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Confirm delete user
+  // Confirm archive user
   document.getElementById('confirmDeleteUserBtn').addEventListener('click', function() {
     const id = document.getElementById('deleteUserId').value;
 
@@ -293,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(response => response.json())
     .then(data => {
       if (data.status === 'success') {
-        showToast('Success', 'User deleted successfully', 'success');
+        showToast('Success', 'User archived successfully', 'success');
         bootstrap.Modal.getInstance(document.getElementById('deleteUserModal')).hide();
         loadUsers();
       } else {
@@ -301,7 +352,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     })
     .catch(error => {
-      showToast('Error', 'Failed to delete user', 'error');
+      showToast('Error', 'Failed to archive user', 'error');
     });
   });
 
@@ -372,7 +423,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Confirm delete transaction
+  // Confirm archive transaction
   document.getElementById('confirmDeleteTransactionBtn').addEventListener('click', function() {
     const id = document.getElementById('deleteTransactionId').value;
 
@@ -384,15 +435,16 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(response => response.json())
     .then(data => {
       if (data.status === 'success') {
-        showToast('Success', 'Transaction deleted successfully', 'success');
+        showToast('Success', 'Transaction archived successfully', 'success');
         bootstrap.Modal.getInstance(document.getElementById('deleteTransactionModal')).hide();
         loadTransactions();
+        loadArchive();
       } else {
         showToast('Error', data.message, 'error');
       }
     })
     .catch(error => {
-      showToast('Error', 'Failed to delete transaction', 'error');
+      showToast('Error', 'Failed to archive transaction', 'error');
     });
   });
 
@@ -405,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function() {
     new bootstrap.Modal(document.getElementById('editUserModal')).show();
   };
 
-  window.deleteUser = function(id, username) {
+  window.archiveUser = function(id, username) {
     document.getElementById('deleteUserId').value = id;
     document.getElementById('deleteUserName').textContent = username;
     new bootstrap.Modal(document.getElementById('deleteUserModal')).show();
@@ -436,7 +488,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   };
 
-  window.deleteTransaction = function(id) {
+  window.archiveTransaction = function(id) {
     document.getElementById('deleteTransactionId').value = id;
     document.getElementById('deleteTransId').textContent = '#' + id;
     new bootstrap.Modal(document.getElementById('deleteTransactionModal')).show();

@@ -1,7 +1,7 @@
 import serial
 import time
 import mysql.connector
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 from dotenv import load_dotenv
 import threading
@@ -301,11 +301,54 @@ def validate_ticket_for_entry(ticket):
             'reason': 'All tickets for this barcode have already been used'
         }
     
-    # DATE/TIME FILTERING DISABLED FOR TESTING
-    # TODO: Re-enable date validation after door testing is complete
-    # Currently allowing all tickets to test door functionality
+    # Check if ticket is expired (date has passed)
+    if ticket_date:
+        try:
+            # Parse ticket date format: MM/DD:HH (e.g., "12/13:14" for Dec 13 at 2 PM)
+            now = datetime.now()
+            current_year = now.year
+            
+            # Split date and time
+            date_parts = ticket_date.split(':')
+            date_part = date_parts[0]  # MM/DD
+            hour = int(date_parts[1]) if len(date_parts) > 1 else 0  # HH
+            
+            month, day = map(int, date_part.split('/'))
+            
+            # Create ticket datetime (assume current year, or next year if date seems in past)
+            ticket_datetime = datetime(current_year, month, day, hour, 0, 0)
+            
+            # If ticket date is more than 6 months in past, assume it was for next year
+            if (now - ticket_datetime).days > 180:
+                ticket_datetime = datetime(current_year + 1, month, day, hour, 0, 0)
+            
+            # Check if ticket date has passed (expired)
+            # Allow a 2-hour grace period after showtime
+            grace_period_hours = 2
+            expiry_datetime = ticket_datetime.replace(hour=ticket_datetime.hour + grace_period_hours) if ticket_datetime.hour + grace_period_hours < 24 else ticket_datetime.replace(day=ticket_datetime.day + 1, hour=(ticket_datetime.hour + grace_period_hours) % 24)
+            
+            if now > expiry_datetime:
+                # Ticket is expired
+                formatted_ticket_date = ticket_datetime.strftime('%b %d at %I:%M %p')
+                formatted_today = now.strftime('%b %d, %Y at %I:%M %p')
+                
+                print(f"[SCANNER] ✗ Ticket EXPIRED - Showtime: {formatted_ticket_date}, Now: {formatted_today}")
+                
+                return {
+                    'valid': False,
+                    'error_type': 'expired',
+                    'reason': 'This ticket has expired',
+                    'ticket_date': formatted_ticket_date,
+                    'today': formatted_today,
+                    'showtime': f"{ticket_datetime.strftime('%I:%M %p')} on {ticket_datetime.strftime('%b %d')}"
+                }
+            
+            print(f"[SCANNER] ✓ Ticket date valid - Showtime: {ticket_datetime.strftime('%b %d at %I:%M %p')}")
+            
+        except Exception as e:
+            print(f"[SCANNER] Warning: Could not parse ticket date '{ticket_date}': {e}")
+            # Continue anyway if date parsing fails
     
-    print(f"[SCANNER] Date filtering DISABLED - ticket date: {ticket_date}")
     print(f"[SCANNER] Seats: {seat_count}, Scanned: {current_scans}, Remaining: {scans_remaining}")
     
     return {

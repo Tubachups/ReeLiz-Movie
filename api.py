@@ -46,7 +46,6 @@ def get_genres():
 
 def get_movie_schedule(movie_index):
     """
-    Generate schedule for a movie based on its index (0-7)
     Movies 0-3: Group A (Mon, Wed, Fri, Sun) - MWF pattern
     Movies 4-7: Group B (Tue, Thu, Sat) - TTS pattern
     Each movie shows twice per day across Cinema 1 and Cinema 2
@@ -61,7 +60,6 @@ def get_movie_schedule(movie_index):
     # Time slots: 10:00 AM, 1:00 PM, 4:00 PM, 7:00 PM
     time_slots = ["10:00 AM", "1:00 PM", "4:00 PM", "7:00 PM"]
     
-    # Determine which group this movie belongs to
     if movie_index < 4:
         # Group A: Monday(1), Wednesday(3), Friday(5), Sunday(0)
         allowed_weekdays = [1, 3, 5, 0]
