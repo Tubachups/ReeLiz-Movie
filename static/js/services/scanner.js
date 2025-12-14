@@ -163,7 +163,6 @@ function showError(errorType, message, data = {}) {
             title = 'Ticket Expired';
             details = `
                 <p><i class="fa-solid fa-clock me-2"></i>This ticket has expired.</p>
-                <p>Tickets are only valid up to <span class="error-highlight">2 hours</span> after the scheduled showtime.</p>
                 <p>Your showtime was: <span class="error-highlight">${data.showtime || 'Unknown'}</span></p>
             `;
             break;

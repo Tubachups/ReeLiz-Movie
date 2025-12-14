@@ -26,6 +26,14 @@ try {
         
         sendResponse('success', 'Users retrieved successfully', $users);
         
+    } elseif ($table === 'archive_users') {
+        // Read all archived users
+        $stmt = $pdo->prepare("SELECT id, username, email, created_at FROM archive_users ORDER BY id DESC");
+        $stmt->execute();
+        $users = $stmt->fetchAll();
+        
+        sendResponse('success', 'Archived users retrieved successfully', $users);
+        
     } elseif ($table === 'transaction') {
         // Read all transactions
         $stmt = $pdo->prepare("SELECT id, date, name, room, movie, sits, amount, barcode, remarks FROM transaction ORDER BY id DESC");
@@ -34,8 +42,16 @@ try {
         
         sendResponse('success', 'Transactions retrieved successfully', $transactions);
         
+    } elseif ($table === 'archive') {
+        // Read all archived transactions
+        $stmt = $pdo->prepare("SELECT id, date, name, room, movie, sits, amount, barcode, remarks FROM archive ORDER BY id DESC");
+        $stmt->execute();
+        $archives = $stmt->fetchAll();
+        
+        sendResponse('success', 'Archives retrieved successfully', $archives);
+        
     } else {
-        sendResponse('error', 'Invalid table name. Use "users" or "transaction"');
+        sendResponse('error', 'Invalid table name. Use "users", "transaction", or "archive"');
     }
     
 } catch (PDOException $e) {

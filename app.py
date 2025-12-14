@@ -269,6 +269,20 @@ def admin_delete_user():
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 
+@app.route('/api/admin/archive_users')
+def admin_get_archive_users():
+    """Get all archived users for admin dashboard"""
+    if not session.get('is_admin'):
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+    
+    try:
+        output = run_php_script('php/read.php', ['archive_users'])
+        result = json.loads(output)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
 @app.route('/api/admin/transactions')
 def admin_get_transactions():
     """Get all transactions for admin dashboard"""
@@ -277,6 +291,20 @@ def admin_get_transactions():
     
     try:
         output = run_php_script('php/read.php', ['transaction'])
+        result = json.loads(output)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+@app.route('/api/admin/archive')
+def admin_get_archive():
+    """Get all archived transactions for admin dashboard"""
+    if not session.get('is_admin'):
+        return jsonify({'status': 'error', 'message': 'Unauthorized'}), 403
+    
+    try:
+        output = run_php_script('php/read.php', ['archive'])
         result = json.loads(output)
         return jsonify(result)
     except Exception as e:

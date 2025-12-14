@@ -182,8 +182,8 @@ function updateCinemaVisibility(schedule, availableTimeSlots) {
   if (visibleCinemas === 0) {
     if (!noCinemasMsg) {
       const msg = document.createElement('div');
-      msg.className = 'no-cinemas-message text-center text-muted py-4';
-      msg.innerHTML = '<i class="bi bi-clock-history fs-1 mb-2 d-block"></i><p>No more showings available for today.<br>Please select a future date.</p>';
+    msg.className = 'no-cinemas-message text-center text-white py-4';
+      msg.innerHTML = '<i class="bi bi-clock-history fs-1 mb-2 d-block"></i><p>No more showings available for today.<br>Please select a future date.<br></p>';
       carousel.querySelector('.carousel-inner').appendChild(msg);
     }
     // Hide carousel controls
