@@ -152,11 +152,10 @@
 
 /* Disabled state for coming soon movies */
 #bookNowBtn:disabled {
-  background-color: #6c757d;
-  border-color: #6c757d;
-  color: #fff;
+  background-color: #06345c;
+  border-color: #071f34;
+  color: #ffffff;
   cursor: not-allowed;
-  opacity: 0.7;
 }
 
 #bookNowBtn:disabled::before {
