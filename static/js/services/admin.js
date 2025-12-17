@@ -99,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>₱${trans.amount}</td>
                 <td><small>${trans.barcode}</small></td>
                 <td><span class="${remarksClass} fw-bold">${trans.remarks || 'Archived'}</span></td>
-                <td><span class="text-muted">-</span></td>
               `;
             } else {
               // Active transactions - with action buttons
@@ -158,6 +157,11 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('transactionFilter').addEventListener('change', function(e) {
     const isArchived = e.target.value === 'archived';
     document.getElementById('transactionsLoading').style.display = 'block';
+    // Hide/show Actions column header based on filter
+    const actionsHeader = document.getElementById('transactionActionsHeader');
+    if (actionsHeader) {
+      actionsHeader.style.display = isArchived ? 'none' : '';
+    }
     loadTransactions(isArchived);
   });
 
