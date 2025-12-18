@@ -4,7 +4,7 @@
   <div class="container-fluid mx-3">
     <a class="navbar-brand " href="{{ url_for('landing') }}">ReeLiz</a>
     {% if session.get('is_admin') %}
-    <a class="navbar-brand text-warning" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+    <a class="navbar-brand" style="color: #4d9fff;" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
     {% endif %}
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
       <span class="navbar-toggler-icon"></span>
