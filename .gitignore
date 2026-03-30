@@ -6,6 +6,7 @@ __pycache__/
 *.pyd
 .Python
 *.db
+*.sqlite3
 .env
 .DS_Store
 node_modules/
