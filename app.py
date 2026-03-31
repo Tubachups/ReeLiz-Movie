@@ -1,5 +1,6 @@
 import secrets
 import threading
+import os
 import api
 import auth
 import database
@@ -11,8 +12,8 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.config["SECRET_KEY"] = secrets.token_hex(32)
-app.debug = True
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", secrets.token_hex(32))
+app.debug = False
 
 database.init_app(app)
 app.register_blueprint(api.api_bp)
@@ -97,4 +98,4 @@ if __name__ == "__main__":
     print("=" * 50 + "\n")
 
     server = Server(app.wsgi_app)
-    server.serve(port=5500, host="127.0.0.1")
+    server.serve(port=5500, debug=True)

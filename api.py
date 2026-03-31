@@ -3,6 +3,7 @@ import os
 import smtplib
 import time
 import traceback
+import controller
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from email.mime.image import MIMEImage
@@ -13,20 +14,24 @@ import requests
 from dotenv import load_dotenv
 from flask import Blueprint, jsonify, request, session
 
-import database
+import controller
 
 load_dotenv()
 
 api_bp = Blueprint("api", __name__)
 
 API_KEY = os.getenv("TMDB_API_KEY")
-if not API_KEY:
-    raise ValueError("TMDB_API_KEY environment variable is not set")
 BASE_URL = "https://api.themoviedb.org/3"
 cache = {}
 CACHE_DURATION = 3600
 
 http_session = requests.Session()
+
+
+def _require_api_key():
+    if API_KEY:
+        return None
+    return jsonify({"error": "TMDB_API_KEY environment variable is not set"}), 500
 
 
 def get_cached_or_fetch(cache_key, fetch_function):
@@ -48,6 +53,9 @@ def _fetch_genres_data():
 
 def get_genres():
     try:
+        missing_key = _require_api_key()
+        if missing_key:
+            return missing_key
         return jsonify(get_cached_or_fetch("genres", _fetch_genres_data))
     except Exception as error:
         return jsonify({"error": str(error)}), 500
@@ -222,6 +230,9 @@ def _fetch_movies_data(movie_type):
 
 def get_movies(movie_type):
     try:
+        missing_key = _require_api_key()
+        if missing_key:
+            return missing_key
         cache_key = f"movies_{movie_type}"
         return jsonify(get_cached_or_fetch(cache_key, lambda: _fetch_movies_data(movie_type)))
     except Exception as error:
@@ -230,6 +241,9 @@ def get_movies(movie_type):
 
 def get_movie_details(movie_id):
     try:
+        if not API_KEY:
+            raise ValueError("TMDB_API_KEY environment variable is not set")
+
         cache_key = f"movie_detail_{movie_id}"
         if cache_key in cache:
             cached_data, timestamp = cache[cache_key]
@@ -311,6 +325,8 @@ def get_movie_details(movie_id):
 
 
 def preload_cache():
+    if not API_KEY:
+        return
     get_cached_or_fetch("movies_now", lambda: _fetch_movies_data("now"))
     get_cached_or_fetch("movies_coming", lambda: _fetch_movies_data("coming"))
     get_cached_or_fetch("genres", _fetch_genres_data)
@@ -343,7 +359,7 @@ def admin_get_users():
     if not session.get("is_admin"):
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
-    success, result = database.get_users(archived=False)
+    success, result = controller.get_users(archived=False)
     if success:
         return jsonify({"status": "success", "message": "Users retrieved successfully", "data": result})
     return jsonify({"status": "error", "message": result}), 500
@@ -355,7 +371,7 @@ def admin_create_user():
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
     data = request.get_json(silent=True) or {}
-    success, message, created = database.create_user(
+    success, message, created = controller.create_user(
         data.get("username"),
         data.get("email"),
         data.get("password"),
@@ -369,7 +385,7 @@ def admin_update_user():
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
     data = request.get_json(silent=True) or {}
-    success, message = database.update_user(
+    success, message = controller.update_user(
         data.get("id"),
         data.get("username"),
         data.get("email"),
@@ -384,7 +400,7 @@ def admin_delete_user():
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
     data = request.get_json(silent=True) or {}
-    success, message = database.archive_user(data.get("id"))
+    success, message = controller.archive_user(data.get("id"))
     return _json_result(success, message)
 
 
@@ -393,7 +409,7 @@ def admin_get_archive_users():
     if not session.get("is_admin"):
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
-    success, result = database.get_users(archived=True)
+    success, result = controller.get_users(archived=True)
     if success:
         return jsonify(
             {"status": "success", "message": "Archived users retrieved successfully", "data": result}
@@ -406,7 +422,7 @@ def admin_get_transactions():
     if not session.get("is_admin"):
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
-    success, result = database.get_transactions(archived=False)
+    success, result = controller.get_transactions(archived=False)
     if success:
         return jsonify({"status": "success", "message": "Transactions retrieved successfully", "data": result})
     return jsonify({"status": "error", "message": result}), 500
@@ -417,7 +433,7 @@ def admin_get_archive():
     if not session.get("is_admin"):
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
-    success, result = database.get_transactions(archived=True)
+    success, result = controller.get_transactions(archived=True)
     if success:
         return jsonify({"status": "success", "message": "Archives retrieved successfully", "data": result})
     return jsonify({"status": "error", "message": result}), 500
@@ -429,7 +445,7 @@ def admin_create_transaction():
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
     data = request.get_json(silent=True) or {}
-    success, message, created = database.create_transaction(data)
+    success, message, created = controller.create_transaction(data)
     return _json_result(success, message, data=created)
 
 
@@ -439,7 +455,7 @@ def admin_update_transaction():
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
     data = request.get_json(silent=True) or {}
-    success, message = database.update_transaction(data)
+    success, message = controller.update_transaction(data)
     return _json_result(success, message)
 
 
@@ -449,7 +465,7 @@ def admin_delete_transaction():
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
     data = request.get_json(silent=True) or {}
-    success, message = database.archive_transaction(data.get("id"))
+    success, message = controller.archive_transaction(data.get("id"))
     return _json_result(success, message)
 
 
@@ -490,9 +506,9 @@ def prepare_transaction():
             hour = datetime.strptime(time_part, "%I:%M %p").strftime("%H")
             db_date = f"{month_num}/{day_str.zfill(2)}:{hour}"
         except Exception:
-            db_date = database.format_datetime_for_db()
+            db_date = controller.format_datetime_for_db()
 
-        success, next_id, _ = database.get_next_transaction_id()
+        success, next_id, _ = controller.get_next_transaction_id()
         if not success or next_id is None:
             return jsonify({"success": False, "message": "Failed to get next transaction ID"}), 500
 
@@ -539,7 +555,7 @@ def confirm_transaction():
                 missing.append("totalAmount")
             return jsonify({"success": False, "message": f'Missing required fields: {", ".join(missing)}'}), 400
 
-        success, message = database.insert_transaction_with_barcode(
+        success, message = controller.insert_transaction_with_barcode(
             transaction_id=transaction_id,
             date=db_date,
             name=username,
@@ -561,7 +577,7 @@ def get_occupied_seats_route(movie_id, cinema_room):
         movie_data = get_movie_details(movie_id)
         movie_title = movie_data["movie"]["title"]
         selected_date = request.args.get("date", None)
-        occupied = database.get_occupied_seats(movie_title, cinema_room, selected_date)
+        occupied = controller.get_occupied_seats(movie_title, cinema_room, selected_date)
         return jsonify(
             {
                 "success": True,
