@@ -21,13 +21,17 @@ load_dotenv()
 api_bp = Blueprint("api", __name__)
 
 API_KEY = os.getenv("TMDB_API_KEY")
-if not API_KEY:
-    raise ValueError("TMDB_API_KEY environment variable is not set")
 BASE_URL = "https://api.themoviedb.org/3"
 cache = {}
 CACHE_DURATION = 3600
 
 http_session = requests.Session()
+
+
+def _require_api_key():
+    if API_KEY:
+        return None
+    return jsonify({"error": "TMDB_API_KEY environment variable is not set"}), 500
 
 
 def get_cached_or_fetch(cache_key, fetch_function):
@@ -49,6 +53,9 @@ def _fetch_genres_data():
 
 def get_genres():
     try:
+        missing_key = _require_api_key()
+        if missing_key:
+            return missing_key
         return jsonify(get_cached_or_fetch("genres", _fetch_genres_data))
     except Exception as error:
         return jsonify({"error": str(error)}), 500
@@ -223,6 +230,9 @@ def _fetch_movies_data(movie_type):
 
 def get_movies(movie_type):
     try:
+        missing_key = _require_api_key()
+        if missing_key:
+            return missing_key
         cache_key = f"movies_{movie_type}"
         return jsonify(get_cached_or_fetch(cache_key, lambda: _fetch_movies_data(movie_type)))
     except Exception as error:
@@ -231,6 +241,9 @@ def get_movies(movie_type):
 
 def get_movie_details(movie_id):
     try:
+        if not API_KEY:
+            raise ValueError("TMDB_API_KEY environment variable is not set")
+
         cache_key = f"movie_detail_{movie_id}"
         if cache_key in cache:
             cached_data, timestamp = cache[cache_key]
@@ -312,6 +325,8 @@ def get_movie_details(movie_id):
 
 
 def preload_cache():
+    if not API_KEY:
+        return
     get_cached_or_fetch("movies_now", lambda: _fetch_movies_data("now"))
     get_cached_or_fetch("movies_coming", lambda: _fetch_movies_data("coming"))
     get_cached_or_fetch("genres", _fetch_genres_data)
