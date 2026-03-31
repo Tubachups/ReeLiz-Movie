@@ -1,5 +1,6 @@
 import secrets
 import threading
+import os
 import api
 import auth
 import database
@@ -11,8 +12,8 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.config["SECRET_KEY"] = secrets.token_hex(32)
-app.debug = True
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", secrets.token_hex(32))
+app.debug = False
 
 database.init_app(app)
 app.register_blueprint(api.api_bp)

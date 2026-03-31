@@ -23,7 +23,15 @@ def get_sqlalchemy_database_uri():
 
 
 def init_app(app):
-    app.config.setdefault("SQLALCHEMY_DATABASE_URI", get_sqlalchemy_database_uri())
+    database_url = os.getenv("DATABASE_URL")
+    if database_url:
+        # Heroku may provide postgres://, but SQLAlchemy expects postgresql://
+        app.config["SQLALCHEMY_DATABASE_URI"] = database_url.replace(
+            "postgres://", "postgresql://", 1
+        )
+    else:
+        app.config["SQLALCHEMY_DATABASE_URI"] = get_sqlalchemy_database_uri()
+
     app.config.setdefault("SQLALCHEMY_TRACK_MODIFICATIONS", False)
     db.init_app(app)
     with app.app_context():
