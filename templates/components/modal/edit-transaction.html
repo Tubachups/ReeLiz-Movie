@@ -1,0 +1,62 @@
+<div class="modal fade" id="editTransactionModal" tabindex="-1" aria-labelledby="editTransactionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content" style="max-height: 90vh;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editTransactionModalLabel"><i class="fa-solid fa-pen me-2"></i>Edit Transaction</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="overflow-y: auto;">
+        <form id="editTransactionForm">
+          <input type="hidden" id="editTransId" name="id">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="editTransDate" class="form-label">Date</label>
+              <input type="text" class="form-control" id="editTransDate" name="date" placeholder="MM/DD:HH" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="editTransName" class="form-label">Customer Name</label>
+              <input type="text" class="form-control" id="editTransName" name="name" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="editTransRoom" class="form-label">Room</label>
+              <input type="text" class="form-control" id="editTransRoom" name="room" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="editTransMovie" class="form-label">Movie</label>
+              <input type="text" class="form-control" id="editTransMovie" name="movie" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="editTransSeats" class="form-label">Seats</label>
+              <input type="text" class="form-control" id="editTransSeats" name="sits" placeholder="A1, A2, B3" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="editTransAmount" class="form-label">Amount</label>
+              <input type="number" class="form-control" id="editTransAmount" name="amount" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="editTransBarcode" class="form-label">Barcode</label>
+              <input type="text" class="form-control" id="editTransBarcode" name="barcode" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="editTransRemarks" class="form-label">Remarks</label>
+              <select class="form-select" id="editTransRemarks" name="remarks">
+                <option value="Active">Active</option>
+                <option value="Scanned">Scanned</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="updateTransactionBtn">Update Transaction</button>
+      </div>
+    </div>
+  </div>
+</div>

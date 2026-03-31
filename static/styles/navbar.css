@@ -9,7 +9,49 @@
 
 .navbar {
   overflow: visible;
-  background-color: #000000 !important;
+  background-color: var(--navbar-bg) !important;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link,
+.navbar .navbar-toggler {
+  color: var(--navbar-text) !important;
+}
+
+.navbar .navbar-toggler {
+  border-color: var(--border-color);
+}
+
+.navbar .navbar-toggler-icon {
+  filter: none;
+}
+
+html[data-theme="dark"] .navbar .navbar-toggler-icon {
+  filter: invert(1) grayscale(1) brightness(2);
+}
+
+.navbar .form-control {
+  background-color: var(--surface-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.navbar .form-control::placeholder {
+  color: var(--muted-text-color);
+}
+
+.theme-toggle-btn {
+  background-color: var(--toggle-bg);
+  border: 1px solid var(--border-color);
+  color: var(--toggle-text);
+  min-width: 88px;
+}
+
+.theme-toggle-btn:hover,
+.theme-toggle-btn:focus {
+  background-color: var(--surface-color);
+  color: var(--toggle-text);
 }
 /* Make navbar indicator specific to navbar only */
 .navbar .nav-link.active {
@@ -23,7 +65,7 @@
   bottom: -1px;
   width: 60%;
   height: 4px;
-  background: #ECB365;
+  background: var(--navbar-accent);
   border-radius: 3px;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
 }
@@ -34,7 +76,7 @@
   }
   .navbar .nav-link.active {
     font-weight: 600;
-    color: #ffffff !important;
+    color: var(--navbar-text) !important;
   }
 }
 

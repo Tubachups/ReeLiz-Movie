@@ -1,0 +1,115 @@
+.table-container {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.table thead th {
+  position: sticky;
+  top: 0;
+  background-color: #212529;
+  color: white;
+  z-index: 1;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-action {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.card {
+  border-radius: 0.5rem !important;
+}
+
+.admin-header {
+  background-color: #212529;
+  color: white;
+  padding: 1rem;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.search-box {
+  max-width: 300px;
+}
+
+.modal-header {
+  background-color: #212529;
+  color: white;
+}
+
+.modal-header .btn-close {
+  filter: invert(1);
+}
+
+/* Force all admin modals to stay centered in viewport immediately */
+#addUserModal,
+#editUserModal,
+#deleteUserModal,
+#addTransactionModal,
+#editTransactionModal,
+#deleteTransactionModal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  overflow: hidden !important;
+  display: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#addUserModal.show,
+#editUserModal.show,
+#deleteUserModal.show,
+#addTransactionModal.show,
+#editTransactionModal.show,
+#deleteTransactionModal.show {
+  display: flex !important;
+}
+
+#addUserModal .modal-dialog,
+#editUserModal .modal-dialog,
+#deleteUserModal .modal-dialog,
+#addTransactionModal .modal-dialog,
+#editTransactionModal .modal-dialog,
+#deleteTransactionModal .modal-dialog {
+  position: relative !important;
+  margin: 0 !important;
+}
+
+/* Enable immediate scroll (no animation delay) for modal content */
+#addUserModal .modal-body,
+#editUserModal .modal-body,
+#deleteUserModal .modal-body,
+#addTransactionModal .modal-body,
+#editTransactionModal .modal-body,
+#deleteTransactionModal .modal-body {
+  scroll-behavior: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Fixed modal content size to prevent dynamic resizing on validation */
+#addUserModal .modal-content {
+  min-height: 420px;
+      width: 600px
+}
+
+#addUserModal .modal-body {
+  min-height: 280px;
+}
+
+#addUserModal .alert {
+  margin-bottom: 1rem;
+}
+
+#addUserModal .invalid-feedback {
+  font-size: 0.8rem;
+}

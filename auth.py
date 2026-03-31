@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, session
 
-import database
+import controller
 
 # Admin credentials
 ADMIN_USERNAME = "admin"
@@ -19,7 +19,7 @@ def login():
             session["is_admin"] = True
             return redirect(url_for("admin_dashboard"))
 
-        success, message, user = database.authenticate_user(username, password)
+        success, message, user = controller.authenticate_user(username, password)
         if success:
             session["user_id"] = user["id"]
             session["username"] = user["username"]
@@ -42,7 +42,7 @@ def signup():
         if password != confirm_password:
             return render_template("pages/login.html", error="Passwords do not match!")
 
-        success, message, _ = database.create_user(username, email, password)
+        success, message, _ = controller.create_user(username, email, password)
         if success:
             return render_template(
                 "pages/login.html",

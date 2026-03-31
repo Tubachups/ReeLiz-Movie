@@ -1,0 +1,54 @@
+:root {
+  --bg-color: #f7f8fb;
+  --surface-color: #ffffff;
+  --text-color: #1f2937;
+  --muted-text-color: #6b7280;
+  --border-color: #dbe1ea;
+  --navbar-bg: #ffffff;
+  --navbar-text: #111827;
+  --navbar-accent: #c8841b;
+  --toggle-bg: #e9edf3;
+  --toggle-text: #111827;
+}
+
+html[data-theme="dark"] {
+  --bg-color: #0f172a;
+  --surface-color: #111827;
+  --text-color: #e5e7eb;
+  --muted-text-color: #9ca3af;
+  --border-color: #2d3748;
+  --navbar-bg: #020617;
+  --navbar-text: #f3f4f6;
+  --navbar-accent: #f3b25b;
+  --toggle-bg: #1f2937;
+  --toggle-text: #f9fafb;
+}
+
+html,
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+body {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.card,
+.modal-content,
+.dropdown-menu,
+.table,
+.form-control,
+.form-select {
+  border-color: var(--border-color);
+}
+
+.card,
+.modal-content {
+  background-color: var(--surface-color);
+  color: var(--text-color);
+}
+
+.text-muted {
+  color: var(--muted-text-color) !important;
+}

@@ -1,0 +1,38 @@
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addUserModalLabel"><i class="fa-solid fa-user-plus me-2"></i>Add New User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Validation Alert -->
+        <div id="addUserAlert" class="alert d-none" role="alert">
+          <i class="fa-solid fa-circle-exclamation me-2"></i>
+          <span id="addUserAlertMessage"></span>
+        </div>
+        <form id="addUserForm">
+          <div class="mb-3">
+            <label for="newUsername" class="form-label">Username</label>
+            <input type="text" class="form-control" id="newUsername" name="username" required>
+            <div class="invalid-feedback" id="newUsernameError"></div>
+          </div>
+          <div class="mb-3">
+            <label for="newEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="newEmail" name="email" required>
+            <div class="invalid-feedback" id="newEmailError"></div>
+          </div>
+          <div class="mb-3">
+            <label for="newPassword" class="form-label">Password</label>
+            <input type="password" class="form-control" id="newPassword" name="password" required>
+            <div class="invalid-feedback" id="newPasswordError"></div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="saveUserBtn">Save User</button>
+      </div>
+    </div>
+  </div>
+</div>

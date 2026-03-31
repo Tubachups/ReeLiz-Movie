@@ -97,4 +97,4 @@ if __name__ == "__main__":
     print("=" * 50 + "\n")
 
     server = Server(app.wsgi_app)
-    server.serve(port=5500, host="127.0.0.1")
+    server.serve(port=5500, debug=True)

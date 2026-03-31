@@ -3,6 +3,7 @@ import os
 import smtplib
 import time
 import traceback
+import controller
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from email.mime.image import MIMEImage
@@ -13,7 +14,7 @@ import requests
 from dotenv import load_dotenv
 from flask import Blueprint, jsonify, request, session
 
-import database
+import controller
 
 load_dotenv()
 
@@ -343,7 +344,7 @@ def admin_get_users():
     if not session.get("is_admin"):
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
-    success, result = database.get_users(archived=False)
+    success, result = controller.get_users(archived=False)
     if success:
         return jsonify({"status": "success", "message": "Users retrieved successfully", "data": result})
     return jsonify({"status": "error", "message": result}), 500
@@ -355,7 +356,7 @@ def admin_create_user():
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
     data = request.get_json(silent=True) or {}
-    success, message, created = database.create_user(
+    success, message, created = controller.create_user(
         data.get("username"),
         data.get("email"),
         data.get("password"),
@@ -369,7 +370,7 @@ def admin_update_user():
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
     data = request.get_json(silent=True) or {}
-    success, message = database.update_user(
+    success, message = controller.update_user(
         data.get("id"),
         data.get("username"),
         data.get("email"),
@@ -384,7 +385,7 @@ def admin_delete_user():
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
     data = request.get_json(silent=True) or {}
-    success, message = database.archive_user(data.get("id"))
+    success, message = controller.archive_user(data.get("id"))
     return _json_result(success, message)
 
 
@@ -393,7 +394,7 @@ def admin_get_archive_users():
     if not session.get("is_admin"):
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
-    success, result = database.get_users(archived=True)
+    success, result = controller.get_users(archived=True)
     if success:
         return jsonify(
             {"status": "success", "message": "Archived users retrieved successfully", "data": result}
@@ -406,7 +407,7 @@ def admin_get_transactions():
     if not session.get("is_admin"):
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
-    success, result = database.get_transactions(archived=False)
+    success, result = controller.get_transactions(archived=False)
     if success:
         return jsonify({"status": "success", "message": "Transactions retrieved successfully", "data": result})
     return jsonify({"status": "error", "message": result}), 500
@@ -417,7 +418,7 @@ def admin_get_archive():
     if not session.get("is_admin"):
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
-    success, result = database.get_transactions(archived=True)
+    success, result = controller.get_transactions(archived=True)
     if success:
         return jsonify({"status": "success", "message": "Archives retrieved successfully", "data": result})
     return jsonify({"status": "error", "message": result}), 500
@@ -429,7 +430,7 @@ def admin_create_transaction():
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
     data = request.get_json(silent=True) or {}
-    success, message, created = database.create_transaction(data)
+    success, message, created = controller.create_transaction(data)
     return _json_result(success, message, data=created)
 
 
@@ -439,7 +440,7 @@ def admin_update_transaction():
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
     data = request.get_json(silent=True) or {}
-    success, message = database.update_transaction(data)
+    success, message = controller.update_transaction(data)
     return _json_result(success, message)
 
 
@@ -449,7 +450,7 @@ def admin_delete_transaction():
         return jsonify({"status": "error", "message": "Unauthorized"}), 403
 
     data = request.get_json(silent=True) or {}
-    success, message = database.archive_transaction(data.get("id"))
+    success, message = controller.archive_transaction(data.get("id"))
     return _json_result(success, message)
 
 
@@ -490,9 +491,9 @@ def prepare_transaction():
             hour = datetime.strptime(time_part, "%I:%M %p").strftime("%H")
             db_date = f"{month_num}/{day_str.zfill(2)}:{hour}"
         except Exception:
-            db_date = database.format_datetime_for_db()
+            db_date = controller.format_datetime_for_db()
 
-        success, next_id, _ = database.get_next_transaction_id()
+        success, next_id, _ = controller.get_next_transaction_id()
         if not success or next_id is None:
             return jsonify({"success": False, "message": "Failed to get next transaction ID"}), 500
 
@@ -539,7 +540,7 @@ def confirm_transaction():
                 missing.append("totalAmount")
             return jsonify({"success": False, "message": f'Missing required fields: {", ".join(missing)}'}), 400
 
-        success, message = database.insert_transaction_with_barcode(
+        success, message = controller.insert_transaction_with_barcode(
             transaction_id=transaction_id,
             date=db_date,
             name=username,
@@ -561,7 +562,7 @@ def get_occupied_seats_route(movie_id, cinema_room):
         movie_data = get_movie_details(movie_id)
         movie_title = movie_data["movie"]["title"]
         selected_date = request.args.get("date", None)
-        occupied = database.get_occupied_seats(movie_title, cinema_room, selected_date)
+        occupied = controller.get_occupied_seats(movie_title, cinema_room, selected_date)
         return jsonify(
             {
                 "success": True,

@@ -1,0 +1,283 @@
+html[data-theme="light"] body {
+  background: linear-gradient(135deg, #f6f8ff 0%, #eef3ff 55%, #f9fbff 100%) !important;
+  color: #172033 !important;
+}
+
+html[data-theme="dark"] body {
+  background: linear-gradient(135deg, #050517 0%, #0a1a4d 50%, #000000 100%) !important;
+  color: #e5e7eb !important;
+}
+
+/* Footer */
+footer {
+  background-color: var(--navbar-bg) !important;
+  border-top: 1px solid var(--border-color);
+}
+
+footer,
+footer a,
+footer h5 {
+  color: var(--navbar-text) !important;
+}
+
+/* Landing page */
+html[data-theme="light"] .hero-header {
+  color: #0f172a;
+  background-color: #dce8ff;
+}
+
+html[data-theme="light"] .hero-header::before,
+html[data-theme="light"] .hero-header::after {
+  background-image: linear-gradient(
+      to bottom,
+      rgba(234, 242, 255, 0.65) 35%,
+      rgba(241, 246, 255, 0.96) 100%
+    ),
+    var(--bg-image) !important;
+}
+
+html[data-theme="light"] .welcome-text,
+html[data-theme="light"] section.fade-section h2 {
+  color: #0f172a !important;
+  text-shadow: none;
+}
+
+html[data-theme="light"] .features {
+  background: #eef3ff !important;
+  color: #111827 !important;
+}
+
+html[data-theme="light"] .features .card {
+  background-color: #ffffff !important;
+  color: #172033 !important;
+  border: 1px solid #d8e2f3;
+}
+
+html[data-theme="light"] .accordion-item {
+  background-color: #ffffff;
+  border: 1px solid #d8e2f3;
+  color: #172033;
+}
+
+html[data-theme="light"] .accordion-button,
+html[data-theme="light"] .accordion-button:not(.collapsed) {
+  background-color: #dbe7ff !important;
+  color: #172033 !important;
+}
+
+html[data-theme="light"] .accordion-button:hover {
+  background-color: #cbdcff !important;
+}
+
+html[data-theme="light"] .accordion-button::after {
+  filter: none;
+}
+
+html[data-theme="light"] .accordion-body {
+  background-color: #f8fbff;
+  color: #253047;
+  border-top: 1px solid #d8e2f3;
+}
+
+/* Movie list page */
+html[data-theme="light"] .movie-title {
+  background: rgba(255, 255, 255, 0.82);
+  color: #111827;
+}
+
+html[data-theme="light"] .show-btn {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid #d8e2f3;
+}
+
+html[data-theme="light"] .show-btn:hover {
+  background: #e0eaff;
+  color: #111827;
+}
+
+/* About page */
+html[data-theme="light"] .about-overlay {
+  background-color: rgba(245, 248, 255, 0.72) !important;
+  color: #111827 !important;
+}
+
+html[data-theme="light"] .features-container {
+  background: linear-gradient(135deg, #eef3ff 0%, #f7faff 100%) !important;
+}
+
+html[data-theme="light"] .features-container .feature-item,
+html[data-theme="light"] .features-container li.bg-body-tertiary {
+  background-color: #ffffff !important;
+  border: 1px solid #d8e2f3;
+  color: #172033;
+}
+
+html[data-theme="light"] .features-container .feature-title,
+html[data-theme="light"] .features-container .feature-desc,
+html[data-theme="light"] .features-container .feature-desc strong {
+  color: #172033 !important;
+}
+
+/* Contact page */
+html[data-theme="light"] .head1,
+html[data-theme="light"] .contact-subitem p {
+  color: #111827 !important;
+}
+
+html[data-theme="light"] .contact-subitem a {
+  color: #1d4ed8 !important;
+}
+
+html[data-theme="light"] .contact-form form {
+  background-color: #ffffff !important;
+  border: 1px solid #d8e2f3;
+}
+
+html[data-theme="light"] .contact-form label {
+  color: #172033;
+}
+
+html[data-theme="light"] .contact-form input,
+html[data-theme="light"] .contact-form textarea {
+  background-color: #f8fbff !important;
+  color: #172033 !important;
+  border-color: #c8d6ee !important;
+}
+
+html[data-theme="light"] .contact-form input::placeholder,
+html[data-theme="light"] .contact-form textarea::placeholder {
+  color: #5f6c81 !important;
+}
+
+html[data-theme="light"] .contact-form button {
+  background-color: #2a4fa3 !important;
+  border-color: #254894 !important;
+}
+
+/* Login + Admin shared tabs/cards */
+html[data-theme="light"] .nav-tabs {
+  background-color: #e9eef9;
+}
+
+html[data-theme="light"] .nav-tabs .nav-link {
+  background-color: #e9eef9;
+  color: #1f2937 !important;
+}
+
+html[data-theme="light"] .nav-tabs .nav-link:hover {
+  background-color: #dde6f7;
+}
+
+html[data-theme="light"] .nav-tabs .nav-link.active {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+}
+
+html[data-theme="light"] .card {
+  background-color: #ffffff !important;
+  color: #172033;
+}
+
+html[data-theme="dark"] .card {
+  background-color: #0f172a !important;
+  color: #e5e7eb;
+}
+
+/* Login page specific */
+html[data-theme="light"] .btn-ghost {
+  border-color: #2a4fa3;
+  color: #2a4fa3 !important;
+}
+
+html[data-theme="light"] .btn-ghost::before {
+  background: #2a4fa3;
+}
+
+html[data-theme="light"] .btn-link {
+  color: #1f2937 !important;
+}
+
+/* Admin page specific */
+html[data-theme="light"] .admin-header,
+html[data-theme="light"] .modal-header,
+html[data-theme="light"] .table thead th {
+  background-color: #2c3f63;
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .table thead th {
+  background-color: #1f2937;
+}
+
+html[data-theme="light"] .table tbody tr:hover {
+  background-color: rgba(42, 79, 163, 0.08);
+}
+
+/* Detail + Booking */
+html[data-theme="light"] .movie-overlay {
+  background-color: rgba(245, 248, 255, 0.62) !important;
+}
+
+html[data-theme="light"] .movie-detail .text-light,
+html[data-theme="light"] .movie-detail p,
+html[data-theme="light"] .movie-detail h1,
+html[data-theme="light"] .movie-detail h2,
+html[data-theme="light"] .movie-detail h3,
+html[data-theme="light"] .movie-detail h4,
+html[data-theme="light"] .movie-detail h5,
+html[data-theme="light"] .movie-detail h6 {
+  color: #111827 !important;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+html[data-theme="light"] .booking-section {
+  background: linear-gradient(135deg, #f5f8ff 0%, #e8efff 100%) !important;
+}
+
+html[data-theme="light"] .booking-section .ticketing {
+  background-color: #ffffff !important;
+  color: #172033;
+  border: 1px solid #d8e2f3;
+}
+
+html[data-theme="light"] .legend,
+html[data-theme="light"] .legend .d-flex,
+html[data-theme="light"] .booking-section h2,
+html[data-theme="light"] .booking-section h3,
+html[data-theme="light"] .booking-section h4 {
+  color: #172033 !important;
+}
+
+html[data-theme="light"] #showtime {
+  color: #172033 !important;
+  background-color: #f8fbff !important;
+  border-color: #c8d6ee !important;
+}
+
+html[data-theme="light"] #bookNowBtn {
+  background-color: #1f2937;
+  border-color: #111827;
+}
+
+html[data-theme="light"] #bookNowBtn::before {
+  background-color: #2d5bc1;
+}
+
+html[data-theme="light"] .barcode-section,
+html[data-theme="light"] .barcode-section svg {
+  background: #ffffff;
+}
+
+html[data-theme="light"] .ticket-invoice {
+  background-color: #ffffff !important;
+  color: #172033 !important;
+}
+
+/* Keep modals readable in dark mode where templates force light utility classes */
+html[data-theme="dark"] .modal-content.bg-light,
+html[data-theme="dark"] .ticket-invoice.bg-light,
+html[data-theme="dark"] .bg-white {
+  background-color: #0f172a !important;
+  color: #e5e7eb !important;
+}

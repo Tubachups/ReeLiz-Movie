@@ -1,6 +1,6 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/navbar.css')}}">
-<nav class="navbar navbar-expand-md bg-dark " data-bs-theme="dark">
+<nav class="navbar navbar-expand-md" id="main-navbar">
   <div class="container-fluid mx-3">
     <a class="navbar-brand " href="{{ url_for('landing') }}">ReeLiz</a>
     {% if session.get('is_admin') %}
@@ -50,9 +50,15 @@
         </li>
         {% endif %}
       </ul>
+      <div class="d-flex align-items-center gap-2">
       <form class="d-flex" role="search">
         <input class="form-control me-2" id="search-input" type="search" placeholder="Search movies...">
       </form>
+      <button class="btn btn-sm theme-toggle-btn" id="theme-toggle" type="button" aria-pressed="false"
+        aria-label="Toggle color theme">
+        <i class="bi bi-moon-stars-fill me-1"></i>Dark
+      </button>
+      </div>
     </div>
   </div>
 </nav>
