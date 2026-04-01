@@ -1,17 +1,12 @@
-@import url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");
 /* HEADERS */
 body{
-  background-color: #000000;  
-}
-h1,
-h3 {
-  font-family: "Oswald", serif;
+  background-color: var(--bg-color);  
 }
 
 /* ICON STYLE */
 .feature-item {
   transition: transform 0.5s ease, box-shadow 0.3s ease;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  box-shadow: var(--overlay-soft) 0px 2px 8px 0px;
 }
 
 .feature-item:hover {
@@ -39,7 +34,7 @@ h3 {
 
 .about-overlay {
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  background-color: rgba(12, 15, 30, 0.85) !important;
+  background-color: var(--overlay-strong) !important;
 }
 
 .about-overlay.fade-out {
@@ -71,26 +66,26 @@ h3 {
 
 /* DARK THEME FOR FEATURES SECTION */
 .features-container {
-  background: linear-gradient(135deg, #050517 0%, #0a1a4d 50%, #000000 100%);
+  background: linear-gradient(135deg, var(--section-gradient-start) 0%, var(--section-gradient-mid) 50%, var(--section-gradient-end) 100%);
   padding: 3rem 0;
 }
 
 .features-container .feature-item,
 .features-container li.bg-body-tertiary {
-  background-color: #131339 !important;
-  border: 2px solid #0d3aa3;
-  color: #fff;
+  background-color: var(--section-card-bg) !important;
+  border: 2px solid var(--section-card-border);
+  color: var(--text-inverse);
 }
 
 .features-container .feature-title {
-  color: #fff;
+  color: var(--text-inverse);
 }
 
 .features-container .feature-desc {
-  color: #ddd;
+  color: var(--section-muted-text);
 }
 
 .features-container .feature-desc strong {
-  color: #fff;
+  color: var(--text-inverse);
 }
 

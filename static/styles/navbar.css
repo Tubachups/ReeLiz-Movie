@@ -11,6 +11,7 @@
   overflow: visible;
   background-color: var(--navbar-bg) !important;
   border-bottom: 1px solid var(--border-color);
+  --bs-navbar-toggler-icon-bg: var(--navbar-toggler-icon-bg);
 }
 
 .navbar .navbar-brand,
@@ -25,10 +26,6 @@
 
 .navbar .navbar-toggler-icon {
   filter: none;
-}
-
-html[data-theme="dark"] .navbar .navbar-toggler-icon {
-  filter: invert(1) grayscale(1) brightness(2);
 }
 
 .navbar .form-control {
@@ -67,7 +64,7 @@ html[data-theme="dark"] .navbar .navbar-toggler-icon {
   height: 4px;
   background: var(--navbar-accent);
   border-radius: 3px;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 0 var(--overlay-soft);
 }
 
 @media (max-width: 767.98px) {

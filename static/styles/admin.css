@@ -10,13 +10,13 @@
 .table thead th {
   position: sticky;
   top: 0;
-  background-color: #212529;
-  color: white;
+  background-color: var(--modal-header-bg);
+  color: var(--modal-header-text);
   z-index: 1;
 }
 
 .table tbody tr:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--table-hover-bg);
 }
 
 .btn-action {
@@ -29,8 +29,8 @@
 }
 
 .admin-header {
-  background-color: #212529;
-  color: white;
+  background-color: var(--modal-header-bg);
+  color: var(--modal-header-text);
   padding: 1rem;
   border-radius: 0.5rem 0.5rem 0 0;
 }
@@ -40,8 +40,8 @@
 }
 
 .modal-header {
-  background-color: #212529;
-  color: white;
+  background-color: var(--modal-header-bg);
+  color: var(--modal-header-text);
 }
 
 .modal-header .btn-close {

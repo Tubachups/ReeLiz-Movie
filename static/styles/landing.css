@@ -1,15 +1,11 @@
 /* GRADIENT CSS */
 /* Welcome Text in Hero */
-body {
-  background: #040a45;
-}
 
 .welcome-text {
   font-weight: 250;
   font-size: 5rem;
-  color: #fff !important;
-  font-family: "Praise", sans-serif;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  color: var(--text-inverse) !important;
+  text-shadow: 2px 2px 4px var(--overlay-soft);
   animation: fadeIn 0.8s ease-out;
 }
 
@@ -33,7 +29,7 @@ body {
 @media (max-width: 425px) {
   .welcome-text {
     font-size: 1.1rem;
-    color: #ffffff !important;
+    color: var(--text-inverse) !important;
   }
 }
 
@@ -63,12 +59,12 @@ body {
 }
 
 .hero-header {
-  background-color: #213555;
+  background-color: var(--hero-bg);
   width: 100%;
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  color: white;
+  color: var(--text-inverse);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -91,8 +87,8 @@ body {
   /* 🔥 Gradient overlay to #040a45 at bottom */
   background-image: linear-gradient(
       to bottom,
-      rgba(8, 80, 109, 0.461) 50%,
-      rgba(4, 10, 69, 1) 100%
+      var(--hero-overlay-start) 50%,
+      var(--hero-overlay-end) 100%
     ),
     var(--bg-image);
 }
@@ -133,9 +129,9 @@ body {
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(15, 15, 15, 0.765) 0%,
-    rgba(15, 15, 15, 0.823) 90%,
-    rgb(15, 15, 15) 100%
+    var(--hero-mask-top) 0%,
+    var(--hero-mask-mid) 90%,
+    var(--hero-mask-bottom) 100%
   );
   z-index: 1;
 }
@@ -146,7 +142,7 @@ body {
 }
 
 .hero-header img {
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+  filter: drop-shadow(0 0 10px var(--overlay-soft));
   max-height: 500px;
 }
 
@@ -166,9 +162,7 @@ header.fade-section {
   transform: translateY(0);
 }
 .features {
-  background: #040a45;
-  color: #fff; /* make text white for contrast */
-  padding: 4rem 0; /* keep breathing space top & bottom */
+  color: var(--text-inverse); /* make text white for contrast */
   border-radius: 0; /* optional: make sure it spans full width */
 }
 
@@ -179,37 +173,37 @@ header.fade-section {
 
 /* Optional: card styling on dark background */
 .features .card {
-  background-color: #25147d; /* blue-gray from palette */
+  background-color: var(--section-card-bg); /* blue-gray from palette */
   border: none;
-  color: #fff;
+  color: var(--text-inverse);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .features .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 15px rgba(129, 0, 95, 0.5);
+  box-shadow: 0 4px 15px var(--overlay-strong);
 }
 
 .features .card img {
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid var(--overlay-soft);
 }
 
 /* FAQ title */
 section.fade-section h2 {
-  color: #fff !important;
+  color: var(--text-inverse) !important;
 }
 
 /* Accordion dark theme */
 .accordion-item {
-  background-color: #1c96bb;
-  border: 1px solid #001b5b;
-  color: #fff;
+  background-color: var(--accordion-bg);
+  border: 1px solid var(--accordion-border);
+  color: var(--text-inverse);
 }
 
 /* Button (header) */
 .accordion-button {
-  background-color: #023d8b !important;
-  color: #fff !important; /* ✅ force white text */
+  background-color: var(--accordion-button-bg) !important;
+  color: var(--text-inverse) !important; /* ✅ force white text */
   border: none !important;
   box-shadow: none !important;
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -222,22 +216,22 @@ section.fade-section h2 {
 
 /* When opened */
 .accordion-button:not(.collapsed) {
-  background-color: #023d8b !important;
-  color: #fff !important;
+  background-color: var(--accordion-button-bg) !important;
+  color: var(--text-inverse) !important;
   box-shadow: none !important;
 }
 
 /* Hover effect */
 .accordion-button:hover {
-  background-color: #022958 !important;
-  color: #fff !important;
+  background-color: var(--accordion-button-hover) !important;
+  color: var(--text-inverse) !important;
 }
 
 /* Accordion body */
 .accordion-body {
-  background-color: #052159;
-  color: #ddd;
-  border-top: 1px solid #00275b;
+  background-color: var(--accordion-body-bg);
+  color: var(--section-muted-text);
+  border-top: 1px solid var(--accordion-body-border);
 }
 
 /* Optional: remove default blue focus outline */
@@ -248,6 +242,6 @@ section.fade-section h2 {
 
 /* Optional hover for accordion items */
 .accordion-item:hover {
-  background-color: #1a005b;
+  background-color: var(--accordion-button-hover);
   transition: background-color 0.3s ease;
 }

@@ -1,9 +1,11 @@
 import { fetchGenres, fetchMovies } from "./services/movieService.js";
-import { renderMovies } from "./components/movieRenderer.js";
+import { renderMovies, toggleNoMoviesState } from "./components/movieRenderer.js";
 import { setupGenresDropdown } from "./components/dropdown.js";
 
 let genresMap = {};
 let allMovies = [];
+let selectedGenreId = null;
+let searchQuery = "";
 
 // Handle navigation on Now Showing or Coming soon
 document.querySelectorAll("[data-page]").forEach((link) => {
@@ -30,24 +32,41 @@ async function initializeGenres() {
   }, {});
   setupGenresDropdown(
     genres,
-    (genreId) => filterMoviesByGenre(genreId),
-    () => renderMovies(allMovies, genresMap)
+    (genreId) => {
+      selectedGenreId = parseInt(genreId, 10);
+      applyFilters();
+    },
+    () => {
+      selectedGenreId = null;
+      applyFilters();
+    }
   );
 }
 
 async function loadMovies(type) {
   allMovies = await fetchMovies(type);
-  renderMovies(allMovies, genresMap);
+  applyFilters();
 }
 
-function filterMoviesByGenre(genreId) {
-  if (!allMovies.length) return;
+function applyFilters() {
+  const query = searchQuery.trim().toLowerCase();
 
-  const filtered = allMovies.filter((movie) =>
-    movie.genre_ids.includes(parseInt(genreId))
-  );
+  const filtered = allMovies.filter((movie) => {
+    const matchesGenre =
+      selectedGenreId === null || movie.genre_ids.includes(selectedGenreId);
+    const matchesSearch = movie.title.toLowerCase().includes(query);
+    return matchesGenre && matchesSearch;
+  });
+
   renderMovies(filtered, genresMap);
+  toggleNoMoviesState(filtered.length === 0);
 }
+
+window.addEventListener("movies:search", (event) => {
+  searchQuery = event.detail?.query || "";
+  applyFilters();
+});
+
 init();
 
  (function () {
