@@ -4,12 +4,29 @@ import { formatDate } from '../utils/dateUtils.js';
 
 export function renderMovies(movies, genresMap) {
   const container = document.querySelector("#movies");
+  if (!container) return;
+
   container.innerHTML = "";
+
+  if (!movies.length) {
+    return;
+  }
 
   movies.forEach((movie) => {
     const movieCard = createMovieCard(movie, genresMap);
     container.append(movieCard);
   });
+}
+
+export function toggleNoMoviesState(isEmpty) {
+  const body = document.body;
+  const moviesContainer = document.querySelector("#movies");
+  const emptyState = document.querySelector("#no-movies-state");
+
+  if (!moviesContainer || !emptyState) return;
+
+  body.classList.toggle("movies-empty", isEmpty);
+  emptyState.classList.toggle("d-none", !isEmpty);
 }
 
 function createMovieCard(movie, genresMap) {

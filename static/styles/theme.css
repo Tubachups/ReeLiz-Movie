@@ -1,27 +1,277 @@
 :root {
-  --bg-color: #f7f8fb;
+  --bg-color: #eeeeee;
   --surface-color: #ffffff;
-  --text-color: #1f2937;
-  --muted-text-color: #6b7280;
-  --border-color: #dbe1ea;
+  --text-color: #222831;
+  --muted-text-color: #4b5563;
+  --border-color: #d1d5db;
   --navbar-bg: #ffffff;
-  --navbar-text: #111827;
-  --navbar-accent: #c8841b;
-  --toggle-bg: #e9edf3;
-  --toggle-text: #111827;
+  --navbar-text: #222831;
+  --navbar-accent: #ffd369;
+  --navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2834,40,49,0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.25' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  --toggle-bg: #f3f4f6;
+  --toggle-text: #222831;
+  --accent-color: #172033;
+  --accent-contrast: #222831;
+
+  --text-inverse: #ffffff;
+  --overlay-strong: rgba(0, 0, 0, 0.85);
+  --overlay-soft: rgba(0, 0, 0, 0.3);
+
+  --gradient-page-start: #f7f7f7;
+  --gradient-page-mid: #eeeeee;
+  --gradient-page-end: #f8f8f8;
+  --gradient-page-angle: 135deg;
+
+  --page-light-heading: #eeeeee;
+  --page-light-text-strong: #111827;
+  --page-light-text: #172033;
+  --page-light-text-muted: #253047;
+  --page-light-muted: #5f6c81;
+  --page-light-border: #d8e2f3;
+  --page-light-border-strong: #c8d6ee;
+  --page-light-surface: #ffffff;
+  --page-light-surface-soft: #f8fbff;
+  --page-light-surface-accent: #eef3ff;
+  --page-light-surface-accent-2: #e8efff;
+  --page-light-accent-soft: #dbe7ff;
+  --page-light-accent-soft-hover: #cbdcff;
+  --page-light-button-bg: #2a4fa3;
+  --page-light-button-border: #254894;
+  --page-light-link: #1d4ed8;
+  --page-light-nav-bg: #e5e7eb;
+  --page-light-nav-hover: #d5d7dc;
+  --page-light-admin-header: #2c3f63;
+  --page-light-table-hover: rgba(42, 79, 163, 0.08);
+  --page-light-overlay: rgba(245, 248, 255, 0.62);
+  --page-light-overlay-strong: rgba(245, 248, 255, 0.72);
+  --page-light-overlay-shadow: rgba(255, 255, 255, 0.3);
+  --page-light-hero-bg: #dce8ff;
+  --page-light-hero-overlay-start: rgba(234, 242, 255, 0.65);
+  --page-light-hero-overlay-end: rgba(241, 246, 255, 0.96);
+  --page-light-movie-title-bg: rgba(255, 255, 255, 0.82);
+  --page-light-book-btn-bg: #1f2937;
+  --page-light-book-btn-border: #111827;
+  --page-light-book-btn-bubble: #2d5bc1;
+
+  --hero-bg: #213555;
+  --hero-overlay-start: rgba(8, 80, 109, 0.461);
+  --hero-overlay-end: rgba(4, 10, 69, 1);
+  --hero-mask-top: rgba(15, 15, 15, 0.765);
+  --hero-mask-mid: rgba(15, 15, 15, 0.823);
+  --hero-mask-bottom: rgb(15, 15, 15);
+
+  --section-gradient-start: #050517;
+  --section-gradient-mid: #0a1a4d;
+  --section-gradient-end: #000000;
+  --section-card-bg: #131339;
+  --section-card-border: #0d3aa3;
+  --section-muted-text: #dddddd;
+
+  --accordion-bg: #1c96bb;
+  --accordion-border: #001b5b;
+  --accordion-button-bg: #023d8b;
+  --accordion-button-hover: #022958;
+  --accordion-body-bg: #052159;
+  --accordion-body-border: #00275b;
+
+  --contact-form-bg: #061032;
+  --contact-form-input-bg: #061333;
+  --contact-form-border: #1a3a7d;
+  --contact-form-input-border: #114c81;
+  --contact-placeholder: #8ab4f8;
+  --contact-link: #4da6ff;
+  --contact-button-bg: #1a3a7d;
+  --contact-button-border: #0f3669;
+  --contact-button-hover: #2a5aad;
+
+  --movie-list-bg-start: #12052b;
+  --movie-list-bg-mid: #02011a;
+  --movie-list-bg-end: #0e011a;
+  --movie-overlay-text-bg: rgba(0, 0, 0, 0.192);
+  --movie-overlay-gradient-start: rgba(0, 0, 0, 0.877);
+  --movie-overlay-gradient-hover-start: rgba(0, 0, 0, 0.9);
+  --movie-overlay-gradient-hover-end: rgba(0, 0, 0, 0.3);
+  --show-btn-bg: #f5f5f5;
+  --show-btn-text: #000000;
+  --show-btn-hover-bg: #705601be;
+  --button-group-bg: #303030;
+  --button-group-hover-bg: #555555;
+
+  --booking-bg-start: #050517;
+  --booking-bg-mid: #071543;
+  --booking-bg-end: #000000;
+  --ticket-card-bg: #1a1a2e;
+  --ticket-card-border: #2f0da8;
+  --ticket-select-bg: #053a97;
+  --ticket-select-active: #1f1169;
+  --ticket-select-hover: #261384;
+  --ticket-select-selected: #107ebd;
+  --ticket-select-selected-hover: #6f01ff;
+
+  --btn-main-bg: #222222;
+  --btn-main-border: #000000;
+  --btn-main-bubble: #091da2;
+  --btn-disabled-bg: #06345c;
+  --btn-disabled-border: #071f34;
+  --btn-disabled-hover: #6c757d;
+
+  --modal-header-bg: #212529;
+  --modal-header-text: #ffffff;
+  --table-hover-bg: rgba(0, 0, 0, 0.05);
+
+  --status-success: #198754;
+  --status-success-soft: rgba(25, 135, 84, 0.5);
+  --status-primary: #0d6efd;
+  --status-primary-soft: rgba(13, 110, 253, 0.18);
+  --status-danger: #f44336;
+  --status-warning: #ffeb3b;
+  --status-available: #4caf50;
+
+  --screen-gradient-start: #00c6ff;
+  --screen-gradient-end: #0073ffcb;
+  --screen-glow: rgba(0, 114, 255, 0.6);
+  --screen-radial-glow: rgba(0, 114, 255, 0.4);
+  --seat-text: rgb(0, 15, 56);
+  --seat-selected-hover: #ffeb3ba2;
+  --carousel-hover-bg: rgba(0, 0, 0, 0.8);
 }
 
 html[data-theme="dark"] {
-  --bg-color: #0f172a;
-  --surface-color: #111827;
-  --text-color: #e5e7eb;
-  --muted-text-color: #9ca3af;
-  --border-color: #2d3748;
-  --navbar-bg: #020617;
-  --navbar-text: #f3f4f6;
-  --navbar-accent: #f3b25b;
-  --toggle-bg: #1f2937;
-  --toggle-text: #f9fafb;
+  --bg-color: #222831;
+  --surface-color: #393e46;
+  --text-color: #eeeeee;
+  --muted-text-color: #eeeeee;
+  --border-color: #393e46;
+  --navbar-bg: #222831;
+  --navbar-text: #eeeeee;
+  --navbar-accent: #ffd369;
+  --navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28238,238,238,0.95%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.25' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  --toggle-bg: #393e46;
+  --toggle-text: #eeeeee;
+  --accent-color: #ffd369;
+  --accent-contrast: #222831;
+
+  --text-inverse: #ffffff;
+  --overlay-strong: rgba(0, 0, 0, 0.85);
+  --overlay-soft: rgba(255, 255, 255, 0.24);
+
+  --gradient-page-start: #222831;
+  --gradient-page-mid: #222831;
+  --gradient-page-end: #393e46;
+  --gradient-page-angle: 145deg;
+
+  --page-light-heading: #eeeeee;
+  --page-light-text-strong: #eeeeee;
+  --page-light-text: #eeeeee;
+  --page-light-text-muted: #d1d5db;
+  --page-light-muted: #c6cfda;
+  --page-light-border: #4a515d;
+  --page-light-border-strong: #596176;
+  --page-light-surface: #393e46;
+  --page-light-surface-soft: #2f3743;
+  --page-light-surface-accent: #2f3743;
+  --page-light-surface-accent-2: #353d49;
+  --page-light-accent-soft: #4a5f83;
+  --page-light-accent-soft-hover: #596882;
+  --page-light-button-bg: #4a5f83;
+  --page-light-button-border: #4a5f83;
+  --page-light-link: #9fc2ff;
+  --page-light-nav-bg: #393e46;
+  --page-light-nav-hover: #4a515d;
+  --page-light-admin-header: #393e46;
+  --page-light-table-hover: rgba(255, 255, 255, 0.06);
+  --page-light-overlay: rgba(47, 55, 67, 0.62);
+  --page-light-overlay-strong: rgba(47, 55, 67, 0.72);
+  --page-light-overlay-shadow: rgba(255, 255, 255, 0.18);
+  --page-light-hero-bg: #2f3743;
+  --page-light-hero-overlay-start: rgba(57, 62, 70, 0.62);
+  --page-light-hero-overlay-end: rgba(57, 62, 70, 0.9);
+  --page-light-movie-title-bg: rgba(57, 62, 70, 0.82);
+  --page-light-book-btn-bg: #393e46;
+  --page-light-book-btn-border: #4a515d;
+  --page-light-book-btn-bubble: #4a5f83;
+
+  --hero-bg: #222831;
+  --hero-overlay-start: rgba(0, 0, 0, 0.55);
+  --hero-overlay-end: rgba(0, 0, 0, 0.92);
+  --hero-mask-top: rgba(0, 0, 0, 0.62);
+  --hero-mask-mid: rgba(0, 0, 0, 0.76);
+  --hero-mask-bottom: rgba(0, 0, 0, 0.92);
+
+  --section-gradient-start: #222831;
+  --section-gradient-mid: #2c313a;
+  --section-gradient-end: #393e46;
+  --section-card-bg: #393e46;
+  --section-card-border: #4a515d;
+  --section-muted-text: #d1d5db;
+
+  --accordion-bg: #393e46;
+  --accordion-border: #4a515d;
+  --accordion-button-bg: #2f3743;
+  --accordion-button-hover: #353d49;
+  --accordion-body-bg: #2a313b;
+  --accordion-body-border: #4a515d;
+
+  --contact-form-bg: #393e46;
+  --contact-form-input-bg: #2f3743;
+  --contact-form-border: #4a515d;
+  --contact-form-input-border: #4a515d;
+  --contact-placeholder: #c6cfda;
+  --contact-link: #9fc2ff;
+  --contact-button-bg: #4a5f83;
+  --contact-button-border: #4a5f83;
+  --contact-button-hover: #6b82aa;
+
+  --movie-list-bg-start: #222831;
+  --movie-list-bg-mid: #2c313a;
+  --movie-list-bg-end: #393e46;
+  --movie-overlay-text-bg: rgba(0, 0, 0, 0.42);
+  --movie-overlay-gradient-start: rgba(0, 0, 0, 0.88);
+  --movie-overlay-gradient-hover-start: rgba(0, 0, 0, 0.92);
+  --movie-overlay-gradient-hover-end: rgba(0, 0, 0, 0.45);
+  --show-btn-bg: #393e46;
+  --show-btn-text: #eeeeee;
+  --show-btn-hover-bg: #4a515d;
+  --button-group-bg: #393e46;
+  --button-group-hover-bg: #4a515d;
+
+  --booking-bg-start: #222831;
+  --booking-bg-mid: #2f3743;
+  --booking-bg-end: #393e46;
+  --ticket-card-bg: #393e46;
+  --ticket-card-border: #4a515d;
+  --ticket-select-bg: #3a4658;
+  --ticket-select-active: #4a5a73;
+  --ticket-select-hover: #596882;
+  --ticket-select-selected: #5d7797;
+  --ticket-select-selected-hover: #6f8cb0;
+
+  --btn-main-bg: #393e46;
+  --btn-main-border: #4a515d;
+  --btn-main-bubble: #4a5f83;
+  --btn-disabled-bg: #4a515d;
+  --btn-disabled-border: #596176;
+  --btn-disabled-hover: #596176;
+
+  --modal-header-bg: #393e46;
+  --modal-header-text: #eeeeee;
+  --table-hover-bg: rgba(255, 255, 255, 0.06);
+
+  --status-success: #2aa86f;
+  --status-success-soft: rgba(42, 168, 111, 0.45);
+  --status-primary: #5b8ee6;
+  --status-primary-soft: rgba(91, 142, 230, 0.2);
+  --status-danger: #d86161;
+  --status-warning: #f0de62;
+  --status-available: #5fbe70;
+
+  --screen-gradient-start: #4a5f83;
+  --screen-gradient-end: #5f7aa7;
+  --screen-glow: rgba(95, 122, 167, 0.5);
+  --screen-radial-glow: rgba(95, 122, 167, 0.35);
+  --seat-text: #222831;
+  --seat-selected-hover: rgba(240, 222, 98, 0.72);
+  --carousel-hover-bg: rgba(255, 255, 255, 0.2);
 }
 
 html,
@@ -51,4 +301,20 @@ body {
 
 .text-muted {
   color: var(--muted-text-color) !important;
+}
+
+.site-footer {
+  background-color: var(--navbar-bg) !important;
+  border-top: 1px solid var(--border-color);
+  color: var(--navbar-text) !important;
+}
+
+.site-footer .footer-link {
+  color: var(--navbar-text) !important;
+  transition: color 0.2s ease, opacity 0.2s ease;
+  font-weight: normal;
+}
+
+.site-footer .footer-link:hover {
+  color: var(--navbar-accent) !important;
 }

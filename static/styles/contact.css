@@ -2,12 +2,12 @@
 
 /* DARK THEME */
 body {
-  background: linear-gradient(135deg, #050517 0%, #0a1a4d 50%, #000000 100%);
+  background: linear-gradient(135deg, var(--section-gradient-start) 0%, var(--section-gradient-mid) 50%, var(--section-gradient-end) 100%);
   min-height: 100vh;
 }
 
 .head1 {
-  color: #fff;
+  color: var(--text-inverse);
 }
 
 .contact-item, h1 {
@@ -36,45 +36,45 @@ body {
   opacity: 0;
   animation: fadeInUp 0.6s ease-out forwards;
   animation-delay: 0.8s;
-  background-color: #061032 !important;
-  border: 2px solid #1a3a7d;
+  background-color: var(--contact-form-bg) !important;
+  border: 2px solid var(--contact-form-border);
 }
 
 .contact-form label {
-  color: #fff;
+  color: var(--text-inverse);
 }
 
 .contact-form input,
 .contact-form textarea {
-  background-color: #061333 !important;
-  color: #fff !important;
-  border-color: #114c81 !important;
+  background-color: var(--contact-form-input-bg) !important;
+  color: var(--text-inverse) !important;
+  border-color: var(--contact-form-input-border) !important;
 }
 
 .contact-form input::placeholder,
 .contact-form textarea::placeholder {
-  color: #8ab4f8 !important;
+  color: var(--contact-placeholder) !important;
 }
 
 .contact-form button {
   transition: 0.3s ease;
-  background-color: #1a3a7d !important;
-  border-color: #0f3669 !important;
-  color: #fff;
+  background-color: var(--contact-button-bg) !important;
+  border-color: var(--contact-button-border) !important;
+  color: var(--text-inverse);
 }
 
 .contact-form button:hover {
   opacity: .9;
-  background-color: #2a5aad !important;
+  background-color: var(--contact-button-hover) !important;
 }
 
 /* Contact info text colors */
 .contact-subitem p {
-  color: #fff;
+  color: var(--text-inverse);
 }
 
 .contact-subitem a {
-  color: #4da6ff !important;
+  color: var(--contact-link) !important;
 }
 
 

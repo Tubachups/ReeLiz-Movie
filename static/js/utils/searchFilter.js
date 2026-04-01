@@ -1,18 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("search-input");
-  const moviesContainer = document.getElementById("movies");
+  if (!searchInput) return;
 
   searchInput.addEventListener("input", () => {
-    const query = searchInput.value.toLowerCase();
-    const movies = moviesContainer.querySelectorAll(".movie-card");
-
-    movies.forEach((movie) => {
-      const title = movie.querySelector(".movie-title").innerText.toLowerCase();
-      if (title.includes(query)) {
-        movie.style.display = "block";
-      } else {
-        movie.style.display = "none";
-      }
-    });
+    const query = searchInput.value;
+    window.dispatchEvent(
+      new CustomEvent("movies:search", {
+        detail: { query },
+      })
+    );
   });
 });

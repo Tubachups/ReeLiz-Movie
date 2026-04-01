@@ -1,27 +1,27 @@
 .booking-section {
-  background: linear-gradient(135deg, #050517 0%, #071543 50%, #000000 100%);
+  background: linear-gradient(135deg, var(--booking-bg-start) 0%, var(--booking-bg-mid) 50%, var(--booking-bg-end) 100%);
 }
 
 .booking-section .ticketing {
-  background-color: #1a1a2e !important;
-  color: white;
-  border: 2px solid #2f0da8;
+  background-color: var(--ticket-card-bg) !important;
+  color: var(--text-inverse);
+  border: 2px solid var(--ticket-card-border);
 }
 
 .legend,
 .legend .d-flex {
-  color: #fff;
+  color: var(--text-inverse);
 }
 
 .booking-section h2,
 .booking-section h3,
 .booking-section h4 {
-  color: #fff;
+  color: var(--text-inverse);
 }
 
 #showtime {
-  color: #fff !important;
-  border-color: #2f0da8 !important;
+  color: var(--text-inverse) !important;
+  border-color: var(--ticket-card-border) !important;
 }
 
 .thumbnail {
@@ -39,28 +39,28 @@
 }
 
 .date-pill:active {
-  background: #1f1169;
+  background: var(--ticket-select-active);
 }
 
 .date-pill {
-  background: #053a97;
+  background: var(--ticket-select-bg);
   cursor: pointer;
   transition: 0.3s;
-  color: white;
+  color: var(--text-inverse);
 }
 
 .date-pill:hover {
-  background: #261384;
+  background: var(--ticket-select-hover);
   transform: translateY(-5px);
 }
 
 .date-pill.selected {
   font-weight: bold;
-  background: #107ebd;
+  background: var(--ticket-select-selected);
 }
 
 .date-pill.selected:hover {
-  background: #6f01ff;
+  background: var(--ticket-select-selected-hover);
 }
 
 .date-month {
@@ -78,9 +78,9 @@
 /* Base style */
 #bookNowBtn {
   position: relative;
-  background-color: #222222;
-  color: #fff;
-  border: 2px solid #000000;
+  background-color: var(--btn-main-bg);
+  color: var(--text-inverse);
+  border: 2px solid var(--btn-main-border);
   overflow: hidden;
   transition: color 0.3s ease, border-color 0.3s ease;
   padding: 14px 40px;
@@ -100,8 +100,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: #091da2;
-  border-color: #34a209;
+  background-color: var(--btn-main-bubble);
+  border-color: var(--btn-main-bubble);
   z-index: 0;
   border-radius: 50% 50% 0 0;
   transition: all 0.3s ease-in-out;
@@ -152,9 +152,9 @@
 
 /* Disabled state for coming soon movies */
 #bookNowBtn:disabled {
-  background-color: #06345c;
-  border-color: #071f34;
-  color: #ffffff;
+  background-color: var(--btn-disabled-bg);
+  border-color: var(--btn-disabled-border);
+  color: var(--text-inverse);
   cursor: not-allowed;
 }
 
@@ -163,8 +163,8 @@
 }
 
 #bookNowBtn:disabled:hover {
-  background-color: #6c757d;
-  border-color: #6c757d;
+  background-color: var(--btn-disabled-hover);
+  border-color: var(--btn-disabled-hover);
 }
 
 #bookNowBtn:disabled:hover .btn-text {
@@ -192,9 +192,9 @@
 }
 
 .btn-outline-secondary:hover {
-  background-color: #bb3c49 !important;
-  color: #ffffff !important;
-  border-color: #b92f3d !important;
+  background-color: var(--status-danger) !important;
+  color: var(--text-inverse) !important;
+  border-color: var(--status-danger) !important;
 }
 
 .movie-detail {
@@ -206,15 +206,15 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, #212529 1%, transparent 10%),
-    linear-gradient(to bottom, transparent 75%, #000000 100%);
+  background: linear-gradient(to bottom, var(--modal-header-bg) 1%, transparent 10%),
+    linear-gradient(to bottom, transparent 75%, var(--btn-main-border) 100%);
   z-index: 2;
   pointer-events: none;
 }
 
 .movie-detail h1,
 .movie-detail p {
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.582);
+  text-shadow: 0 2px 6px var(--overlay-strong);
 }
 
 @keyframes fadeInUp {
@@ -239,8 +239,8 @@
   transform: translateY(-4px);
 }
 .payment-option.active {
-  border-color: #0d6efd;
-  box-shadow: 0 6px 18px rgba(13, 110, 253, 0.18);
+  border-color: var(--status-primary);
+  box-shadow: 0 6px 18px var(--status-primary-soft);
 }
 
 .success-checkmark {
@@ -255,7 +255,7 @@
   position: relative;
   border-radius: 50%;
   box-sizing: content-box;
-  border: 4px solid #198754;
+  border: 4px solid var(--status-success);
 }
 
 .success-checkmark .check-icon::before {
@@ -280,13 +280,13 @@
   content: "";
   height: 100px;
   position: absolute;
-  background: #fff;
+  background: var(--text-inverse);
   transform: rotate(-45deg);
 }
 
 .success-checkmark .icon-line {
   height: 5px;
-  background-color: #198754;
+  background-color: var(--status-success);
   display: block;
   border-radius: 2px;
   position: absolute;
@@ -318,7 +318,7 @@
   border-radius: 50%;
   position: absolute;
   box-sizing: content-box;
-  border: 4px solid rgba(25, 135, 84, 0.5);
+  border: 4px solid var(--status-success-soft);
 }
 
 .success-checkmark .icon-fix {
@@ -329,7 +329,7 @@
   height: 85px;
   position: absolute;
   transform: rotate(-45deg);
-  background-color: #fff;
+  background-color: var(--text-inverse);
 }
 
 @keyframes rotate-circle {
@@ -400,7 +400,6 @@
 
 /* Ticket Preview Modal Styles */
 .ticket-invoice {
-  font-family: "Courier New", monospace;
   border: none;
 }
 
@@ -432,18 +431,18 @@
 
 #ticketPreviewModal .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 8px var(--overlay-soft);
 }
 
 .ticket-logo {
   display: block;
   margin: 0 auto 5px auto;
   max-width: 120px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  filter: drop-shadow(0 2px 4px var(--overlay-soft));
 }
 
 .barcode-section {
-  background: white;
+  background: var(--surface-color);
   padding: 20px 15px;
   border-radius: 5px;
   text-align: center;
@@ -455,16 +454,47 @@
   height: auto;
   display: inline-block;
   margin: 0 auto;
-  background: white;
+  background: var(--surface-color);
   image-rendering: crisp-edges;
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-optimize-contrast;
 }
 
 #preview-barcode-number {
-  font-family: "Courier New", monospace;
   font-size: 1rem;
   font-weight: bold;
-  color: #2c3e50;
+  color: var(--text-color);
   letter-spacing: 1px;
+}
+
+/* Email sent modal styles */
+.email-sent-icon {
+  animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.email-animation svg {
+  filter: drop-shadow(0 4px 6px var(--status-success-soft));
+}
+
+#emailSuccessModal .modal-content {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+#emailSuccessModal .alert {
+  border-radius: 10px;
 }

@@ -2,12 +2,12 @@
   width: 65%;
   background: linear-gradient(
     to right,
-    #00c6ff,
-    #0073ffcb
+    var(--screen-gradient-start),
+    var(--screen-gradient-end)
   ); /* glowing effect */
   border-radius: 20% / 100%; /* curve */
   letter-spacing: 3px;
-  box-shadow: 0 0 15px rgba(0, 114, 255, 0.6);
+  box-shadow: 0 0 15px var(--screen-glow);
 }
 
 .screen::after {
@@ -20,20 +20,20 @@
   border-radius: 50%;
   background: radial-gradient(
     ellipse at center,
-    rgba(0, 114, 255, 0.4),
+    var(--screen-radial-glow),
     transparent
   );
 }
 
 /* Legend colors */
 .legend-seat.vacant {
-  background: #4caf50;
+  background: var(--status-available);
 }
 .legend-seat.occupied {
-  background: #f44336;
+  background: var(--status-danger);
 }
 .legend-seat.selected {
-  background: #ffeb3b;
+  background: var(--status-warning);
 }
 
 /* Real seats */
@@ -42,29 +42,29 @@
   height: 45px;
   transition: 0.2s;
   user-select: none;
-  color: rgb(0, 15, 56);
+  color: var(--seat-text);
 }
 
 /* Seat states */
 .vacant {
-  background: #4caf50; /* Green */
+  background: var(--status-available); /* Green */
 }
 .occupied {
-  background: #f44336; /* Red */
+  background: var(--status-danger); /* Red */
   cursor: not-allowed;
 }
 .selected {
-  background: #ffeb3b; /* Yellow */
+  background: var(--status-warning); /* Yellow */
 }
 
 /* Hover only on selected seats */
 .selected:hover {
-  background: #ffeb3ba2;
+  background: var(--seat-selected-hover);
 }
 
 /* Hover only on vacant seats */
 .vacant:hover {
-  background: #66bb6a;
+  background: var(--status-available);
 }
 
 .seat-layout-wrapper {
@@ -78,7 +78,7 @@
 
 #cinemaCarousel .carousel-control-prev-icon:hover,
 #cinemaCarousel .carousel-control-next-icon:hover {
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: var(--carousel-hover-bg);
   transform: scale(1.1);
 }
 

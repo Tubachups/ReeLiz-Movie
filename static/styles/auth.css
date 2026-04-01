@@ -1,11 +1,11 @@
 body {
   /* same image as the side container */
-  background: linear-gradient(rgba(0, 0, 0, 0.819), rgba(0, 0, 0, 0.844)),
+  background: linear-gradient(var(--overlay-strong), var(--overlay-strong)),
     /* dark overlay */ url("img/login1.jpg") center/cover no-repeat;
   min-height: 100vh;
   opacity: 0;
   animation: fadeIn 0.3s ease-in-out forwards;
-  color: #fff;
+  color: var(--text-color);
 }
 
 .card,
@@ -68,15 +68,15 @@ body {
 
 .nav-tabs {
   border: none !important;
-  background-color: #212529;
+  background-color: var(--navbar-bg);
   border-top-left-radius: 0.5rem;
 }
 
 .nav-tabs .nav-link {
   border: none !important;
   border-radius: 0 !important;
-  background-color: #212529;
-  color: rgb(255, 255, 255) !important;
+  background-color: var(--navbar-bg);
+  color: var(--navbar-text) !important;
   position: relative;
   transform: translateY(0);
   will-change: transform;
@@ -95,15 +95,16 @@ body {
 /* hover uses transform (no layout shift) and raises z-index so it doesn't get overlapped */
 .nav-tabs .nav-link:hover {
   transform: translateY(-4px);
-  background-color: #2d3338;
+  background-color: var(--surface-color);
+  color: var(--navbar-text) !important;
   transition: transform 0.25s ease, background-color 0.35s ease;
   z-index: 3;
 }
 
 /* active tab stays flush (no translate), sits above others */
 .nav-tabs .nav-link.active {
-  background-color: white !important;
-  color: black !important;
+  background-color: var(--accent-color) !important;
+  color: var(--accent-contrast) !important;
   transform: translateY(0);
   border: none !important;
   z-index: 4;
@@ -119,20 +120,20 @@ body {
   bottom: -1px;
   width: 60%;
   height: 4px;
-  background: rgb(227, 222, 222);
+  background: var(--text-inverse);
   border-radius: 3px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px var(--overlay-soft);
 }
 
 .card {
   height: fit-content;
-  background-color: white !important;
+  background-color: var(--surface-color) !important;
   border: none;
   border-top-left-radius: 0.9rem;
   border-bottom-left-radius: 0.5rem;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 20px var(--overlay-soft);
 }
 
 .auth-image-container {
@@ -151,51 +152,39 @@ body {
 .btn-ghost {
   position: relative;
   display: inline-block;
-  border: 2px solid #212529;
-  color: #212529 !important;
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color) !important;
   background: transparent;
   font-weight: 600;
   letter-spacing: 0.5px;
-  overflow: hidden;
-  transition: color 0.4s ease, box-shadow 0.3s ease;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  z-index: 1;
-}
-
-.btn-ghost::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 0%;
-  height: 100%;
-  background: #212529;
-  transform: translateX(-50%);
-  transition: all 0.4s ease;
-  z-index: -1;
-}
-
-.btn-ghost:hover::before {
-  width: 100%;
+  border-radius: 0.5rem;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 .btn-ghost:hover {
-  color: white !important;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+  background: var(--accent-color);
+  color: var(--accent-contrast) !important;
+}
+
+html[data-theme="light"] .btn-ghost:hover {
+  color: var(--text-inverse) !important;
+}
+
+html[data-theme="dark"] .btn-ghost:hover {
+  color: var(--accent-contrast) !important;
 }
 .text-center a {
-  color: rgb(53, 100, 210);
+  color: var(--navbar-accent);
   font-weight: 500;
   transition: color 0.3s ease;
 }
 
 .text-center a:hover {
-  color: #15426e;
+  color: var(--text-color);
   text-decoration: underline;
 }
 .btn-link {
-  color: #212529 !important;
+  color: var(--text-color) !important;
   font-weight: 400;
   text-decoration: none !important;
   display: inline-flex;
@@ -218,10 +207,10 @@ body {
 }
 
 .form-check-input:checked {
-  background-color: black;
-  border-color: black;
+  background-color: var(--navbar-accent);
+  border-color: var(--navbar-accent);
 }
 
 .form-check-input:focus {
-  border-color: black;
+  border-color: var(--navbar-accent);
 }

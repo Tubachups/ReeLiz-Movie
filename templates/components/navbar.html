@@ -1,6 +1,6 @@
 
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/navbar.css')}}">
-<nav class="navbar navbar-expand-md" id="main-navbar">
+<nav class="navbar navbar-expand-lg" id="main-navbar">
   <div class="container-fluid mx-3">
     <a class="navbar-brand " href="{{ url_for('landing') }}">ReeLiz</a>
     {% if session.get('is_admin') %}
